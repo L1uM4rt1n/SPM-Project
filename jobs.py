@@ -27,28 +27,21 @@ except Exception as e:
 app = Flask(__name__)
 CORS(app)
 
-class CustomEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, ObjectId):
-            return str(obj)  # Convert ObjectId to a string
-        if isinstance(obj, datetime):
-            return obj.isoformat()  # Convert datetime to ISO format
-        return super(CustomEncoder, self).default(obj)
-    
-
+#Get all jobs
 @app.route("/jobs", methods=['GET'])
 def get_all_jobs():
     jobs_collection_ref = db.get_collection('job_listings')
     
     try:
         job_doc_ref = jobs_collection_ref.find()
+        job_doc_ref = [job for job in job_doc_ref]
         jobs = []
 
         for job in job_doc_ref:
-            job_json = json.dumps(job, cls=CustomEncoder, indent=4)
-            job_dict = json.loads(job_json)  
-            job_dict['job_id'] = str(job['_id'])
-            jobs.append(job_dict)
+            job['_id'] = str(job['_id'])
+            job['app_deadline'] = job['app_deadline'].isoformat()
+            job['date_posted'] = job['date_posted'].isoformat()
+            jobs.append(job)
             
         if len(jobs) == 0:
             return jsonify(
@@ -74,6 +67,39 @@ def get_all_jobs():
             }
         )
 
+# Get job by specific job_id (represented by '_id')
+@app.route("/jobs/<string:jobid>", methods=['GET'])
+def get_listing_by_listingid(jobid):
+
+    jobs_collection_ref = db.get_collection('job_listings')
+    
+
+    try:
+        job_doc_ref = jobs_collection_ref.find_one({"_id": ObjectId(jobid)})
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 404,
+                "message": f"Error retrieving listing: {str(e)}"
+            }
+        ), 404
+    
+    if job_doc_ref is None:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There is no job with this job_id"
+            }
+        ), 404
+
+    job_doc_ref['_id'] = str(job_doc_ref['_id'])
+
+    return jsonify(
+            {
+                "code": 200,
+                "data": job_doc_ref
+            }
+        )
 
 #####################################
 # RUN SCRIPT
