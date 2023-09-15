@@ -47,7 +47,6 @@ def get_all_jobs():
         for job in job_doc_ref:
             job_json = json.dumps(job, cls=CustomEncoder, indent=4)
             job_dict = json.loads(job_json)  
-            job_dict['jobid'] = str(job['_id'])
             jobs.append(job_dict)
             
         if len(jobs) == 0:
