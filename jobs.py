@@ -101,6 +101,38 @@ def get_listing_by_listingid(jobid):
             }
         )
 
+@app.route("/jobs/search", methods=['GET'])
+def search_jobs():
+    # Get the search query from the request parameters
+    search_query = request.args.get('query', '')
+
+    # Query the job_listings collection to find job titles that contain the search query
+    jobs_collection_ref = db.get_collection('job_listings')
+    matching_jobs = []
+
+    try:
+        job_doc_ref = jobs_collection_ref.find({"job_title": {"$regex": search_query, "$options": "i"}})
+
+        for job in job_doc_ref:
+            job['_id'] = str(job['_id'])
+            matching_jobs.append(job)
+
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "jobs": matching_jobs
+                }
+            }
+        )
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "message": f"Error searching jobs: {str(e)}"
+            }
+        )
+
 #####################################
 # RUN SCRIPT
 #####################################
