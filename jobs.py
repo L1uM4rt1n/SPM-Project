@@ -101,6 +101,7 @@ def get_listing_by_listingid(jobid):
             }
         )
 
+#Search for job by specific keyword that matches words in job title
 @app.route("/jobs/search", methods=['GET'])
 def search_jobs():
     # Get the search query from the request parameters
