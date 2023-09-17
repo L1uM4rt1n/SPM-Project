@@ -31,6 +31,7 @@
         a.navbar-brand {
         color: #454545
         }
+
     </style>
     
 
@@ -67,7 +68,7 @@
         </div>
         <div id="jobs">
             <div class="row listing m-3" v-for="position in Positions">
-                {{ position }} 
+                <job-post position="position" v-bind:details="position"></job-post>
             </div>
         </div>
 
@@ -77,45 +78,27 @@
         const jobs = Vue.createApp({
             data() {
                 return{
-                    Positions: [['Title','Department','Availability','Deadline'],['Title','Department','Availability','Deadline']]
+                    Positions: [['Title','Department','Availability','Deadline',['Skill 1','Skill 2','...']],['Title','Department','Availability','Deadline',['Skill 1','Skill 2','...']]],
+                    Skills: [],
                 }
-            },
-            methods: {
-                add() {
-                    const data = { subject: this.subject,
-                                    entry: this.entry,
-                                    mood: this.mood 
-                                }
-                    // POST request
-                    /* axios.post(url, data
-                    )
-                    .then(response => {
-                        console.log(response.data)
-                        this.showStatus = true
-                        this.status = response.data
-                    })
-                    .catch(error => {
-                        this.showStatus = true
-                        this.status = 'There was an error: ' + error.message 
-                    })  */
-                    // GET request
-                    axios.get(url, {
-                        params: data
-                    })
-                    .then(response => {
-                        console.log(response.data)
-                        this.showStatus = true
-                        this.status = response.data
-                    })
-                    .catch(error => {
-                        this.showStatus = true
-                        this.status = 'There was an error: ' + error.message 
-                    }) 
-                    
-                }
-            }
-        }).mount('#jobs')
-        
+            }, 
+        })
+        jobs.component('job-post', {
+            props: ['skills', 'details'],
+            template: `    
+                    <div class="row"> 
+                        <div class="col-11">
+                            {{ details }} 
+                        </div>
+                        <div class="col">
+                            <div style="height: 45px; width: 45px; background-color: white; color: green; border-radius: 50%;text-align:center; padding-top:15%">
+                                100%
+                            </div>
+                        </div>
+                    </div> 
+                    `
+        })
+        jobs.mount('#jobs')
     </script>
     
 </body>
