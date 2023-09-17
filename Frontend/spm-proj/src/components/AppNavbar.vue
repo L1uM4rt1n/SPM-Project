@@ -2,10 +2,10 @@
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-            <img src="/docs/5.5/assets/brand/bootstrap-solid.svg" width="30" height="30" alt="">
+            <img src="../components/img/ondeh.jpeg" width="30" height="50" alt="">
             </a>
             <a class="navbar-brand" href="#">
-            <img src="/docs/5.5/assets/brand/bootstrap-solid.svg" width="30" height="30" alt="">
+            <img src="../components/img/user.png" width="30" height="50" alt="">
             </a>
         </div>
         </nav>
