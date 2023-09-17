@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12">
         <!-- Your Bootstrap search bar HTML here -->
-        <div class="input-group" id="adv-search">
+        <div class="input-group  my-5" id="adv-search">
             <input type="text" class="form-control " placeholder="Search for job listings" />
             <div class="input-group-btn">
                 <div class="btn-group" role="group">

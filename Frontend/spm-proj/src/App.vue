@@ -4,7 +4,7 @@
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div> -->
   <div>
-    <Navbar />
+    <AppNavbar />
     <SearchBar />
     <JobListings />
   </div>
@@ -20,13 +20,13 @@
 //     HelloWorld
 //   }
 // }
-import Navbar from './components/Navbar.vue';
+import AppNavbar from './components/AppNavbar.vue';
 import SearchBar from './components/SearchBar.vue';
 import JobListings from './components/JobListings.vue';
 
 export default {
   components: {
-    Navbar,
+    AppNavbar,
     SearchBar,
     JobListings,
   },
@@ -40,6 +40,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 0px;
 }
 </style>
