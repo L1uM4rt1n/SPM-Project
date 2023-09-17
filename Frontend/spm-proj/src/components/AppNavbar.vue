@@ -17,7 +17,7 @@ import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 
 export default {
-    name: 'Navbar',
+    name: 'AppNavbar',
 };
 
 </script>
