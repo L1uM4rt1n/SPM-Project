@@ -2,10 +2,10 @@
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-            <img src="../components/img/ondeh.jpeg" width="30" height="50" alt="">
+            <img src="../components/img/ondeh.jpeg" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
             </a>
             <a class="navbar-brand" href="#">
-            <img src="../components/img/user.png" width="30" height="50" alt="">
+            <img src="../components/img/user.png"  class="rounded-circle" width="50" height="50" alt="">
             </a>
         </div>
         </nav>
