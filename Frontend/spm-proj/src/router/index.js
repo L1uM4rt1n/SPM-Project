@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HRHome from '../views/HRHome.vue';
 import createJobListing from '../views/createJobListing.vue';
-
+import Login from '../views/Login.vue';
 const routes = [
   // Other routes
     {
@@ -15,6 +15,12 @@ const routes = [
     name: 'HRHome',
     component: HRHome,
     },
+
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login,
+      },
 ];
 
 const router = createRouter({
