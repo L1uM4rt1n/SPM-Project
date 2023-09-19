@@ -1,36 +1,66 @@
 <template>
-  <!-- <div>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div> -->
-  <div>
-    <AppNavbar />
-    <SearchBar />
-    <JobListings />
-  </div>
 
+  <div id="app">
+    <!-- Header content -->
+    <header>
+
+    </header>
+
+    <!-- Navigation Bar content-->
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="./img/ondeh.jpeg" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
+          </a>
+          <a class="navbar-brand" href="#">
+          <img src="./img/user.png"  class="rounded-circle" width="50" height="50" alt="">
+        </a>
+      </div>
+    </nav>
+
+    <main>
+        <!-- Contains the main content of the webpage-->
+      <div>
+      <router-view></router-view>
+      </div>
+
+    </main>
+
+    <footer>
+      <!-- Footer content -->
+    </footer>
+
+  </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
+import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
+import 'jquery/dist/jquery.min.js'; // Import jQuery
+import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+// import router from "./router";
+import { createRouter, createWebHistory } from 'vue-router';
 
-// export default {
-//   name: 'App',
-//   components: {
-//     HelloWorld
-//   }
-// }
-import AppNavbar from './components/AppNavbar.vue';
-import SearchBar from './components/SearchBar.vue';
-import JobListings from './components/JobListings.vue';
 
 export default {
-  components: {
-    AppNavbar,
-    SearchBar,
-    JobListings,
+  name: 'App',
+
+  methods: {
+
   },
-};
+
+// Configure the Vue Router instance
+router: createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    routes: [
+      // Define your routes here
+      {
+        path: '/hr-home',
+        name: 'HRHome',
+        component: () => import('./views/HRHome.vue'), // Example: Import your Home component
+      },
+    ],
+  }),
+}
 </script>
 
 <style>
