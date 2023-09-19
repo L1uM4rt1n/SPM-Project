@@ -25,17 +25,18 @@ axios.get(show_all_jobs)
             const tr = document.createElement('tr');
 
             // show only date for app_deadline
-            const appDeadlineDate = new Date(jobListing.app_deadline);
+            const appDeadlineDate = new Date(jobListing.App_Deadline);
             const formattedAppDeadline = appDeadlineDate.toDateString();
 
             tr.innerHTML = `
-                <td>${jobListing.job_title}</td>
-                <td>${jobListing.job_department}</td>
+                <td>${jobListing.Role_Name}</td>
+                <td>${jobListing.Job_Department}</td>
                 <td>${formattedAppDeadline}</td>
-                <td>${jobListing.skills_req.join(', ')}</td>
+               
             `;
             tbody.appendChild(tr);
         }
+        //  <td>${jobListing.Skills_req.join(', ')}</td>
         document.body.appendChild(table);
     })
     .catch((error) => {

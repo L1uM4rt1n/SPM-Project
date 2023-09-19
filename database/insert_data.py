@@ -123,6 +123,10 @@ for collection_name, schema in collection_schemas.items():
             db[collection_name].insert_one(document)
             
         else:
-            print(f"Document with {unique_field} {document[unique_field]} already exists.")
+            if existing_document != document:
+                print(f"Updating document with {unique_field} {document[unique_field]}")
+                db[collection_name].replace_one({unique_field: document[unique_field]}, document)
+            else:
+                print(f"Document with {unique_field} {document[unique_field]} already exists.")
             
 client.close()

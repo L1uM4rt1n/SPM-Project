@@ -33,6 +33,7 @@ def get_all_jobs():
         for job in job_listings:
             job['_id'] = str(job['_id'])
             jobs.append(job)
+        print(jobs)
         return jsonify(
             {
                 "code": 200, 
