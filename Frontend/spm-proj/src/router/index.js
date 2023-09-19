@@ -11,7 +11,7 @@ const routes = [
     },
 
     {
-    path: '/hr-home',
+    path: '/',
     name: 'HRHome',
     component: HRHome,
     },

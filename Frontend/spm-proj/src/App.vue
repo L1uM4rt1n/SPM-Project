@@ -21,7 +21,8 @@
     <main>
         <!-- Contains the main content of the webpage-->
       <div>
-      <router-view></router-view>
+        <!-- Router View to display components based on routes -->
+        <router-view></router-view>
       </div>
 
     </main>
@@ -39,28 +40,27 @@ import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 // import router from "./router";
 import { createRouter, createWebHistory } from 'vue-router';
+import HRHome from './views/HRHome.vue';
 
 
 export default {
   name: 'App',
-
   methods: {
-
   },
 
-// Configure the Vue Router instance
-router: createRouter({
-    history: createWebHistory(process.env.BASE_URL),
-    routes: [
-      // Define your routes here
-      {
-        path: '/hr-home',
-        name: 'HRHome',
-        component: () => import('./views/HRHome.vue'), // Example: Import your Home component
-      },
-    ],
-  }),
-}
+  // Configure the Vue Router instance
+  router: createRouter({
+      history: createWebHistory(process.env.BASE_URL),
+      routes: [
+        // Define your routes here
+        {
+          path: '/',
+          name: 'HRHome',
+          component: HRHome, // Example: Import your Home component
+        },
+      ],
+    }),
+  }
 </script>
 
 <style>
