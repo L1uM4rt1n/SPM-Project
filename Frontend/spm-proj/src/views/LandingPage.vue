@@ -1,6 +1,6 @@
 <template>
     <div class="landing-page">
-        <h1>Welcome to the Landing Page</h1>
+        <h1 class="m-5">Welcome to the Landing Page</h1>
         <div class="container mx-auto">
             
             <!-- Add your page content here -->
@@ -8,13 +8,14 @@
 
                 <!-- HR Home Button -->
                 <router-link :to="{ name: 'HRHome' }">
-                    <a class="btn btn-primary" href="#" role="button">To HR Home Page</a>
+                    <a class="btn-lg btn-primary" href="#" role="button">To HR Home Page</a>
                 </router-link>
 
                 <!-- Staff Home Button -->
                 <!-- <router-link :to="{ name: 'StaffHome' }">
-                    <a class="btn btn-primary" href="#" role="button">Create Job Listing</a>
+                    
                 </router-link> -->
+                <a class="btn-lg btn-primary" href="#" role="button">To Staff Home Page</a>
 
 
             </div>

@@ -9,9 +9,11 @@
     <!-- Navigation Bar content-->
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
+        <router-link :to="{ name: 'landingPage' }">
         <a class="navbar-brand" href="#">
           <img src="./img/ondeh.jpeg" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
           </a>
+        </router-link>
           <a class="navbar-brand" href="#">
           <img src="./img/user.png"  class="rounded-circle" width="50" height="50" alt="">
         </a>
