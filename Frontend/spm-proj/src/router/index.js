@@ -13,12 +13,19 @@ const routes = [
     },
 
     {
+    path: '/',
+    name: 'landingPage',
+    component: landingPage,
+    },
+
+    {
     path: '/create-job-listing',
     name: 'createJobListing',
     component: createJobListing,
     },
 
     {
+    path: '/HRHome',
     path: '/HRHome',
     name: 'HRHome',
     component: HRHome,
