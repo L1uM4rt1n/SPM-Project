@@ -39,8 +39,8 @@ def get_all_jobs():
 
         for job in job_doc_ref:
             job['_id'] = str(job['_id'])
-            job['app_deadline'] = job['app_deadline'].isoformat()
-            job['date_posted'] = job['date_posted'].isoformat()
+            job['App_Deadline'] = job['App_Deadline'].isoformat()
+            job['Date_Posted'] = job['Date_Posted'].isoformat()
             jobs.append(job)
             
         if len(jobs) == 0:
@@ -73,7 +73,6 @@ def get_listing_by_listingid(jobid):
 
     jobs_collection_ref = db.get_collection('job_listings')
     
-
     try:
         job_doc_ref = jobs_collection_ref.find_one({"_id": ObjectId(jobid)})
     except Exception as e:
@@ -112,7 +111,7 @@ def search_jobs():
     matching_jobs = []
 
     try:
-        job_doc_ref = jobs_collection_ref.find({"job_title": {"$regex": search_query, "$options": "i"}})
+        job_doc_ref = jobs_collection_ref.find({"Role_Name": {"$regex": search_query, "$options": "i"}})
 
         for job in job_doc_ref:
             job['_id'] = str(job['_id'])
