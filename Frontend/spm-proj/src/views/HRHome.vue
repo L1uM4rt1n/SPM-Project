@@ -37,6 +37,7 @@
     
 <script>
 import SearchBar from '../components/SearchBar.vue';
+import SearchBar from '../components/SearchBar.vue';
 import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS

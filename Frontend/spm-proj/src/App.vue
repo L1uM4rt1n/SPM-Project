@@ -26,6 +26,8 @@
       <div>
         <!-- Router View to display components based on routes -->
         <router-view></router-view>
+        <!-- Router View to display components based on routes -->
+        <router-view></router-view>
       </div>
 
     </main>
