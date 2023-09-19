@@ -1,9 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HRHome from '../views/HRHome.vue';
 import createJobListing from '../views/createJobListing.vue';
-import Login from '../views/Login.vue';
+import landingPage from '../views/LandingPage.vue';
+
 const routes = [
   // Other routes
+    {
+    path: '/',
+    name: 'landingPage',
+    component: landingPage,
+    },
+
     {
     path: '/create-job-listing',
     name: 'createJobListing',
@@ -11,16 +18,13 @@ const routes = [
     },
 
     {
-    path: '/',
+    path: '/HRHome',
     name: 'HRHome',
     component: HRHome,
     },
 
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login,
-      },
+
+    
 ];
 
 const router = createRouter({

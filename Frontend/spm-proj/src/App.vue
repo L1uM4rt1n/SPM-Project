@@ -40,7 +40,7 @@ import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 // import router from "./router";
 import { createRouter, createWebHistory } from 'vue-router';
-import HRHome from './views/HRHome.vue';
+import landingPage from './views/LandingPage.vue';
 
 
 export default {
@@ -55,8 +55,8 @@ export default {
         // Define your routes here
         {
           path: '/',
-          name: 'HRHome',
-          component: HRHome, // Example: Import your Home component
+          name: 'landingPage',
+          component: landingPage, // Example: Import your Home component
         },
       ],
     }),
