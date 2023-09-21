@@ -10,7 +10,74 @@
             placeholder="Search for job listings"
             v-model="searchKeyword"
             />
+        <div class="input-group my-5" id="adv-search">
+            <input
+            type="text"
+            class="form-control border-secondary"
+            placeholder="Search for job listings"
+            v-model="searchKeyword"
+            />
             <div class="input-group-btn">
+            <div class="btn-group" role="group">
+                <div class="dropdown dropdown-lg">
+                <button
+                    type="button"
+                    class="btn btn-default dropdown-toggle border-bottom border-top border-secondary"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                    <span class="caret"></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                    <form class="form-horizontal" role="form">
+                    <div class="mt-3">
+                        <h5 class="">Select Departments:</h5>
+                        <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            @click="toggleDepartmentsDropdown"
+                        >
+                            {{ selectedDepartments.length === 0 ? 'Select departments' : selectedDepartments.join(', ') }}
+                        </button>
+                        <div class=" secondary-dropdownn-menu dropdown-menu" :class="{ show: isDepartmentsDropdownOpen }">
+                            <div class="form-check" v-for="department in departments" :key="department.id">
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                :id="'department_' + department.id"
+                                :value="department.name"
+                                v-model="selectedDepartments"
+                                style="max-width: 150px;"
+                            />
+                            <label class="form-check-label" :for="'department_' + department.id">{{ department.name }}</label>
+                            </div>
+                        </div>
+                        </div>
+                        <h5 class="mt-3">Select Skills:</h5>
+                        <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            @click="toggleSkillsDropdown"
+                        >
+                            {{ selectedSkills.length === 0 ? 'Select skills' : selectedSkills.join(', ') }}
+                        </button>
+                        <div class="secondary-dropdown-menu dropdown-menu" :class="{ show: isSkillsDropdownOpen }">
+                            <div class="form-check" v-for="skill in skills" :key="skill.id">
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                :id="'skill_' + skill.id"
+                                :value="skill.name"
+                                v-model="selectedSkills"
+                                style="max-width: 150px;"
+                            />
+                            <label class="form-check-label" :for="'skill_' + skill.id">{{ skill.name }}</label>
+                            </div>
             <div class="btn-group" role="group">
                 <div class="dropdown dropdown-lg">
                 <button
@@ -144,7 +211,7 @@ export default {
     },
     mounted(){
         const searchButton = document.getElementById('searchButton');
-        searchButton.addEventListener('click', this.triggerSearch);
+        searchButton.addEventListener('click', this.handleSearchClick);
     },
 };
 </script>
@@ -152,6 +219,21 @@ export default {
 <style>
 /* Add component-specific styles here */
 .dropdown.dropdown-lg .dropdown-menu {
+    margin-top: -1px;
+    padding: 6px 20px;
+}
+.input-group-btn .btn-group {
+    display: flex !important;
+}
+.btn-group .btn {
+    border-radius: 0;
+    margin-left: -1px;
+}
+.btn-group .btn:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.btn-group .form-horizontal .btn[type="submit"] {
     margin-top: -1px;
     padding: 6px 20px;
 }
@@ -178,7 +260,35 @@ export default {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
+}
+.form-horizontal .form-group {
+    margin-left: 0;
+    margin-right: 0;
+}
+.form-group .form-control:last-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
 
+@media screen and (min-width: 768px) {
+    #adv-search {
+    width: 600px;
+    margin: 0 auto;
+    }
+    .dropdown.dropdown-lg {
+    position: static !important;
+    }
+    .dropdown.dropdown-lg .dropdown-menu {
+    min-width: 300px;
+    }
+}
+
+.secondary-dropdown-menu{
+    margin-top: -1px;
+    padding: 6px 20px;
+    min-width: 100px; /* Minimum width */
+    max-width: 100px; /* Maximum width */
+}
 @media screen and (min-width: 768px) {
     #adv-search {
     width: 600px;
