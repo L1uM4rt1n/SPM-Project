@@ -2,26 +2,31 @@
     <div class="landing-page">
         <h1 class="m-5">Welcome to the Landing Page</h1>
         <div class="container mx-auto">
-            
-            <!-- Add your page content here -->
-            <div class="d-flex flex-row justify-content-center p-1">
-
+            <div class="jumbotron">
+            <h1 class="display-4">HR Home!</h1>
+            <hr class="my-4">
+            <p class="lead">
                 <!-- HR Home Button -->
                 <router-link :to="{ name: 'HRHome' }">
-                    <a class="btn-lg btn-primary" href="#" role="button">To HR Home Page</a>
+                    <a class="btn-lg btn-secondary border-dark" href="#" role="button">To HR Home Page</a>
                 </router-link>
+            </p>
+            </div>
 
-                <!-- Staff Home Button -->
-                <!-- <router-link :to="{ name: 'StaffHome' }">
-                    
-                </router-link> -->
-                <a class="btn-lg btn-primary" href="#" role="button">To Staff Home Page</a>
+            <div class="jumbotron">
+            <h1 class="display-4">Staff Home!</h1>
+            <hr class="my-4">
 
-
+            <p class="lead">
+                <!-- HR Home Button -->
+                <!-- <router-link :to="{ name: 'HRHome' }"> -->
+                    <a class="btn-lg btn-secondary border-dark" href="#" role="button">To Staff Home Page</a>
+                <!-- </router-link> -->
+            </p>
+            </div>
             </div>
         </div>
 
-    </div>
 </template>
 
 <script>

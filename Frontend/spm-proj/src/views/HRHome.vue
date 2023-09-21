@@ -18,7 +18,7 @@
             </div>
     
             <!-- Display Job Listings -->
-            <div class="mb-3" v-for="job in filteredJobListings" :key="job.id">
+            <div class="mb-3" v-for="job in filteredResults" :key="job.id">
             <div class="card border-secondary position-relative">
                 <div class="card-body">
                 <h4 class="card-title pb-3">{{ job.title }}</h4>
@@ -55,66 +55,37 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
         filteredResults:[],
         };
     },
-    computed: {
-        filteredJobListings() {
-      // Your filtering logic here based on selectedSkills, selectedDepartments, and searchKeyword
-        return this.jobListings.filter((job) => {
+    methods: {
+    performSearch(payload) {
+        if (payload) {
+        const { keyword, selectedDepartments, selectedSkills } = payload;
+
+        // Your filtering logic here based on selected departments, skills, and keyword
+        const filteredResults = this.jobListings.filter((job) => {
+            const hasSelectedDepartment =
+            selectedDepartments.length === 0 ||
+            selectedDepartments.includes(job.department);
             const hasSelectedSkills =
-            this.selectedSkills.length === 0 ||
-            this.selectedSkills.some((skill) => job.skills.includes(skill));
-            const hasSelectedDepartments =
-            this.selectedDepartments.length === 0 ||
-            this.selectedDepartments.includes(job.department);
+            selectedSkills.length === 0 ||
+            selectedSkills.some((selectedSkill) =>
+                job.skills.includes(selectedSkill)
+            );
             const keywordMatch = job.title
             .toLowerCase()
-            .includes(this.searchKeyword.toLowerCase());
+            .includes(keyword.toLowerCase());
 
-            return hasSelectedSkills && hasSelectedDepartments && keywordMatch;
+            return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
         });
+        this.filteredResults = filteredResults;
+        }
         },
-    },
-    methods: {
-  performSearch() { // Define the performSearch method
-        // Add logs to check variable values
-        console.log("performSearch function is executed"); // Log that the function is called
-        console.log("searchKeyword:", this.searchKeyword);
-        console.log("selectedDepartments:", this.selectedDepartments);
-        console.log("selectedSkills:", this.selectedSkills);
-        // Filtering logic based on selected department, skills, and keyword
-        const filteredResults = this.jobListings.filter((job) => {
-        // Check if the job matches selected department
-        const hasSelectedDepartment =
-            this.selectedDepartments.length === 0 ||
-            this.selectedDepartments.includes(job.department);
-
-        // Check if at least one selected skill matches job skills
-        const hasSelectedSkills =
-            this.selectedSkills.length === 0 ||
-            this.selectedSkills.some((selectedSkill) =>
-            job.skills.includes(selectedSkill)
-            );
-
-        // Check if the keyword is found in the job title (case insensitive)
-        const keywordMatch = job.title
-            .toLowerCase()
-            .includes(this.searchKeyword.toLowerCase());
-
-        // Return true if all criteria match
-        return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
-        });
-        console.log("filteredResults:", filteredResults);
-
-        // Update the jobListings array with the filtered results
-        this.jobListings = filteredResults;
-        console.log("jobListings after filtering:", this.jobListings);
-    },
     },
 
     watch: {
-    // Watch for changes to the searchKeyword and trigger performSearch
-    searchKeyword: function() {
-        this.performSearch(); // Call the performSearch method when searchKeyword changes
-    },
+        // Watch for changes to the searchKeyword and trigger performSearch
+        searchKeyword: function() {
+            this.performSearch(); // Call the performSearch method when searchKeyword changes
+        },
     },
     mounted() {
       // Simulate fetching data from a database (replace with actual data fetching)
@@ -129,17 +100,17 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
             deadline: '31/09/2002',
             },
             {
-                id: 2,
-                title: 'Frontend Developer',
-                skills: ['HTML', 'CSS', 'JavaScript'],
-                department: 'HR',
-                availability: 2,
-                deadline: '26/09/2002',
+            id: 2,
+            title: 'Frontend Developer',
+            skills: ['HTML', 'CSS', 'JavaScript'],
+            department: 'HR',
+            availability: 2,
+            deadline: '26/09/2002',
             },
           // Add more job listings here
         ];
         // Set filteredJobListings to match the initial data
-        this.filteredJobListings = this.jobListings;
+        this.filteredResults = this.jobListings;
       }, 1000); // Simulate an API call delay
     },
     };

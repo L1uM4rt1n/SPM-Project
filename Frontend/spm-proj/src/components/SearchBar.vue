@@ -144,7 +144,7 @@ export default {
     },
     mounted(){
         const searchButton = document.getElementById('searchButton');
-        searchButton.addEventListener('click', this.handleSearchClick);
+        searchButton.addEventListener('click', this.triggerSearch);
     },
 };
 </script>
