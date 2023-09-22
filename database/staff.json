@@ -1,1 +1,52 @@
-{}
+[
+    {
+        "Staff_ID": "9_000_001",
+        "Staff_FName": "John",
+        "Staff_LName": "Doe",
+        "Dept": "Human Resources",
+        "Country": "Singapore",
+        "Email": "john.doe@example.com",
+        "Access_Rights": 1,
+        "Skills_Possessed": ["Communication", "Recruitment", "Employee Relations"]
+    },
+    {
+        "Staff_ID": "9_000_002",
+        "Staff_FName": "Alice",
+        "Staff_LName": "Smith",
+        "Dept": "Finance",
+        "Country": "Singapore",
+        "Email": "alice.smith@example.com",
+        "Access_Rights": 2,
+        "Skills_Possessed": ["Financial Analysis", "Budgeting", "Accounting"]
+    },
+    {
+        "Staff_ID": "9_000_003",
+        "Staff_FName": "Elena",
+        "Staff_LName": "Garcia",
+        "Dept": "IT",
+        "Country": "Singapore",
+        "Email": "elena.garcia@example.com",
+        "Access_Rights": 2,
+        "Skills_Possessed": ["Software Development", "Database Management", "Networking"]
+    },
+    {
+        "Staff_ID": "9_000_004",
+        "Staff_FName": "Michael",
+        "Staff_LName": "Wang",
+        "Dept": "Marketing",
+        "Country": "Singapore",
+        "Email": "michael.wang@example.com",
+        "Access_Rights": 2,
+        "Skills_Possessed": ["Digital Marketing", "Market Research", "Campaign Management"]
+    },
+    {
+        "Staff_ID": "9_000_005",
+        "Staff_FName": "Sakura",
+        "Staff_LName": "Tanaka",
+        "Dept": "Operations",
+        "Country": "Japan",
+        "Email": "sakura.tanaka@example.com",
+        "Access_Rights": 2,
+        "Skills_Possessed": ["Supply Chain Management", "Process Optimization", "Quality Control"]
+    }
+]

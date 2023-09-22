@@ -32,11 +32,11 @@ axios.get(show_all_jobs)
                 <td>${jobListing.Role_Name}</td>
                 <td>${jobListing.Job_Department}</td>
                 <td>${formattedAppDeadline}</td>
-               
+                <td>${jobListing.Skills_Req.join(', ')}</td>
             `;
             tbody.appendChild(tr);
         }
-        //  <td>${jobListing.Skills_req.join(', ')}</td>
+
         document.body.appendChild(table);
     })
     .catch((error) => {

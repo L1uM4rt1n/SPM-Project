@@ -39,17 +39,6 @@ collection_schemas = {
                 },
                 "Job_Requirements": {
                     "bsonType": "string"
-                }
-            }
-        }
-    },
-    "role_skill": {
-        "$jsonSchema": {
-            "bsonType": "object",
-            "required": ["Role_Name", "Skill_Name"],
-            "properties": {
-                "Role_Name": {
-                    "bsonType": "string"
                 },
                 "Skills_Req": {
                     "bsonType": "array",
@@ -63,7 +52,7 @@ collection_schemas = {
     "staff": {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["Staff_ID", "Staff_FName", "Staff_LName", "Dept", "Country", "Email", "Access_Rights"],
+            "required": ["Staff_ID", "Staff_FName", "Staff_LName", "Dept", "Country", "Email", "Access_Rights", "Skills_Possessed"],
             "properties": {
             "_id": None,
             "Staff_ID": {
@@ -86,22 +75,13 @@ collection_schemas = {
             },
             "Access_Rights": {
                 "bsonType": "int32"
+            },
+            "Skills_Possessed": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
             }
-        }
-        }
-    },
-    "staff_skill": {
-        "$jsonSchema": {
-            "bsonType": "object",
-            "required": ["Staff_ID", "Skill_Name"],
-            "properties": {
-                "_id": None,
-                "Staff_ID": {
-                    "bsonType": "int32"
-                },
-                "Skill_Name": {
-                    "bsonType": "string"
-                }
             }
         }
     }
