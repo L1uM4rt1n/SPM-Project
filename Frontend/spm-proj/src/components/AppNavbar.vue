@@ -25,4 +25,3 @@ export default {
 <style>
 /* Add component-specific styles here */
 </style>
-    
