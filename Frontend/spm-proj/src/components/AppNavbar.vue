@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light bg-light" >
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
             <img src="../components/img/ondeh.jpeg" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
