@@ -1,19 +1,69 @@
 <template>
-  <div>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+  <div id="app">
+    <!-- Header content -->
+    <header>
+
+    </header>
+
+
+    <!-- Navigation Bar content-->
+    <nav class="navbar navbar-light border-bottom border-dark">
+      <div class="container-fluid">
+        <router-link :to="{ name: 'landingPage' }">
+        <a class="navbar-brand" href="#">
+          <img src="./img/ondeh.jpeg" class="rounded-circle" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
+          </a>
+        </router-link>
+          <a class="navbar-brand" href="#">
+          <img src="./img/user.png"  class="rounded-circle" width="50" height="50" alt="">
+        </a>
+      </div>
+    </nav>
+
+    <main>
+        <!-- Contains the main content of the webpage-->
+      <div>
+        <!-- Router View to display components based on routes -->
+        <router-view></router-view>
+      </div>
+
+    </main>
+
+    <footer>
+      <!-- Footer content -->
+    </footer>
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
+import 'jquery/dist/jquery.min.js'; // Import jQuery
+import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+// import router from "./router";
+import { createRouter, createWebHistory } from 'vue-router';
+import landingPage from './views/LandingPage.vue';
+
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  methods: {
+  },
+
+  // Configure the Vue Router instance
+  router: createRouter({
+      history: createWebHistory(process.env.BASE_URL),
+      routes: [
+        // Define your routes here
+        {
+          path: '/',
+          name: 'landingPage',
+          component: landingPage, // Example: Import your Home component
+        },
+      ],
+    }),
   }
-}
 </script>
 
 <style>
@@ -21,8 +71,8 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 0px;
 }
 </style>
