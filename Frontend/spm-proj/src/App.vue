@@ -8,7 +8,7 @@
 
 
     <!-- Navigation Bar content-->
-    <nav class="navbar navbar-light border-bottom border-dark">
+    <nav class="navbar navbar-light border-bottom border-dark" style="box-shadow: 0px 5px 5px grey;">
       <div class="container-fluid">
         <router-link :to="{ name: 'landingPage' }">
         <a class="navbar-brand" href="#">
