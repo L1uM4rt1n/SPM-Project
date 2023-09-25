@@ -42,7 +42,6 @@
   import 'bootstrap/dist/js/bootstrap'
   import 'jquery/dist/jquery.min.js'
   import { createRouter, createWebHistory } from 'vue-router'
-  import landingPage from './views/LandingPage.vue'
 
   export default {
     name: 'App',
@@ -65,7 +64,7 @@
           {
             path: "/",
             name: "landingPage",
-            component: landingPage
+            component: () => import('../views/LandingPage.vue')
           }
         ]
       }
