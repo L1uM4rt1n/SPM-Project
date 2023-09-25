@@ -1,26 +1,27 @@
 <template>
-    <!-- Search Bar -->
-    <SearchBar
-            v-model:keywordSearch="searchKeyword"
-            :selectedSkills="selectedSkills"
-            :selectedDepartments="selectedDepartments"
-            @search-request="performSearch"
-    />
-
-    <!-- Display Job Listings -->
     <div class="container">
-        <router-link to="'/role/' + role.slug" class="card-link" v-for="role in filteredResults" :key="role.id">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">{{ role.title }}</h4>
-                    <h6 class="card-text">Role ID: {{  role.id }}</h6>
-                    <p class="card-text">Availability: {{ role.availability }}</p>
-                    <p class="card-text">Application Deadline: {{ role.deadline }}</p>
+        <!-- Search Bar -->
+        <SearchBar
+                v-model:keywordSearch="searchKeyword"
+                :selectedSkills="selectedSkills"
+                :selectedDepartments="selectedDepartments"
+                @search-request="performSearch"
+        />
+    
+        <!-- Display Job Listings -->
+        <div class="container">
+            <router-link to="'/role/' + role.slug" class="card-link" v-for="role in filteredResults" :key="role.id">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ role.title }}</h4>
+                        <h6 class="card-text">Role ID: {{  role.id }}</h6>
+                        <p class="card-text">Availability: {{ role.availability }}</p>
+                        <p class="card-text">Application Deadline: {{ role.deadline }}</p>
+                    </div>
                 </div>
-            </div>
-        </router-link>
+            </router-link>
+        </div>
     </div>
-
 </template>
 
 <script>

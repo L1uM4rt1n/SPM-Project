@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HRHome from '../views/HRHome.vue';
-// import createJobListing from '../views/createJobListing.vue';
 import landingPage from '../views/LandingPage.vue';
 import StaffPage from '../views/StaffPage.vue';
 
@@ -11,13 +10,6 @@ const routes = [
     name: 'landingPage',
     component: landingPage,
     },
-
-
-    // {
-    // path: '/create-job-listing',
-    // name: 'createJobListing',
-    // component: createJobListing,
-    // },
 
     {
     path: '/HRHome',
@@ -30,15 +22,6 @@ const routes = [
     name: 'StaffPage',
     component: StaffPage,
     },
-
-    // {
-    // path: '/role/:slug',
-    // component: RoleDetails
-    // }
-    
-
-
-    
 ];
 
 const router = createRouter({
