@@ -64,7 +64,7 @@
           {
             path: "/",
             name: "landingPage",
-            component: () => import('../views/LandingPage.vue')
+            component: () => import('./views/LandingPage.vue')
           }
         ]
       }
