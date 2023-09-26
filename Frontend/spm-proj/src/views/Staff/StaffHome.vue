@@ -64,7 +64,7 @@
                     });
             },
             loadSkillMatchPercentageComponent() {
-                import('./SkillsMatchedPercentage.vue')
+                import('../../components/SkillsMatchedPercentage.vue')
                     .then(module => {
                         this.skillMatchPercentageComponent = module.default;
                     })

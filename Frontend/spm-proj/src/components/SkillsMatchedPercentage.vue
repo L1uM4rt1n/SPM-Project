@@ -62,7 +62,7 @@
       };
 </script>
 
-<style scoped>
+<style>
       .skill-match-percentage {
             display: flex;
             justify-content: center;
