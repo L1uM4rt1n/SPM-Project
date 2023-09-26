@@ -133,6 +133,13 @@ def search_jobs():
             }
         )
 
+#Get skills required for a specific job
+@app.route("/job/skillset", methods=['GET'])
+
+
+#Getting skills of a specific staff
+@app.route("/staff/skillset", methods=['GET'])
+
 #####################################
 # RUN SCRIPT
 #####################################
