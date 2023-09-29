@@ -15,10 +15,8 @@
 
             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
             <select class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
-                <option selected>Choose Department...</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                <option disabled selected>Choose Department...</option>
+                <option v-for="type in jobtypes" :key="type" :value="type">{{ type }}</option>
             </select>
 
             <label for="exampleFormControlTextarea1">Job Description</label>
@@ -59,7 +57,86 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 export default {
     name: 'createJobListing',
     // Other component options and code
-};
+data() {
+        return {
+        selectedSkills: [],
+        selectedDepartments: [],
+        searchKeyword: '', // Add a data property for search keyword
+        jobListings: [], // Initialize an empty array for job listings
+        jobtypes: [], // All job types
+        filteredResults:[],
+        };
+    },
+    methods: {
+    performSearch(payload) {
+        if (payload) {
+        const { keyword, selectedDepartments, selectedSkills } = payload;
+
+        // Your filtering logic here based on selected departments, skills, and keyword
+        const filteredResults = this.jobListings.filter((job) => {
+            const hasSelectedDepartment =
+            selectedDepartments.length === 0 ||
+            selectedDepartments.includes(job.department);
+            const hasSelectedSkills =
+            selectedSkills.length === 0 ||
+            selectedSkills.some((selectedSkill) =>
+                job.skills.includes(selectedSkill)
+            );
+            const keywordMatch = job.title
+            .toLowerCase()
+            .includes(keyword.toLowerCase());
+
+            return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
+        });
+        this.filteredResults = filteredResults;
+        }
+        },
+    },
+
+    watch: {
+        // Watch for changes to the searchKeyword and trigger performSearch
+        searchKeyword: function() {
+            this.performSearch(); // Call the performSearch method when searchKeyword changes
+        },
+
+        jobListings(newListings) {
+            let titles = [];
+            for (let i = 0; i < newListings.length; i++) {
+                let title = newListings[i].title;
+                if (!titles.includes(title)) {
+                    titles.push(title);
+                }
+            }
+            this.jobtypes = titles;
+        },
+    },
+    mounted() {
+      // Simulate fetching data from a database (replace with actual data fetching)
+        setTimeout(() => {
+            this.jobListings = [
+            {
+            id: 1,
+            title: 'Software Developer',
+            skills: ['Java', 'HTML'],
+            department: 'IT',
+            availability: 2,
+            deadline: '31/09/2002',
+            },
+            {
+            id: 2,
+            title: 'Frontend Developer',
+            skills: ['HTML', 'CSS', 'JavaScript'],
+            department: 'HR',
+            availability: 2,
+            deadline: '26/09/2002',
+            },
+          // Add more job listings here
+        ],
+        // Set filteredJobListings to match the initial data
+        this.filteredResults = this.jobListings;
+      }, 1000); // Simulate an API call delay
+    },
+    };
 </script>
 
 
