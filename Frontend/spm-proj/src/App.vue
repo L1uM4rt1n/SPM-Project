@@ -12,11 +12,11 @@
       <div class="container-fluid">
         <router-link :to="{ name: 'landingPage' }">
         <a class="navbar-brand" href="#">
-          <img src="./img/ondeh.jpeg" class="rounded-circle" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
+          <img src="./assets/ondeh.jpeg" class="rounded-circle" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
           </a>
         </router-link>
           <a class="navbar-brand" href="#">
-          <img src="./img/user.png"  class="rounded-circle" width="50" height="50" alt="">
+          <img src="./assets/user.png"  class="rounded-circle" width="50" height="50" alt="">
         </a>
       </div>
     </nav>
