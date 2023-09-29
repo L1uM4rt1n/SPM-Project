@@ -8,20 +8,7 @@
             @search-request="performSearch"
         />
     
-        <SearchBar
-            v-model:keywordSearch="searchKeyword"
-            :selectedSkills="selectedSkills"
-            :selectedDepartments="selectedDepartments"
-            @search-request="performSearch"
-        />
-    
         <div class="container">
-            <!-- Display Title and Create Listing Button -->
-            <div class="d-flex flex-row justify-content-between align-items-center p-3">
-            <h1 class="mb-0"></h1>
-            <router-link :to="{ name: 'createJobListing' }">
-                <button class="btn btn-secondary border-dark">Create Job Listing</button>
-            </router-link>
             <!-- Display Title and Create Listing Button -->
             <div class="d-flex flex-row justify-content-between align-items-center p-3">
             <h1 class="mb-0"></h1>
@@ -48,17 +35,12 @@
         </div>
     </template>
     
-        </div>
-    </template>
-    
 <script>
-import SearchBar from '../components/SearchBar.vue';
 import SearchBar from '../components/SearchBar.vue';
 import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 
-    export default {
     export default {
     name: 'HRHome',
     components: {

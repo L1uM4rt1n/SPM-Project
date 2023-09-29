@@ -12,11 +12,6 @@ const routes = [
     component: landingPage,
     },
 
-    {
-    path: '/',
-    name: 'landingPage',
-    component: landingPage,
-    },
 
     {
     path: '/create-job-listing',

@@ -12,11 +12,11 @@
       <div class="container-fluid">
         <router-link :to="{ name: 'landingPage' }">
         <a class="navbar-brand" href="#">
-          <img src="./assets/ondeh.jpeg" class="rounded-circle" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
+          <img src="./img/ondeh.jpeg" class="rounded-circle" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
           </a>
         </router-link>
           <a class="navbar-brand" href="#">
-          <img src="./assets/user.png"  class="rounded-circle" width="50" height="50" alt="">
+          <img src="./img/user.png"  class="rounded-circle" width="50" height="50" alt="">
         </a>
       </div>
     </nav>
@@ -24,8 +24,6 @@
     <main>
         <!-- Contains the main content of the webpage-->
       <div>
-        <!-- Router View to display components based on routes -->
-        <router-view></router-view>
         <!-- Router View to display components based on routes -->
         <router-view></router-view>
       </div>
