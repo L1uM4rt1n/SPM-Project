@@ -25,17 +25,9 @@
             <!-- Checkboxes -->
             <div class="py-3">
                 <label for="Skills">Skills Required</label><br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                    <label class="form-check-label" for="inlineCheckbox1">1</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-                    <label class="form-check-label" for="inlineCheckbox2">2</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" disabled>
-                    <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
+                <div v-for="skill in skilltypes" :key="skill" class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" :key="skill" :value="skill">
+                    <label class="form-check-label" for="inlineCheckbox1">{{skill}}</label>
                 </div>
             </div>
 
@@ -64,6 +56,7 @@ data() {
         searchKeyword: '', // Add a data property for search keyword
         jobListings: [], // Initialize an empty array for job listings
         jobtypes: [], // All job types
+        skilltypes: [], // All skill types
         filteredResults:[],
         };
     },
@@ -108,7 +101,14 @@ data() {
                 }
             }
             this.jobtypes = titles;
-        },
+            let skills = [];
+            for (let i = 0; i < newListings.length; i++) {
+            skills = skills.concat(newListings[i].skills);
+            }
+
+            // Remove duplicates by converting the array to a Set and then back to an array
+            this.skilltypes = [...new Set(skills)];
+            },
     },
     mounted() {
       // Simulate fetching data from a database (replace with actual data fetching)
