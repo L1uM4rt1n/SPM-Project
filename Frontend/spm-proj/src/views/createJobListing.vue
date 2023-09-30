@@ -14,12 +14,12 @@
             </div>
 
             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
-            <select v-model="selectionDepartment" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
+            <select v-model="selectedDepartments" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
                 <option disabled selected>Choose Department...</option>
                 <option v-for="type in jobtypes" :key="type" :value="type">{{ type }}</option>
             </select>
-            <br>
-            <input  type="text" placeholder="New Deparment">
+
+            <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Deparment Name" style="margin-left:10px">
 
             <br>
             <label for="exampleFormControlTextarea1">Job Description</label>
