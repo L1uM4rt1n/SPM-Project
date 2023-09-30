@@ -14,11 +14,14 @@
             </div>
 
             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
-            <select class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
+            <select v-model="selectionDepartment" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
                 <option disabled selected>Choose Department...</option>
                 <option v-for="type in jobtypes" :key="type" :value="type">{{ type }}</option>
             </select>
+            <br>
+            <input  type="text" placeholder="New Deparment">
 
+            <br>
             <label for="exampleFormControlTextarea1">Job Description</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
 
@@ -53,6 +56,7 @@ data() {
         return {
         selectedSkills: [],
         selectedDepartments: [],
+        selectedDepartment: '',
         searchKeyword: '', // Add a data property for search keyword
         jobListings: [], // Initialize an empty array for job listings
         jobtypes: [], // All job types
@@ -93,14 +97,16 @@ data() {
         },
 
         jobListings(newListings) {
-            let titles = [];
+            let departmentss = ['New'];
             for (let i = 0; i < newListings.length; i++) {
-                let title = newListings[i].title;
-                if (!titles.includes(title)) {
-                    titles.push(title);
+                let dept = newListings[i].department;
+                if (!departmentss.includes(dept)) {
+                    departmentss.push(dept);
                 }
             }
-            this.jobtypes = titles;
+            this.jobtypes = departmentss;
+
+
             let skills = [];
             for (let i = 0; i < newListings.length; i++) {
             skills = skills.concat(newListings[i].skills);
