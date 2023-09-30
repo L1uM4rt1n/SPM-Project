@@ -19,7 +19,7 @@
                 <option v-for="type in jobtypes" :key="type" :value="type">{{ type }}</option>
             </select>
 
-            <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Deparment Name" style="margin-left:10px">
+            <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Department Name" style="margin-left:10px">
 
             <br>
             <label for="exampleFormControlTextarea1">Job Description</label>
@@ -32,9 +32,16 @@
                     <input class="form-check-input" type="checkbox" id="inlineCheckbox1" :key="skill" :value="skill">
                     <label class="form-check-label" for="inlineCheckbox1">{{skill}}</label>
                 </div>
+                    
+                <!-- Additional 'Other' checkbox -->
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="otherSkill" v-model="isOtherChecked">
+                    <label class="form-check-label" for="otherSkill">Other</label>
+                </div>
             </div>
-
-
+            <br>
+            <textarea v-if="isOtherChecked" placeholder="Please specify the other skill(s)"></textarea>
+            <br>
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
@@ -55,6 +62,8 @@ export default {
 data() {
         return {
         selectedSkills: [],
+        checkedSkills: [],  // This will store checked skills
+        isOtherChecked: false,  // This will track if 'Other' is checked
         selectedDepartments: [],
         selectedDepartment: '',
         searchKeyword: '', // Add a data property for search keyword
