@@ -120,9 +120,9 @@
   <script>
   import "bootstrap/dist/css/bootstrap.min.css"
     import "bootstrap"  
-//   import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
+//   import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 5 CSS
 //   import 'jquery/dist/jquery.min.js'; // Import jQuery
-//   import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+//   import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 5 JS
   
   export default {
     name: 'SearchBar',
@@ -168,6 +168,7 @@
         },
         clearSearch(){
             this.searchKeyword = ''
+            this.triggerSearch()
         },
         triggerSearch() {
             this.$emit('search-request', {

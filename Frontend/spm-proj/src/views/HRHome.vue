@@ -10,21 +10,21 @@
     
         <div class="container">
             <!-- Display Title and Create Listing Button -->
-            <div class="d-flex flex-row justify-content-between align-items-center p-2">
+            <div class="d-flex flex-row justify-content-between align-items-center">
             <h1 class="mb-0"></h1>
             <!-- <router-link :to="{ name: 'createJobListing' }"> -->
-                <button class="btn btn-secondary border-dark">Create Job Listing</button>
+                <button class="btn btn-secondary border-dark my-2">Create Job Listing</button>
             <!-- </router-link> -->
             </div>
 
             <!-- Display Job Listings -->
-            <div class="mb-3" v-for="role in filteredResults" :key="role.id">
+            <div class="mb-1" v-for="role in filteredResults" :key="role.id">
             <div class="card border-secondary position-relative">
-                <div class="card-body m-2">
-                <h4 class="card-title pb-3">{{ role.title }}</h4>
-                <p class="card-text">Role ID: {{  role.id }}</p>
-                <p class="card-text">Availability: {{ role.availability }}</p>
-                <p class="card-text">Application Deadline: {{ role.deadline }}</p>
+                <div class="card-body">
+                    <h4 class="card-title">{{ role.title }}</h4>
+                    <p class="card-text">Role ID: {{  role.id }}</p>
+                    <p class="card-text">Availability: {{ role.availability }}</p>
+                    <p class="card-text">Application Deadline: {{ role.deadline }}</p>
                 </div>
                 <!-- Edit Button (Bottom-right corner) -->
                 <div class="position-absolute bottom-0 end-0 m-2 edit-button">
@@ -38,9 +38,9 @@
     
 <script>
 import SearchBar from '../components/SearchBar.vue';
-import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
+import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 5 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
-import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 5 JS
 // import axios from 'axios';
 
 
