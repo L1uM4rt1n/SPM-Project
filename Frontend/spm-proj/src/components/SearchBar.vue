@@ -4,12 +4,20 @@
         <div class="col-md-12">
             <!-- Your Bootstrap search bar HTML here -->
             <div class="input-group my-5" id="adv-search">
+            
             <input
                 type="text"
                 class="form-control border-secondary"
                 placeholder="Search for job listings"
                 v-model="searchKeyword"
+                @keyup.enter = "triggerSearch"
+                style ="border-right: 0; border-color: transparent;"
             />
+            <div class="input-group-append">
+                <button class="btn border-secondary" @click="clearSearch" style ="border-left: 0; border-color: transparent; border-radius:0">X
+                </button>
+            </div>
+            <!-- <button type="button" class="btn btn-outline-secondary btn-close" aria-label="Close" @click="clearSearch" ></button> -->
             <div class="dropdown" @click.stop>
                 <button
                 type="button"
@@ -29,7 +37,7 @@
                     />
                 </svg>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end secondary-dropdown-menu" :class="{ show: isDropdownOpen }">
+                <ul ref="secondaryMenu" class="dropdown-menu dropdown-menu-end secondary-dropdown-menu" :class="{ show: isDropdownOpen }">
                 <li>
                     <h5 class="">Select Departments:</h5>
                 </li>
@@ -89,7 +97,7 @@
                 </li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-outline-secondary" @click="triggerSearch" id="searchButton">Search
+            <button type="button" class="btn btn-outline-secondary" @click="triggerSearch" id="searchButton">
                 <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -145,26 +153,42 @@
     };
     },
     methods: {
-    toggleDropdown() {
-        this.isDropdownOpen = !this.isDropdownOpen;
-    },
-    toggleSkillsDropdown() {
-        this.isSkillsDropdownOpen = !this.isSkillsDropdownOpen;
-    },
-    toggleDepartmentsDropdown() {
-        this.isDepartmentsDropdownOpen = !this.isDepartmentsDropdownOpen;
-    },
-    clearSelection() {
-        this.selectedSkills = [];
-        this.selectedDepartments = [];
-    },
-    triggerSearch() {
-        this.$emit('search-request', {
-        keyword: this.searchKeyword,
-        selectedDepartments: this.selectedDepartments,
-        selectedSkills: this.selectedSkills,
-        });
-    },
+        toggleDropdown() {
+            this.isDropdownOpen = !this.isDropdownOpen;
+        },
+        toggleSkillsDropdown() {
+            this.isSkillsDropdownOpen = !this.isSkillsDropdownOpen;
+        },
+        toggleDepartmentsDropdown() {
+            this.isDepartmentsDropdownOpen = !this.isDepartmentsDropdownOpen;
+        },
+        clearSelection() {
+            this.selectedSkills = [];
+            this.selectedDepartments = [];
+        },
+        clearSearch(){
+            this.searchKeyword = ''
+        },
+        triggerSearch() {
+            this.$emit('search-request', {
+            keyword: this.searchKeyword,
+            selectedDepartments: this.selectedDepartments,
+            selectedSkills: this.selectedSkills,
+            });
+        },
+        handleClickOutside(event) {
+            // Check if the click target is inside the secondary menu
+            const secondaryMenu = this.$refs.secondaryMenu; // Add ref to your secondary menu
+            if (secondaryMenu && !secondaryMenu.contains(event.target)) {
+                // Click occurred outside the secondary menu, close it
+                this.isDropdownOpen = false;
+            }
+        },
+        beforeDestroy() {
+            // Remove the event listener when the component is destroyed
+            document.removeEventListener('click', this.handleClickOutside);
+        },
+
     },
     mounted() {
     const searchButton = document.getElementById('searchButton');
@@ -175,7 +199,10 @@
         this.triggerSearch();
         }
     })
+    // Add an event listener to the document for clicks
+    document.addEventListener('click', this.handleClickOutside);
     },
+
 };
 </script>
 
