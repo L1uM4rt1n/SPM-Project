@@ -10,17 +10,17 @@
     
         <div class="container">
             <!-- Display Title and Create Listing Button -->
-            <div class="d-flex flex-row justify-content-between align-items-center p-3">
+            <div class="d-flex flex-row justify-content-between align-items-center p-2">
             <h1 class="mb-0"></h1>
-            <!-- <router-link :to="{ name: 'createJobListing' }">
+            <!-- <router-link :to="{ name: 'createJobListing' }"> -->
                 <button class="btn btn-secondary border-dark">Create Job Listing</button>
-            </router-link> -->
+            <!-- </router-link> -->
             </div>
 
             <!-- Display Job Listings -->
             <div class="mb-3" v-for="role in filteredResults" :key="role.id">
             <div class="card border-secondary position-relative">
-                <div class="card-body">
+                <div class="card-body m-2">
                 <h4 class="card-title pb-3">{{ role.title }}</h4>
                 <p class="card-text">Role ID: {{  role.id }}</p>
                 <p class="card-text">Availability: {{ role.availability }}</p>
@@ -28,7 +28,7 @@
                 </div>
                 <!-- Edit Button (Bottom-right corner) -->
                 <div class="position-absolute bottom-0 end-0 m-2 edit-button">
-                <a :href="'#edit/' + role.id" class="btn btn-link">Edit</a>
+                <a :href="'#edit/' + role.id" class="btn btn-link" style="text-decoration: none;">Edit</a>
                 </div>
             </div>
             </div>
