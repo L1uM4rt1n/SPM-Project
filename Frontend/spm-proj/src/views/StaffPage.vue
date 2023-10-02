@@ -1,13 +1,15 @@
 <template>
+    <!-- Search Bar -->
     <SearchBar
             v-model:keywordSearch="searchKeyword"
             :selectedSkills="selectedSkills"
             :selectedDepartments="selectedDepartments"
             @search-request="performSearch"
     />
-    
+
+    <!-- Display Job Listings -->
     <div class="container">
-        <router-link to="'/role/' + role.slug" class="card-link" v-for="role in roles" :key="role.id">
+        <router-link to="'/role/' + role.slug" class="card-link" v-for="role in filteredResults" :key="role.id">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">{{ role.title }}</h4>
@@ -32,30 +34,74 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
         components: {
             SearchBar,
         },
-        data(){
-            return{
-                roles: [
-                    {
-                    id: 1,
-                    title: 'Software Developer',
-                    skills: ['Java', 'HTML'],
-                    department: 'IT',
-                    availability: 2,
-                    deadline: '31/09/2002',
-                    // slug: 'role-1'
-                    },
-                    {
-                    id: 2,
-                    title: 'Frontend Developer',
-                    skills: ['HTML', 'CSS', 'JavaScript'],
-                    department: 'HR',
-                    availability: 2,
-                    deadline: '26/09/2002',
-                    // slug: 'role-2'
-                    },
-                ]
-            }
+        data() {
+        return {
+        selectedSkills: [],
+        selectedDepartments: [],
+        searchKeyword: '', // Add a data property for search keyword
+        roleListings: [], // Initialize an empty array for job listings
+        filteredResults:[],
+        };
+    },
+    methods: {
+    performSearch(payload) {
+        if (payload) {
+        const { keyword, selectedDepartments, selectedSkills } = payload;
+
+        // Your filtering logic here based on selected departments, skills, and keyword
+        const filteredResults = this.roleListings.filter((role) => {
+            const hasSelectedDepartment =
+            selectedDepartments.length === 0 ||
+            selectedDepartments.includes(role.department);
+            const hasSelectedSkills =
+            selectedSkills.length === 0 ||
+            selectedSkills.some((selectedSkill) =>
+                role.skills.includes(selectedSkill)
+            );
+            const keywordMatch = role.title
+            .toLowerCase()
+            .includes(keyword.toLowerCase());
+
+            return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
+        });
+        this.filteredResults = filteredResults;
+        }
         },
+    },
+
+    watch: {
+        // Watch for changes to the searchKeyword and trigger performSearch
+        searchKeyword: function() {
+            this.performSearch(); // Call the performSearch method when searchKeyword changes
+        },
+    },
+    mounted() {
+      // Simulate fetching data from a database (replace with actual data fetching)
+        setTimeout(() => {
+            this.roleListings = [
+            {
+            id: 1,
+            title: 'Software Developer',
+            skills: ['Java', 'HTML'],
+            department: 'IT',
+            availability: 2,
+            deadline: '31/09/2002',
+            },
+            {
+            id: 2,
+            title: 'Frontend Developer',
+            skills: ['HTML', 'CSS', 'JavaScript'],
+            department: 'HR',
+            availability: 2,
+            deadline: '26/09/2002',
+            },
+          // Add more role listings here
+        ];
+        // Set filteredJobListings to match the initial data
+        this.filteredResults = this.roleListings;
+      }, 1000); // Simulate an API call delay
+    },
+
     }
 
 </script>

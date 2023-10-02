@@ -144,7 +144,13 @@ export default {
     },
     mounted(){
         const searchButton = document.getElementById('searchButton');
-        searchButton.addEventListener('click', this.triggerSearch);
+        searchButton.addEventListener('click', this.triggerSearch)
+
+        searchButton.addEventListener("keypress", (event) => {
+            if (event.key === "Enter"){
+                this.triggerSearch()
+            }
+        })
     },
 };
 </script>

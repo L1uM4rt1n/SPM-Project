@@ -12,27 +12,28 @@
             <!-- Display Title and Create Listing Button -->
             <div class="d-flex flex-row justify-content-between align-items-center p-3">
             <h1 class="mb-0"></h1>
-            <router-link :to="{ name: 'createJobListing' }">
+            <!-- <router-link :to="{ name: 'createJobListing' }">
                 <button class="btn btn-secondary border-dark">Create Job Listing</button>
-            </router-link>
+            </router-link> -->
             </div>
-    
+
             <!-- Display Job Listings -->
-            <div class="mb-3" v-for="job in filteredResults" :key="job.id">
+            <div class="mb-3" v-for="role in filteredResults" :key="role.id">
             <div class="card border-secondary position-relative">
                 <div class="card-body">
-                <h4 class="card-title pb-3">{{ job.title }}</h4>
-                <p class="card-text">Availability: {{ job.availability }}</p>
-                <p class="card-text">Application Deadline: {{ job.deadline }}</p>
+                <h4 class="card-title pb-3">{{ role.title }}</h4>
+                <p class="card-text">Role ID: {{  role.id }}</p>
+                <p class="card-text">Availability: {{ role.availability }}</p>
+                <p class="card-text">Application Deadline: {{ role.deadline }}</p>
                 </div>
                 <!-- Edit Button (Bottom-right corner) -->
                 <div class="position-absolute bottom-0 end-0 m-2 edit-button">
-                <a :href="'#edit/' + job.id" class="btn btn-link">Edit</a>
+                <a :href="'#edit/' + role.id" class="btn btn-link">Edit</a>
                 </div>
             </div>
             </div>
         </div>
-        </div>
+    </div>
     </template>
     
 <script>
@@ -51,7 +52,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
         selectedSkills: [],
         selectedDepartments: [],
         searchKeyword: '', // Add a data property for search keyword
-        jobListings: [], // Initialize an empty array for job listings
+        roleListings: [], // Initialize an empty array for job listings
         filteredResults:[],
         };
     },
@@ -61,16 +62,16 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
         const { keyword, selectedDepartments, selectedSkills } = payload;
 
         // Your filtering logic here based on selected departments, skills, and keyword
-        const filteredResults = this.jobListings.filter((job) => {
+        const filteredResults = this.roleListings.filter((role) => {
             const hasSelectedDepartment =
             selectedDepartments.length === 0 ||
-            selectedDepartments.includes(job.department);
+            selectedDepartments.includes(role.department);
             const hasSelectedSkills =
             selectedSkills.length === 0 ||
             selectedSkills.some((selectedSkill) =>
-                job.skills.includes(selectedSkill)
+                role.skills.includes(selectedSkill)
             );
-            const keywordMatch = job.title
+            const keywordMatch = role.title
             .toLowerCase()
             .includes(keyword.toLowerCase());
 
@@ -90,7 +91,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
     mounted() {
       // Simulate fetching data from a database (replace with actual data fetching)
         setTimeout(() => {
-            this.jobListings = [
+            this.roleListings = [
             {
             id: 1,
             title: 'Software Developer',
@@ -110,7 +111,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
           // Add more job listings here
         ];
         // Set filteredJobListings to match the initial data
-        this.filteredResults = this.jobListings;
+        this.filteredResults = this.roleListings;
       }, 1000); // Simulate an API call delay
     },
     };
