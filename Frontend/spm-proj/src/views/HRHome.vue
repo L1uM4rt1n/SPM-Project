@@ -41,6 +41,8 @@ import SearchBar from '../components/SearchBar.vue';
 import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+import axios from 'axios';
+
 
     export default {
     name: 'HRHome',
@@ -115,6 +117,21 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
       }, 1000); // Simulate an API call delay
     },
     };
+    
+    //     mounted() {
+    //     // Make an Axios GET request to fetch role listings from your SQL database
+    //     axios.get('your-api-endpoint-here')
+    //         .then((response) => {
+    //             // Assuming your API response contains role listings in response.data
+    //             this.roleListings = response.data;
+
+    //             // Set filteredResults to match the initial data
+    //             this.filteredResults = this.roleListings;
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error fetching data:', error);
+    //         });
+    // },
 </script>
 
 <style>
