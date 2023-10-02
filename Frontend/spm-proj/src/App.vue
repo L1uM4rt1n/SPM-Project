@@ -38,9 +38,10 @@
 </template>
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
-import 'jquery/dist/jquery.min.js'; // Import jQuery
-import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+import 'bootstrap/dist/css/bootstrap.css';
+import 'jquery/dist/jquery.min.js';
+import 'bootstrap/dist/js/bootstrap.min.js';
+
 // import router from "./router";
 import { createRouter, createWebHistory } from 'vue-router';
 import landingPage from './views/LandingPage.vue';
