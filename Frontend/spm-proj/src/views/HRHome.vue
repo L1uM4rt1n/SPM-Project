@@ -114,7 +114,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
         ];
         // Set filteredJobListings to match the initial data
         this.filteredResults = this.roleListings;
-      }, 1000); // Simulate an API call delay
+      }, 200); // Simulate an API call delay
     },
     };
     
