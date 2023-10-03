@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Search Bar -->
         <SearchBar
-                v-model:keywordSearch="searchKeyword"
+                v-model="searchKeyword"
                 :selectedSkills="selectedSkills"
                 :selectedDepartments="selectedDepartments"
                 @search-request="performSearch"

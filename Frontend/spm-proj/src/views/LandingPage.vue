@@ -34,6 +34,22 @@
       
       export default {
             methods: {
+                  goToHRHome() {
+                        this.$router
+                              .push({ name: 'HRHome' })
+                              .catch((error) => {
+                                    console.error("Error navigating to HR Home Page:", error);
+                                    this.$router.push({ name: "landingPage" });
+                              });
+                  },
+                  goToStaffHome() {
+                        this.$router
+                              .push({ name: 'StaffHome' })
+                              .catch((error) => {
+                                    console.error("Error navigating to Staff Home Page:", error);
+                                    this.$router.push({ name: "landingPage" });
+                              });
+                  }
             },
             mounted() {
                   document.title = "SBRP Portal";

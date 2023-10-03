@@ -1,14 +1,13 @@
 <template>
-
   <div id="app">
-    <!-- Header content -->
+
+    <!-- header content -->
     <header>
 
     </header>
-
-
-    <!-- Navigation Bar content-->
-    <nav class="navbar navbar-light border-bottom border-dark">
+    
+    <!-- navBar -->
+    <nav class="navbar navbar-light navbar-expand-lg border-bottom border-dark">
       <div class="container-fluid">
         <router-link :to="{ name: 'landingPage' }">
         <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;" @click="handleLogoClick()">
@@ -21,18 +20,14 @@
       </div>
     </nav>
 
+    <hr class="my-0">
+
     <main>
-        <!-- Contains the main content of the webpage-->
       <div>
-        <!-- Router View to display components based on routes -->
+        <!-- rendering component based on current route -->
         <router-view></router-view>
       </div>
-
     </main>
-
-    <footer>
-      <!-- Footer content -->
-    </footer>
 
   </div>
 </template>
