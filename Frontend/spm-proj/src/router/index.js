@@ -10,7 +10,7 @@ const routes = [
 
     // route: individual role listing
     {
-        path: '/staff-home/role-listings',
+        path: '/role-listings',
         name: 'roleListings',
         component: () => import('../views/Staff/RoleListing.vue')
     },

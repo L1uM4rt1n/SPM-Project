@@ -1,38 +1,46 @@
 <template>
-
   <div id="app">
-    <!-- Header content -->
+
+    <!-- header content -->
     <header>
 
     </header>
-
-
-    <!-- Navigation Bar content-->
-    <nav class="navbar navbar-light border-bottom border-dark">
+    
+    <!-- navBar -->
+    <nav class="navbar navbar-light navbar-expand-lg border-bottom border-dark">
       <div class="container-fluid">
-        <router-link :to="{ name: 'landingPage' }">
-          <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;" @click="handleLogoClick()">
-            <img src="./assets/ondeh.jpeg" class="rounded-circle mx-2" width="50" height="50" alt=""><i> Ondeh Ondeh </i>
+        
+        <!-- landing page -->
+        <router-link :to="{ name : 'landingPage'}">
+          <a href="./App.vue" class="navbar-brand text-decoration-none">
+            <img src="./assets/companyLogo.jpeg" 
+                  class="rounded-rect" 
+                  width="120" 
+                  height="80"
+                  alt="">
+            <!-- <i> Ondeh Ondeh </i> -->
           </a>
         </router-link>
-          <a class="navbar-brand" href="#">
-            <img src="./assets/user.png"  class="rounded-circle" width="50" height="50" alt="">
-          </a>
+
+        <!-- personal profile icon -->
+        <a href="#" class="navbar-brand ml-auto">
+          <img src="./assets/profileIcon.png" 
+                alt="" 
+                class="rounded-circle"
+                width="50"
+                height="50">
+        </a>
       </div>
     </nav>
 
+    <hr class="my-0">
+
     <main>
-        <!-- Contains the main content of the webpage-->
       <div>
-        <!-- Router View to display components based on routes -->
+        <!-- rendering component based on current route -->
         <router-view></router-view>
       </div>
-
     </main>
-
-    <footer>
-      <!-- Footer content -->
-    </footer>
 
   </div>
 </template>
@@ -52,7 +60,6 @@
           throw new Error('An error occurred');
         } catch (error) {
           console.error(error);
-        } finally {
           // redirect the user back to the LandingPage.vue
           this.$router.push({ name: 'landingPage' });
         }
@@ -98,18 +105,5 @@
     text-align: center;
     color: #2c3e50;
     margin-top: 0px;
-  }
-  a{
-    text-decoration: none;
-  }
-  a:hover {
-    color: blue;
-  }
-  .navbar-brand {
-      text-decoration: none;
-      outline: none;
-  }
-  a:focus {
-    outline: none;
   }
 </style>
