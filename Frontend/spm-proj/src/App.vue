@@ -11,8 +11,8 @@
     <nav class="navbar navbar-light border-bottom border-dark">
       <div class="container-fluid">
         <router-link :to="{ name: 'landingPage' }">
-        <a class="navbar-brand" href="#">
-          <img src="./assets/ondeh.jpeg" class="rounded-circle" width="50" height="50" alt="">  <i>Ondeh Ondeh</i>
+        <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;">
+          <img src="./assets/ondeh.jpeg" class="rounded-circle mx-2" width="50" height="50" alt=""><i>Ondeh Ondeh</i>
           </a>
         </router-link>
           <a class="navbar-brand" href="#">
@@ -38,9 +38,10 @@
 </template>
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
-import 'jquery/dist/jquery.min.js'; // Import jQuery
-import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+import 'bootstrap/dist/css/bootstrap.css';
+import 'jquery/dist/jquery.min.js';
+import 'bootstrap/dist/js/bootstrap.min.js';
+
 // import router from "./router";
 import { createRouter, createWebHistory } from 'vue-router';
 import landingPage from './views/LandingPage.vue';
@@ -74,5 +75,18 @@ export default {
   /* text-align: center; */
   color: #2c3e50;
   margin-top: 0px;
+};
+a{
+  text-decoration: none;
+}
+a:hover {
+  color: blue;
+}
+.navbar-brand {
+    text-decoration: none;
+    outline: none;
+}
+a:focus {
+  outline: none;
 }
 </style>
