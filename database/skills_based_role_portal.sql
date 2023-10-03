@@ -47,10 +47,10 @@ COMMIT;
 -- ROLE/ JOB LISTING --------------------------------
 CREATE TABLE IF NOT EXISTS Role (
     Role_ID INT PRIMARY KEY,
-    Role_Name VARCHAR(20),
+    Role_Name VARCHAR(50) NOT NULL,
     Date_Posted DATE NOT NULL,
     App_Deadline DATE NOT NULL,
-    Role_Department VARCHAR(20) NOT NULL,
+    Role_Department VARCHAR(50) NOT NULL,
     Role_Description VARCHAR(2600) NOT NULL,
     Role_Requirements VARCHAR(2600) NOT NULL,
     INDEX (Role_Name)
@@ -154,8 +154,6 @@ VALUES
     -- ('Operations Executive', 'Communication'),
     -- ('Operations Executive', 'Teamwork'),
     -- ('Operations Executive', 'Analytical Skills');
-
-
 COMMIT;
 
 
@@ -163,6 +161,7 @@ COMMIT;
 CREATE TABLE IF NOT EXISTS Staff_Skill (
     Staff_ID INT,
     Skill_Name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (Staff_ID, Skill_Name),
     FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID)
     -- FOREIGN KEY (Skill_Name) REFERENCES Role_Skill(Skill_Name)
 );
@@ -189,8 +188,13 @@ COMMIT;
 CREATE TABLE IF NOT EXISTS Staff_Role_Apply (
     Staff_ID INT,
     Role_ID INT,
-    Applied BIT,
+    Applied VARCHAR(1) NOT NULL,
     PRIMARY KEY (Staff_ID, Role_ID),
     FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID),
     FOREIGN KEY (Role_ID) REFERENCES Role(Role_ID)
 );
+
+INSERT INTO Staff_Role_Apply (Staff_ID, Role_ID, Applied)
+VALUES
+    (4, 1000004, '1');
+COMMIT;
