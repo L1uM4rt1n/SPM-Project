@@ -1,25 +1,28 @@
 <template>
       <div class="landing-page">
-            <h1 class="page-title m-5"> Welcome to Ondeh Ondeh SBRP Portal </h1>
-            
+            <h1 class="page-title m-5"> Welcome to the SBRP Portal </h1>
+
             <div class="container mx-auto">
-                  <!-- HR Home Page -->
-                  <div class="jumbotron">
+                  <div class="border p-5  my-3 bg-light rounded">
+                        <h1 class="display-4">HR Home</h1>
+                        <hr class="my-4">
                         <p class="lead">
                               <!-- HR Home Button -->
-                              <button class="btn-lg btn-secondary border-dark w-30" @click="goToHRHome">
-                                    To HR Home Page
-                              </button>
-                  </p>
+                              <router-link :to="{ name: 'HRHome' }">
+                                    <a class=" btn btn-lg btn-secondary border-dark" href="#" role="button"> HR Home Page </a>
+                              </router-link>
+                        </p>
                   </div>
+                  
+                  <div class="border p-5  my-3 bg-light rounded">
+                        <h1 class="display-4">Staff Home</h1>
+                        <hr class="my-4">
 
-                  <!-- Staff Home Page -->
-                  <div class="jumbotron">
                         <p class="lead">
-                              <!-- Staff Home Button -->
-                              <button class="btn-lg btn-secondary border-dark w-30" @click="goToStaffHome">
-                                    To Staff Home Page
-                              </button>
+                              <!-- HR Home Button -->
+                              <router-link :to="{ name: 'StaffPage' }">
+                                    <a class=" btn btn-lg btn-secondary border-dark" href="#" role="button"> Staff Home Page </a>
+                              </router-link>
                         </p>
                   </div>
             </div>
@@ -33,22 +36,6 @@
       
       export default {
             methods: {
-                  goToHRHome() {
-                        this.$router
-                              .push({ name: 'HRHome' })
-                              .catch((error) => {
-                                    console.error("Error navigating to HR Home Page:", error);
-                                    this.$router.push({ name: "landingPage" });
-                              });
-                  },
-                  goToStaffHome() {
-                        this.$router
-                              .push({ name: 'StaffHome' })
-                              .catch((error) => {
-                                    console.error("Error navigating to Staff Home Page:", error);
-                                    this.$router.push({ name: "landingPage" });
-                              });
-                  }
             },
             mounted() {
                   document.title = "SBRP Portal";
