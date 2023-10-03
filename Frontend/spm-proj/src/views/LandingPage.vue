@@ -18,7 +18,7 @@
 
                         <p class="lead">
                               <!-- HR Home Button -->
-                              <router-link :to="{ name: 'StaffPage' }">
+                              <router-link :to="{ name: 'StaffHome' }">
                                     <a class=" btn btn-lg btn-secondary border-dark" href="#" role="button">To Staff Home Page</a>
                               </router-link>
                         </p>

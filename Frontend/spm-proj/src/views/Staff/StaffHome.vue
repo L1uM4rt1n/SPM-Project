@@ -25,7 +25,7 @@
     import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 
     export default {
-        name: 'StaffPage',
+        name: 'StaffHome',
         data() {
             return {
                 roles: [],

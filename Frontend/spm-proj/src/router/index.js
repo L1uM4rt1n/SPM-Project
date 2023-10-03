@@ -1,19 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-  // Other routes
+    // route: landing page
     {
         path: '/',
         name: 'landingPage',
         component: () => import('../views/LandingPage.vue')
     },
 
+    // route: individual role listing
     {
-        path: '/role-listings',
+        path: '/staff-home/role-listings',
         name: 'roleListings',
         component: () => import('../views/Staff/RoleListing.vue')
     },
-
+    // route: HR home page
     {
         path: '/hr-home',
         name: 'HRHome',
@@ -27,9 +28,11 @@ const routes = [
     },
 ];
 
-const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
-    routes,
-});
+const router = createRouter(
+    {
+        history: createWebHistory(process.env.BASE_URL),
+        routes,
+    }
+)
 
-export default router;
+export default router
