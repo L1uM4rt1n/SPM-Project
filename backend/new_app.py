@@ -39,8 +39,7 @@ class Staff(db.Model):
     Email = db.Column(db.String(50), unique=True, nullable=False)
     Access_Rights = db.Column(db.Integer, db.ForeignKey('AccessRights.Access_Rights_ID'))
 
-    def __init__(self, Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights):
-        self.Staff_ID = Staff_ID
+    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights):
         self.Staff_FName = Staff_FName
         self.Staff_LName = Staff_LName
         self.Dept = Dept
@@ -50,7 +49,6 @@ class Staff(db.Model):
         
     def json(self):
         return{
-            'Staff_ID': self.Staff_ID,
             'Staff_FName': self.Staff_FName,
             'Staff_LName': self.Staff_LName,
             'Dept': self.Dept,
@@ -143,7 +141,7 @@ class Staff_Role_Apply(db.Model):
             'Applied': self.Applied
         }
 
-# role endpoints
+################ role endpoints ##################################################
 
 # for staff to read/view all roles
 @app.route('/roles/get_all_roles', methods=['GET'])
@@ -179,6 +177,14 @@ def search_roles():
 
     return jsonify(results)
 
+# to generate Role_ID
+def generate_unique_role_id():
+    max_existing_role = db.session.query(db.func.max(Role.Role_ID)).scalar()
+    if max_existing_role is None:
+        return 1000001
+    next_role_id = max_existing_role + 1
+    return next_role_id
+
 # for HR to create new role
 @app.route('/roles/create', methods=['POST'])
 def create_role():
@@ -201,7 +207,9 @@ def create_role():
         ), 400
 
     # If the role doesn't exist, insert it into the database
+    role_id = generate_unique_role_id()
     new_role = Role(
+        Role_ID=role_id,
         Role_Name=role_name,
         Date_Posted=date_posted,
         App_Deadline=app_deadline,
@@ -215,8 +223,19 @@ def create_role():
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        return jsonify({
-            'error': str(e)
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "Role_ID": role_id,
+                    "Role_Name": role_name,
+                    "Date_Posted": date_posted,
+                    "App_Deadline": app_deadline,
+                    "Role_Department": role_department,
+                    "Role_Description": role_description,
+                    "Role_Requirements": role_requirements
+                },
+                "message": "An error occurred creating the Role record: " + str(e)
             }
         ), 500
 
@@ -308,8 +327,18 @@ def create_staff():
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        return jsonify({
-            'error': str(e)
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "Staff_FName": staff_fname,
+                    "Staff_LName": staff_lname,
+                    "Dept": dept,
+                    "Country": country,
+                    "Email": email,
+                    "Access_Rights": access_rights
+                },
+                "message": "An error occurred creating the Staff record: " + str(e)
             }
         ), 500
 
