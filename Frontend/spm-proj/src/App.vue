@@ -10,8 +10,9 @@
     <nav class="navbar navbar-light navbar-expand-lg border-bottom border-dark">
       <div class="container-fluid">
         <router-link :to="{ name: 'landingPage' }">
-        <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;" @click="handleLogoClick()">
-          <img src="./assets/companyLogo.jpeg" class="rounded-circle mx-2" width="50" height="50" alt=""><i>Ondeh Ondeh</i>
+          <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;">
+            <img src="./assets/companyLogo.jpeg" class="mx-2 rounded" width="120" height="80" alt="">
+            <i>Ondeh Ondeh</i>
           </a>
         </router-link>
           <a class="navbar-brand" href="#">
@@ -41,16 +42,6 @@
   export default {
     name: 'App',
     methods: {
-      handleLogoClick() {
-        try {
-          // throw an error to simulate an error occurring
-          throw new Error('An error occurred');
-        } catch (error) {
-          console.error(error);
-          // redirect the user back to the LandingPage.vue
-          this.$router.push({ name: 'landingPage' });
-        }
-      }
     },
     router: createRouter(
       {
