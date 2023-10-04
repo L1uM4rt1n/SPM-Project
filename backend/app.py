@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from os import environ
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/patient_records'
@@ -189,13 +190,28 @@ def generate_unique_role_id():
 @app.route('/roles/create', methods=['POST'])
 def create_role():
     data = request.get_json()
-
-    role_name = data['Role_Name']
-    date_posted = data['Date_Posted']
-    app_deadline = data['App_Deadline']
-    role_department = data['Role_Department']
-    role_description = data['Role_Description']
-    role_requirements = data['Role_Requirements']
+    
+    try:
+        role_name = data['Role_Name']
+        date_posted = data['Date_Posted']
+        app_deadline = data['App_Deadline']
+        role_department = data['Role_Department']
+        role_description = data['Role_Description']
+        role_requirements = data['Role_Requirements']
+    except KeyError as e:
+        return jsonify(
+            {
+                "code": 400,
+                "message": f"Missing required field: {str(e)}"
+            }
+        ), 400
+    except ValueError as e:
+        return jsonify(
+            {
+                "code": 400,
+                "message": f"Invalid value for field: {str(e)}"
+            }
+        ), 400
 
     # Check if the role already exists by name
     if Role.query.filter_by(Role_Name=role_name).first():
@@ -221,21 +237,18 @@ def create_role():
     try:
         db.session.add(new_role)
         db.session.commit()
-    except Exception as e:
+    except IntegrityError as e:
         db.session.rollback()
         return jsonify(
             {
-                "code": 500,
-                "data": {
-                    "Role_ID": role_id,
-                    "Role_Name": role_name,
-                    "Date_Posted": date_posted,
-                    "App_Deadline": app_deadline,
-                    "Role_Department": role_department,
-                    "Role_Description": role_description,
-                    "Role_Requirements": role_requirements
-                },
-                "message": "An error occurred creating the Role record: " + str(e)
+                "code": 409,
+                "message": "Integrity violation: " + str(e)
+            }
+        ), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'error': str(e)
             }
         ), 500
 
@@ -296,12 +309,27 @@ def get_role_skills(role_name):
 def create_staff():
     data = request.get_json()
 
-    staff_fname = data['Staff_FName']
-    staff_lname = data['Staff_LName']
-    dept = data['Dept']
-    country = data['Country']
-    email = data['Email']
-    access_rights = data['Access_Rights']
+    try:
+        staff_fname = data['Staff_FName']
+        staff_lname = data['Staff_LName']
+        dept = data['Dept']
+        country = data['Country']
+        email = data['Email']
+        access_rights = data['Access_Rights']
+    except KeyError as e:
+        return jsonify(
+            {
+                "code": 400,
+                "message": f"Missing required field: {str(e)}"
+            }
+        ), 400
+    except ValueError as e:
+        return jsonify(
+            {
+                "code": 400,
+                "message": f"Invalid value for field: {str(e)}"
+            }
+        ), 400
 
     # Check if staff member already exists by email
     if Staff.query.filter_by(Email=email).first():
@@ -325,20 +353,18 @@ def create_staff():
     try:
         db.session.add(new_staff)
         db.session.commit()
-    except Exception as e:
+    except IntegrityError as e:
         db.session.rollback()
         return jsonify(
             {
-                "code": 500,
-                "data": {
-                    "Staff_FName": staff_fname,
-                    "Staff_LName": staff_lname,
-                    "Dept": dept,
-                    "Country": country,
-                    "Email": email,
-                    "Access_Rights": access_rights
-                },
-                "message": "An error occurred creating the Staff record: " + str(e)
+                "code": 409,
+                "message": "Integrity violation: " + str(e)
+            }
+        ), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'error': str(e)
             }
         ), 500
 
