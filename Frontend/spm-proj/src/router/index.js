@@ -3,6 +3,7 @@ import HRHome from '../views/HRHome.vue';
 import createJobListing from '../views/createJobListing.vue';
 import landingPage from '../views/LandingPage.vue';
 import StaffPage from '../views/StaffPage.vue';
+import createSuccess from '../views/createSuccess.vue';
 
 const routes = [
   // Other routes
@@ -17,6 +18,12 @@ const routes = [
     name: 'createJobListing',
     component: createJobListing,
     },
+
+    {
+      path: '/create-job-listing/createSuccess',
+      name: 'createSuccess',
+      component: createSuccess,
+      },
 
     {
     path: '/HRHome',
