@@ -55,6 +55,7 @@
 import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+import axios from 'axios';
 
 export default {
     name: 'createJobListing',
@@ -74,6 +75,15 @@ data() {
         };
     },
     methods: {
+        fetchroles() {
+            axios.get("http://127.0.0.1:5000/roles/get_all_roles")
+            .then(response => {
+                console.log(response.data.data)
+            })
+            .catch(error => {
+                console.error("There was an error fetching the data:", error);
+            });
+        },
     performSearch(payload) {
         if (payload) {
         const { keyword, selectedDepartments, selectedSkills } = payload;
@@ -126,6 +136,9 @@ data() {
             },
     },
     mounted() {
+        // Use axios to fetch data from Flask API
+        this.fetchroles();
+
       // Simulate fetching data from a database (replace with actual data fetching)
         setTimeout(() => {
             this.jobListings = [
