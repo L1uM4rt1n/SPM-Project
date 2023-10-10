@@ -9,48 +9,38 @@
         <div class="container">
             <div class="form-group">
                 <label for="exampleInputEmail1">Name</label>
-                <input type="email" class="form-control" id="jobName" aria-describedby="jobName" placeholder="Enter Job Listing Name" style="margin-bottom: 15px;">
+                <input type="email" class="form-control" id="jobName" aria-describedby="jobName" placeholder="Enter Role Listing Name" style="margin-bottom: 15px;">
                 <!-- <small id="" class="form-text text-muted">This is a small description</small> -->
             </div>
 
-            <div class="form-group">
-                <label for="exampleInputEmail1" style="margin-right: 10px;">Application Deadline</label>
 
-                <!-- Day dropdown -->
-                <select v-model="selectedDay" style="width: 100px; margin-right: 5px;" >
-                    <option disabled selected>DD</option>
-                    <option v-for="day in 31" :key="day" :value="day">{{ day }}</option>
-                </select>
-                /
-
-                <!-- Month dropdown -->
-                <select v-model="selectedMonth" style="width: 100px; margin-right: 5px;">
-                    <option disabled selected>MM</option>
-                    <option v-for="month in 12" :key="month" :value="month">{{ month }}</option>
-                </select>
-                /
-                <!-- Year dropdown -->
-                <select v-model="selectedYear" style="width: 100px; margin-right: 5px;">
-                    <option disabled selected>YYYY</option>
-                    <option v-for="year in 9" :key="year" :value="year + 2022">{{ year + 2022 }}</option>
-                </select>
-            </div>
-
-
-
-            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
             <div>
-                <select v-model="selectedDepartments" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
-                    <option disabled selected>Choose Department...</option>
-                    <option v-for="type in jobtypes" :key="type" :value="type">{{ type }}</option>
-                </select>
+                Application Deadline <br>
+                <input type="date" id="myDate" value="2023-10-09">
+
             </div>
 
-            <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Department Name" style="width: 100%;">
+            <div>
+                <label class="mr-2" for="inlineFormCustomSelectPref" style="margin-top: 15px;">Department</label>
+                <div>
+                    <select v-model="selectedDepartments" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
+                        <option disabled selected>Choose Department...</option>
+                        <option v-for="type in jobtypes" :key="type" :value="type">{{ type }}</option>
+                    </select>
+                </div>
 
-            <br>
-            <label for="exampleFormControlTextarea1">Role Description</label>
+                <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Department Name" style="width: 100%;">
+            </div>
+            
+            <div>
+                <label for="exampleFormControlTextarea1">Role Description</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            </div>
+
+            <div>
+                <label for="exampleFormControlTextarea1" style="margin-top: 15px;">Role Expectations</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            </div>
 
             <!-- Checkboxes -->
             <div class="py-3">
