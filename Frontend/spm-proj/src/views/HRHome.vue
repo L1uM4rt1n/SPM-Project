@@ -21,10 +21,10 @@
             <div class="mb-1" v-for="role in filteredResults" :key="role.id">
             <div class="card border-secondary position-relative">
                 <div class="card-body">
-                    <h4 class="card-title">{{ role.title }}</h4>
-                    <p class="card-text">Role ID: {{  role.id }}</p>
+                    <h4 class="card-title">{{ role.Role_Name }}</h4>
+                    <p class="card-text">Role ID: {{  role.Role_ID }}</p>
                     <p class="card-text">Availability: {{ role.availability }}</p>
-                    <p class="card-text">Application Deadline: {{ role.deadline }}</p>
+                    <p class="card-text">Application Deadline: {{ role.App_Deadline }}</p>
                 </div>
                 <!-- Edit Button (Bottom-right corner) -->
                 <div class="position-absolute bottom-0 end-0 m-2 edit-button">
@@ -41,7 +41,7 @@ import SearchBar from '../components/SearchBar.vue';
 import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 5 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 5 JS
-// import axios from 'axios';
+import axios from 'axios';
 
 
     export default {
@@ -54,33 +54,38 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 5 JS
         selectedSkills: [],
         selectedDepartments: [],
         searchKeyword: '', // Add a data property for search keyword
-        roleListings: [], // Initialize an empty array for job listings
+        roleListings: [], // Initialize an empty array for role listings for role objects
         filteredResults:[],
+        departments:[],
+        skills:[],
         };
     },
     methods: {
-    performSearch(payload) {
-        if (payload) {
-        const { keyword, selectedDepartments, selectedSkills } = payload;
+        performSearch(payload) {
+            if (payload) {
+            const { keyword, selectedDepartments, selectedSkills } = payload;
 
-        // Your filtering logic here based on selected departments, skills, and keyword
-        const filteredResults = this.roleListings.filter((role) => {
-            const hasSelectedDepartment =
-            selectedDepartments.length === 0 ||
-            selectedDepartments.includes(role.department);
-            const hasSelectedSkills =
-            selectedSkills.length === 0 ||
-            selectedSkills.some((selectedSkill) =>
-                role.skills.includes(selectedSkill)
-            );
-            const keywordMatch = role.title
-            .toLowerCase()
-            .includes(keyword.toLowerCase());
+            // Filter the role listings based on selected departments, skills, and keyword
+            console.log(payload)
+            console.log(this.roleListings)
+            const filteredResults = this.roleListings.filter((role) => {
+                const hasSelectedDepartment =
+                    selectedDepartments.length === 0 ||
+                    selectedDepartments.includes(role.Role_Department);
+                const hasSelectedSkills =
+                    selectedSkills.length === 0 ||
+                    selectedSkills.some((selectedSkill) =>
+                        role.Role_Requirements.includes(selectedSkill)
+                );
+                const keywordMatch =
+                role.Role_Name &&
+                role.Role_Name.toLowerCase().includes(keyword.toLowerCase());
 
-            return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
-        });
-        this.filteredResults = filteredResults;
-        }
+                return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
+            });
+
+            this.filteredResults = filteredResults;
+            }
         },
     },
 
@@ -90,48 +95,24 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 5 JS
             this.performSearch(); // Call the performSearch method when searchKeyword changes
         },
     },
-    mounted() {
-      // Simulate fetching data from a database (replace with actual data fetching)
-        setTimeout(() => {
-            this.roleListings = [
-            {
-            id: 1,
-            title: 'Software Developer',
-            skills: ['Java', 'HTML'],
-            department: 'IT',
-            availability: 2,
-            deadline: '31/09/2002',
-            },
-            {
-            id: 2,
-            title: 'Frontend Developer',
-            skills: ['HTML', 'CSS', 'JavaScript'],
-            department: 'HR',
-            availability: 2,
-            deadline: '26/09/2002',
-            },
-          // Add more job listings here
-        ];
-        // Set filteredJobListings to match the initial data
-        this.filteredResults = this.roleListings;
-      }, 200); // Simulate an API call delay
+    created() {
+          // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
+        axios.get('http://localhost:5008/roles/get_all_roles')
+            .then((response) => {
+            // Check for a successful response (status code 200)
+            if (response.status === 200) {
+                // Assuming the data returned is in response.data.data.bookings
+                this.roleListings = response.data.data.bookings;
+                console.log(this.roleListings)
+                this.filteredResults = this.roleListings;
+            }
+            })
+            .catch((error) => {
+            // Handle any errors or show a message to the user
+            console.error('Error fetching data:', error);
+            });
     },
     };
-    
-    //     mounted() {
-    //     // Make an Axios GET request to fetch role listings from your SQL database
-    //     axios.get('your-api-endpoint-here')
-    //         .then((response) => {
-    //             // Assuming your API response contains role listings in response.data
-    //             this.roleListings = response.data;
-
-    //             // Set filteredResults to match the initial data
-    //             this.filteredResults = this.roleListings;
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error fetching data:', error);
-    //         });
-    // },
 </script>
 
 <style>

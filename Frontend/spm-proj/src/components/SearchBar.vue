@@ -51,16 +51,15 @@
                         {{ selectedDepartments.length === 0 ? 'Select departments' : selectedDepartments.join(', ') }}
                     </button>
                     <ul class="dropdown-menu" :class="{ show: isDepartmentsDropdownOpen }">
-                        <li v-for="department in departments" :key="department.id" class="my-1 mx-3">
+                        <li v-for="department in departments" :key="department" class="my-1 mx-3">
                         <input
                             type="checkbox"
                             class="form-check-input"
-                            :id="'department_' + department.id"
-                            :value="department.name"
+                            :value="department"
                             v-model="selectedDepartments"
                             style="max-width: 150px;"
                         />
-                        <label class="form-check-label" :for="'department_' + department.id">{{ department.name }}</label>
+                        <label class="form-check-label" :for="'department_' + department">{{ department }}</label>
                         </li>
                     </ul>
                     </div>
@@ -78,12 +77,11 @@
                         {{ selectedSkills.length === 0 ? 'Select skills' : selectedSkills.join(', ') }}
                     </button>
                     <ul class="dropdown-menu" :class="{ show: isSkillsDropdownOpen }">
-                        <li v-for="skill in skills" :key="skill.id" class="my-1 mx-3">
+                        <li v-for="skill in skills" :key="skill" class="my-1 mx-3">
                         <input
                             type="checkbox"
                             class="form-check-input"
-                            :id="'skill_' + skill.id"
-                            :value="skill.name"
+                            :value="skill"
                             v-model="selectedSkills"
                             style="max-width: 150px;"
                         />
@@ -123,6 +121,7 @@
 //   import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 5 CSS
 //   import 'jquery/dist/jquery.min.js'; // Import jQuery
 //   import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 5 JS
+import axios from 'axios';
   
   export default {
     name: 'SearchBar',
@@ -131,25 +130,12 @@
         isDropdownOpen: false,
         isSkillsDropdownOpen: false,
         isDepartmentsDropdownOpen: false,
-        skills: [
-        { id: 1, name: 'JavaScript' },
-        { id: 2, name: 'HTML' },
-        { id: 3, name: 'CSS' },
-        { id: 4, name: 'Analytics' },
-        { id: 5, name: 'Excel' },
-        { id: 6, name: 'UX/UI' },
-        // Add more skills as needed
-        ],
-        selectedSkills: [],
-        departments: [
-        { id: 1, name: 'HR' },
-        { id: 2, name: 'Marketing' },
-        { id: 3, name: 'Finance' },
-        { id: 4, name: 'IT' },
-        // Add more departments as needed
-        ],
+        skills: [],
+        departments:[],
         selectedDepartments: [],
+        selectedSkills:[],
         searchKeyword: '',
+        roleListings:[],
     };
     },
     methods: {
@@ -168,6 +154,8 @@
         },
         clearSearch(){
             this.searchKeyword = ''
+            this.selectedSkills = [];
+            this.selectedDepartments = [];
             this.triggerSearch()
         },
         triggerSearch() {
@@ -192,6 +180,29 @@
 
     },
     mounted() {
+              // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
+              axios.get('http://localhost:5008/roles/get_all_roles')
+            .then((response) => {
+            // Check for a successful response (status code 200)
+            if (response.status === 200) {
+                // Assuming the data returned is in response.data.data.bookings
+                this.roleListings = response.data.data.bookings;
+                console.log(this.roleListings)
+
+                this.roleListings.forEach((role) => {
+                var department = role.Role_Department;
+                var skill = role.Role_Requirements;
+                if (!this.departments.includes(department) && !this.skills.includes(skill)) {
+                    this.departments.push(department);
+                    this.skills.push(skill);
+                    }
+                });
+            }
+            })
+            .catch((error) => {
+            // Handle any errors or show a message to the user
+            console.error('Error fetching data:', error);
+            });
     const searchButton = document.getElementById('searchButton');
     searchButton.addEventListener('click', this.triggerSearch);
 
@@ -202,9 +213,8 @@
     })
     // Add an event listener to the document for clicks
     document.addEventListener('click', this.handleClickOutside);
-    },
-
-};
+    }
+  }
 </script>
 
 <style>
