@@ -9,13 +9,13 @@
 
     <!-- Display Job Listings -->
     <div class="container">
-        <router-link to="'/role/' + role.slug" class="card-link" v-for="role in filteredResults" :key="role.id">
+        <router-link to="'/role/' + role.slug" class="card-link" v-for="role in filteredResults" :key="role.role_ID">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">{{ role.title }}</h4>
-                    <h6 class="card-text">Role ID: {{  role.id }}</h6>
-                    <p class="card-text">Availability: {{ role.availability }}</p>
-                    <p class="card-text">Application Deadline: {{ role.deadline }}</p>
+                    <h4 class="card-title">{{ role.Role_Name }}</h4>
+                    <h6 class="card-text">Role ID: {{  role.Role_ID }}</h6>
+                    <p class="card-text">Availability: {{ role.Availability }}</p>
+                    <p class="card-text">Application Deadline: {{ role.App_Deadline }}</p>
                 </div>
             </div>
         </router-link>
@@ -28,6 +28,7 @@ import SearchBar from '../components/SearchBar.vue';
 import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
+import axios from 'axios';
 
     export default{
         name: 'StaffPage',
@@ -36,36 +37,39 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
         },
         data() {
         return {
-        selectedSkills: [],
-        selectedDepartments: [],
-        searchKeyword: '', // Add a data property for search keyword
-        roleListings: [], // Initialize an empty array for job listings
-        filteredResults:[],
+            selectedSkills: [],
+            selectedDepartments: [],
+            searchKeyword: '', // Add a data property for search keyword
+            roleListings: [], // Initialize an empty array for job listings
+            filteredResults:[],
         };
     },
     methods: {
-    performSearch(payload) {
-        if (payload) {
-        const { keyword, selectedDepartments, selectedSkills } = payload;
+        performSearch(payload) {
+            if (payload) {
+                const { keyword, selectedDepartments, selectedSkills } = payload;
 
-        // Your filtering logic here based on selected departments, skills, and keyword
-        const filteredResults = this.roleListings.filter((role) => {
-            const hasSelectedDepartment =
-            selectedDepartments.length === 0 ||
-            selectedDepartments.includes(role.department);
-            const hasSelectedSkills =
-            selectedSkills.length === 0 ||
-            selectedSkills.some((selectedSkill) =>
-                role.skills.includes(selectedSkill)
-            );
-            const keywordMatch = role.title
-            .toLowerCase()
-            .includes(keyword.toLowerCase());
+                // Filter the role listings based on selected departments, skills, and keyword
+                const filteredResults = this.roleListings.filter((role) => {
+                    const hasSelectedDepartment =
+                        selectedDepartments.length === 0 ||
+                        selectedDepartments.includes(role.Role_Department);
 
-            return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
-        });
-        this.filteredResults = filteredResults;
-        }
+                    const hasSelectedSkills =
+                        selectedSkills.length === 0 ||
+                        selectedSkills.some((selectedSkill) =>
+                            role.Role_Skills.includes(selectedSkill)
+                        );
+
+                    const keywordMatch =
+                        role.Role_Name &&
+                        role.Role_Name.toLowerCase().includes(keyword.toLowerCase());
+
+                    return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
+                });
+
+                this.filteredResults = filteredResults;
+            }
         },
     },
 
@@ -75,31 +79,25 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
             this.performSearch(); // Call the performSearch method when searchKeyword changes
         },
     },
-    mounted() {
-      // Simulate fetching data from a database (replace with actual data fetching)
-        setTimeout(() => {
-            this.roleListings = [
-            {
-            id: 1,
-            title: 'Software Developer',
-            skills: ['Java', 'HTML'],
-            department: 'IT',
-            availability: 2,
-            deadline: '31/09/2002',
-            },
-            {
-            id: 2,
-            title: 'Frontend Developer',
-            skills: ['HTML', 'CSS', 'JavaScript'],
-            department: 'HR',
-            availability: 2,
-            deadline: '26/09/2002',
-            },
-          // Add more role listings here
-        ];
-        // Set filteredJobListings to match the initial data
-        this.filteredResults = this.roleListings;
-      }, 1000); // Simulate an API call delay
+    created() {
+          // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
+        axios.get('http://localhost:5008/roles/get_all_roles')
+            .then((response) => {
+            // Check for a successful response (status code 200)
+            if (response.status === 200) {
+                // Assuming the data returned is in response.data.data.bookings
+                console.log("==================== response.data ====================")
+                console.log(response.data)
+                this.roleListings = response.data.data.roles_with_details;
+                console.log("============= roleListings in HRHome.vue ============")
+                console.log(this.roleListings)
+                this.filteredResults = this.roleListings;
+            }
+            })
+            .catch((error) => {
+            // Handle any errors or show a message to the user
+            console.error('Error fetching data:', error);
+            });
     },
 
     }

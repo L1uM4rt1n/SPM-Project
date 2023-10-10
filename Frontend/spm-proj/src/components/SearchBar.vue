@@ -58,6 +58,7 @@
                             :value="department"
                             v-model="selectedDepartments"
                             style="max-width: 150px;"
+                            :id="'department_' + department"
                         />
                         <label class="form-check-label" :for="'department_' + department">{{ department }}</label>
                         </li>
@@ -76,7 +77,7 @@
                     >
                         {{ selectedSkills.length === 0 ? 'Select skills' : selectedSkills.join(', ') }}
                     </button>
-                    <ul class="dropdown-menu" :class="{ show: isSkillsDropdownOpen }">
+                    <ul class="dropdown-menu scrollable-menu" :class="{ show: isSkillsDropdownOpen }">
                         <li v-for="skill in skills" :key="skill" class="my-1 mx-3">
                         <input
                             type="checkbox"
@@ -84,8 +85,9 @@
                             :value="skill"
                             v-model="selectedSkills"
                             style="max-width: 150px;"
+                            :id="'skill_' + skill"
                         />
-                        <label class="form-check-label" :for="'skill_' + skill.id">{{ skill.name }}</label>
+                        <label class="form-check-label" :for="'skill_' + skill">{{ skill }}</label>
                         </li>
                     </ul>
                     </div>
@@ -136,6 +138,7 @@ import axios from 'axios';
         selectedSkills:[],
         searchKeyword: '',
         roleListings:[],
+        RoleSkill:'',
     };
     },
     methods: {
@@ -180,39 +183,48 @@ import axios from 'axios';
 
     },
     mounted() {
-              // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
-              axios.get('http://localhost:5008/roles/get_all_roles')
+        // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
+        axios.get('http://localhost:5008/roles/get_all_roles')
             .then((response) => {
-            // Check for a successful response (status code 200)
-            if (response.status === 200) {
-                // Assuming the data returned is in response.data.data.bookings
-                this.roleListings = response.data.data.bookings;
-                console.log(this.roleListings)
+                // Check for a successful response (status code 200)
+                if (response.status === 200) {
+                    // Assuming the data returned is in response.data.data.bookings
+                    this.roleListings = response.data.data.roles_with_details;
 
-                this.roleListings.forEach((role) => {
-                var department = role.Role_Department;
-                var skill = role.Role_Requirements;
-                if (!this.departments.includes(department) && !this.skills.includes(skill)) {
-                    this.departments.push(department);
-                    this.skills.push(skill);
-                    }
-                });
-            }
+                    this.roleListings.forEach((role) => {
+                        var department = role.Role_Department;
+                        if (!this.departments.includes(department)) {
+                            this.departments.push(department);
+                        }
+
+                        if (role.Role_Skills && Array.isArray(role.Role_Skills)) {
+                            role.Role_Skills.forEach((skill) => {
+                                if (!this.skills.includes(skill)) {
+                                    this.skills.push(skill);
+                                }
+                            });
+                        }
+                    });
+                }
+                this.departments.sort(); // This sorts the array in ascending order (alphabetical order)
+                this.skills.sort();
             })
             .catch((error) => {
-            // Handle any errors or show a message to the user
-            console.error('Error fetching data:', error);
+                // Handle any errors or show a message to the user
+                console.error('Error fetching data:', error);
             });
-    const searchButton = document.getElementById('searchButton');
-    searchButton.addEventListener('click', this.triggerSearch);
 
-    searchButton.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-        this.triggerSearch();
-        }
-    })
-    // Add an event listener to the document for clicks
-    document.addEventListener('click', this.handleClickOutside);
+        const searchButton = document.getElementById('searchButton');
+        searchButton.addEventListener('click', this.triggerSearch);
+
+        searchButton.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                this.triggerSearch();
+            }
+        });
+
+        // Add an event listener to the document for clicks
+        document.addEventListener('click', this.handleClickOutside);
     }
   }
 </script>
@@ -269,5 +281,10 @@ margin-top: -1px;
 padding: 20px 20px;
 min-width: 300px; /* Minimum width */
 max-width: 300px; /* Maximum width */
+}
+
+.scrollable-menu {
+    max-height: 300px; /* Adjust the maximum height as needed */
+    overflow-y: auto;
 }
 </style>

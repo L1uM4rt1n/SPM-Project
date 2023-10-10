@@ -18,10 +18,10 @@
             </div>
 
             <!-- Display Job Listings -->
-            <div class="mb-1" v-for="role in filteredResults" :key="role.id">
+            <div class="mb-1" v-for="role in filteredResults" :key="role.role_ID">
             <div class="card border-secondary position-relative">
                 <div class="card-body">
-                    <h4 class="card-title">{{ role.Role_Name }} <span class="text-secondary border border-rounded">(Available: 3{{role.availability}})</span></h4>
+                    <h4 class="card-title">{{ role.Role_Name }} <span class="text-secondary border border-rounded">(Available: {{role.Availability}})</span></h4>
                     <p class="card-text">Role ID: {{  role.Role_ID }}</p>
                     <p class="card-text">Department: {{ role.Role_Department }}</p>
                     <p class="card-text">Application Deadline: {{ role.App_Deadline }}</p>
@@ -63,30 +63,31 @@ import axios from 'axios';
     methods: {
         performSearch(payload) {
             if (payload) {
-            const { keyword, selectedDepartments, selectedSkills } = payload;
+                const { keyword, selectedDepartments, selectedSkills } = payload;
 
-            // Filter the role listings based on selected departments, skills, and keyword
-            console.log(payload)
-            console.log(this.roleListings)
-            const filteredResults = this.roleListings.filter((role) => {
-                const hasSelectedDepartment =
-                    selectedDepartments.length === 0 ||
-                    selectedDepartments.includes(role.Role_Department);
-                const hasSelectedSkills =
-                    selectedSkills.length === 0 ||
-                    selectedSkills.some((selectedSkill) =>
-                        role.Role_Requirements.includes(selectedSkill)
-                );
-                const keywordMatch =
-                role.Role_Name &&
-                role.Role_Name.toLowerCase().includes(keyword.toLowerCase());
+                // Filter the role listings based on selected departments, skills, and keyword
+                const filteredResults = this.roleListings.filter((role) => {
+                    const hasSelectedDepartment =
+                        selectedDepartments.length === 0 ||
+                        selectedDepartments.includes(role.Role_Department);
 
-                return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
-            });
+                    const hasSelectedSkills =
+                        selectedSkills.length === 0 ||
+                        selectedSkills.some((selectedSkill) =>
+                            role.Role_Skills.includes(selectedSkill)
+                        );
 
-            this.filteredResults = filteredResults;
+                    const keywordMatch =
+                        role.Role_Name &&
+                        role.Role_Name.toLowerCase().includes(keyword.toLowerCase());
+
+                    return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
+                });
+
+                this.filteredResults = filteredResults;
             }
         },
+
     },
 
     watch: {
@@ -102,8 +103,10 @@ import axios from 'axios';
             // Check for a successful response (status code 200)
             if (response.status === 200) {
                 // Assuming the data returned is in response.data.data.bookings
+                console.log("==================== response.data ====================")
                 console.log(response.data)
                 this.roleListings = response.data.data.roles_with_details;
+                console.log("============= roleListings in HRHome.vue ============")
                 console.log(this.roleListings)
                 this.filteredResults = this.roleListings;
             }
@@ -124,5 +127,11 @@ import axios from 'axios';
     right: 0;
     margin: 10px; /* Adjust margin as needed */
 }
+
+.scrollable-menu {
+    max-height: 300px; /* Adjust the maximum height as needed */
+    overflow-y: auto;
+}
+
 </style>
     
