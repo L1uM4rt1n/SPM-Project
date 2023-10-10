@@ -103,7 +103,7 @@ import axios from 'axios';
             if (response.status === 200) {
                 // Assuming the data returned is in response.data.data.bookings
                 console.log(response.data)
-                this.roleListings = response.data.data.bookings;
+                this.roleListings = response.data.data.roles_with_details;
                 console.log(this.roleListings)
                 this.filteredResults = this.roleListings;
             }

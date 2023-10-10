@@ -5,15 +5,9 @@ from os import environ
 from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/patient_records'
-
-# Window user configuration
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
-
-# Mac user configuration (Check port number)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
-
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -74,9 +68,10 @@ class Role(db.Model):
     Role_Department = db.Column(db.String(50), nullable=False)
     Role_Description = db.Column(db.String(2600), nullable=False)
     Role_Requirements = db.Column(db.String(2600), nullable=False)
+    Availability = db.Column(db.Integer, nullable=False)
     Role_Name_index = db.Index('Role_Name', Role_Name)
 
-    def __init__(self, Role_ID, Role_Name, Date_Posted, App_Deadline, Role_Department, Role_Description, Role_Requirements):
+    def __init__(self, Role_ID, Role_Name, Date_Posted, App_Deadline, Role_Department, Role_Description, Role_Requirements, Availability):
         self.Role_ID = Role_ID
         self.Role_Name = Role_Name
         self.Date_Posted = Date_Posted
@@ -84,6 +79,7 @@ class Role(db.Model):
         self.Role_Department = Role_Department
         self.Role_Description = Role_Description
         self.Role_Requirements = Role_Requirements
+        self.Availability = Availability
         
     def json(self):
         return{
@@ -93,7 +89,8 @@ class Role(db.Model):
             'App_Deadline': self.App_Deadline,
             'Role_Department': self.Role_Department,
             'Role_Description': self.Role_Description,
-            'Role_Requirements': self.Role_Requirements
+            'Role_Requirements': self.Role_Requirements,
+            'Availability': self.Availability
         }
     
 class Role_Skill(db.Model):
@@ -154,16 +151,23 @@ class Staff_Role_Apply(db.Model):
 @app.route('/roles/get_all_roles', methods=['GET'])
 def get_all():
     role_list = Role.query.all()
-    if len(role_list):
+    roles_with_details = {}
+    for role in role_list:
+        role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
+        role_data = role.json()
+        role_data['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
+        # roles_with_details dictionary, Role_ID as the key
+        roles_with_details[role.Role_ID] = role_data
+
+    if len(roles_with_details) > 0:
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    # we use for book to perform an iteration and create a JSON representation of it using book.json() function.
-                    "bookings": [role.json() for role in role_list]
+                    "roles_with_details": roles_with_details
                 }
             }
-        )
+        ), 200
     return jsonify(
         {
             "code": 404,
@@ -183,6 +187,20 @@ def search_roles():
     results = [role.json() for role in roles]
 
     return jsonify(results)
+
+# for staff to view individual role details
+@app.route('/role/<int:Role_ID>', methods=['GET'])
+def get_role_details(Role_ID):
+    role = Role.query.filter_by(Role_ID=Role_ID).first()
+    if not role:
+        return jsonify({'message': 'Role not found'}), 404
+
+    role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
+    role_details = role.json()
+    role_details['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
+
+    return jsonify(role_details)
+
 
 # to generate Role_ID
 def generate_unique_role_id():
@@ -204,6 +222,7 @@ def create_role():
         role_department = data['Role_Department']
         role_description = data['Role_Description']
         role_requirements = data['Role_Requirements']
+        availability = data['Availability']
     except KeyError as e:
         return jsonify(
             {
@@ -237,7 +256,8 @@ def create_role():
         App_Deadline=app_deadline,
         Role_Department=role_department,
         Role_Description=role_description,
-        Role_Requirements=role_requirements
+        Role_Requirements=role_requirements,
+        Availability=availability
     )
 
     try:
@@ -281,6 +301,7 @@ def update_role(role_id):
     role.Role_Department = data['Role_Department']
     role.Role_Description = data['Role_Description']
     role.Role_Requirements = data['Role_Requirements']
+    role.Availability = data['Availability']
 
     skills = data.get('Role_Skills', [])  # assuming Role_Skills is a list of skill names
     # clear existing role skills
@@ -295,20 +316,7 @@ def update_role(role_id):
     return jsonify({'message': 'Role updated successfully'}), 200
 
 
-# get skills required for the role
-@app.route('/roles/<string:role_name>/skills', methods=['GET'])
-def get_role_skills(role_name):
-    role_skills = Role_Skill.query.filter_by(Role_Name=role_name).all()
-    if not role_skills:
-        return jsonify({'message': 'Role not found'}), 404
-
-    results = [role_skill.json() for role_skill in role_skills]
-
-    return jsonify(results)
-
-
-
-# staff endpoints
+##########################3 staff endpoints #########################################
 
 # to create new staff
 @app.route('/staff/create', methods=['POST'])
@@ -439,9 +447,9 @@ def calculate_role_matches(staff_id):
 # when Staff applies for role
 @app.route('/staff/submit_application', methods=['POST'])
 def submit_application():
-    staff_id = 1  # discuss how to fetch the staff ID based on the user
+    staff_id = 3  # discuss how to fetch the staff ID based on the user#######################################
     role_id = request.form.get('role')
-
+    # role_id = 1000003
     # check if staff has already applied for this role
     existing_application = Staff_Role_Apply.query.filter_by(
         Staff_ID=staff_id,
@@ -460,10 +468,16 @@ def submit_application():
     db.session.add(new_application)
     db.session.commit()
 
+    role = Role.query.filter_by(Role_ID=role_id).first()
+    role.Availability -= 1
+    db.session.commit()
+    
     # after this, code the js to change status bar to 'Applied', since there's a entry in
     # staff_role_apply table => means staff has applied for the role
 
     return "Application submitted successfully."
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)
