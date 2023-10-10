@@ -16,7 +16,7 @@
             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
             <select v-model="selectedDepartments" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
                 <option disabled selected>Choose Department...</option>
-                <option v-for="type in jobtypes" :key="type" :value="type">{{ type }}</option>
+                <option v-for="job in filteredResults" :key="job" :value="job">{{ job.Role_Department }}</option>
             </select>
 
             <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Department Name" style="margin-left:10px">
@@ -46,8 +46,6 @@
         </div>
     </div>
 
-    
-
 
 </template>
 
@@ -68,7 +66,7 @@ data() {
         selectedDepartments: [],
         selectedDepartment: '',
         searchKeyword: '', // Add a data property for search keyword
-        jobListings: [], // Initialize an empty array for job listings
+        jobListings: {}, // Initialize an empty array for job listings
         jobtypes: [], // All job types
         skilltypes: [], // All skill types
         filteredResults:[],
@@ -78,12 +76,59 @@ data() {
         fetchroles() {
             axios.get("http://127.0.0.1:5000/roles/get_all_roles")
             .then(response => {
-                console.log(response.data.data)
+                this.filteredResults = response.data.data.bookings
+                //console.log('----FilteredResults-----')
+                //console.log(this.filteredResults)
+
+
+                for(let i = 0; i < this.filteredResults.length; i++){
+                    //console.log(this.filteredResults[i])
+                    this.jobListings[i] = this.filteredResults[i]
+                }
+
+                //console.log('----jobListing-----')
+                //console.log(this.jobListings[0])
+
+                let departmentss = ['New'];
+                for (let i = 0; i < this.jobListings.length; i++) {
+                    let dept = this.jobListings[i].Role_Department;
+                    console.log('1');
+                    if (!departmentss.includes(dept)) {
+                        departmentss.push(dept);
+                }
+
+                this.jobtypes = departmentss;
+
+                console.log(this.jobtypes)
+            }
+                
+
             })
             .catch(error => {
                 console.error("There was an error fetching the data:", error);
             });
         },
+        populating() {
+            let departmentss = ['New'];
+            console.log(this.jobListings)
+            for (let i = 0; i < this.jobListings.length; i++) {
+                let dept = this.jobListings[i].Role_Department;
+                console.log('1');
+                if (!departmentss.includes(dept)) {
+                    departmentss.push(dept);
+                }
+            }
+            this.jobtypes = departmentss;
+
+
+            let skills = [];
+            for (let i = 0; i < this.jobListings.length; i++) {
+            skills = skills.concat(this.jobListings[i].skills);
+            }
+
+            // Remove duplicates by converting the array to a Set and then back to an array
+            this.skilltypes = [...new Set(skills)];
+            },
     performSearch(payload) {
         if (payload) {
         const { keyword, selectedDepartments, selectedSkills } = payload;
@@ -114,55 +159,11 @@ data() {
         searchKeyword: function() {
             this.performSearch(); // Call the performSearch method when searchKeyword changes
         },
-
-        jobListings(newListings) {
-            let departmentss = ['New'];
-            for (let i = 0; i < newListings.length; i++) {
-                let dept = newListings[i].department;
-                if (!departmentss.includes(dept)) {
-                    departmentss.push(dept);
-                }
-            }
-            this.jobtypes = departmentss;
-
-
-            let skills = [];
-            for (let i = 0; i < newListings.length; i++) {
-            skills = skills.concat(newListings[i].skills);
-            }
-
-            // Remove duplicates by converting the array to a Set and then back to an array
-            this.skilltypes = [...new Set(skills)];
-            },
     },
     mounted() {
         // Use axios to fetch data from Flask API
         this.fetchroles();
-
-      // Simulate fetching data from a database (replace with actual data fetching)
-        setTimeout(() => {
-            this.jobListings = [
-            {
-            id: 1,
-            title: 'Software Developer',
-            skills: ['Java', 'HTML'],
-            department: 'IT',
-            availability: 2,
-            deadline: '31/09/2002',
-            },
-            {
-            id: 2,
-            title: 'Frontend Developer',
-            skills: ['HTML', 'CSS', 'JavaScript'],
-            department: 'HR',
-            availability: 2,
-            deadline: '26/09/2002',
-            },
-          // Add more job listings here
-        ],
-        // Set filteredJobListings to match the initial data
-        this.filteredResults = this.jobListings;
-      }, 1000); // Simulate an API call delay
+        this.populating();
     },
     };
 </script>
