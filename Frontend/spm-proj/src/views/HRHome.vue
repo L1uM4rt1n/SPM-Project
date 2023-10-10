@@ -21,9 +21,9 @@
             <div class="mb-1" v-for="role in filteredResults" :key="role.id">
             <div class="card border-secondary position-relative">
                 <div class="card-body">
-                    <h4 class="card-title">{{ role.Role_Name }}</h4>
+                    <h4 class="card-title">{{ role.Role_Name }} <span class="text-secondary border border-rounded">(Available: 3{{role.availability}})</span></h4>
                     <p class="card-text">Role ID: {{  role.Role_ID }}</p>
-                    <p class="card-text">Availability: {{ role.availability }}</p>
+                    <p class="card-text">Department: {{ role.Role_Department }}</p>
                     <p class="card-text">Application Deadline: {{ role.App_Deadline }}</p>
                 </div>
                 <!-- Edit Button (Bottom-right corner) -->
@@ -102,6 +102,7 @@ import axios from 'axios';
             // Check for a successful response (status code 200)
             if (response.status === 200) {
                 // Assuming the data returned is in response.data.data.bookings
+                console.log(response.data)
                 this.roleListings = response.data.data.bookings;
                 console.log(this.roleListings)
                 this.filteredResults = this.roleListings;
