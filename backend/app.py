@@ -151,15 +151,23 @@ class Staff_Role_Apply(db.Model):
 @app.route('/roles/get_all_roles', methods=['GET'])
 def get_all():
     role_list = Role.query.all()
-    if len(role_list):
+    roles_with_details = {}
+    for role in role_list:
+        role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
+        role_data = role.json()
+        role_data['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
+        # roles_with_details dictionary, Role_ID as the key
+        roles_with_details[role.Role_ID] = role_data
+
+    if len(roles_with_details) > 0:
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "bookings": [role.json() for role in role_list]
+                    "roles_with_details": roles_with_details
                 }
             }
-        )
+        ), 200
     return jsonify(
         {
             "code": 404,
