@@ -2,28 +2,46 @@
 
     <div class="createJobListing container my-5">
     <div class="text-center">
-        <h1 class="">Create Job Listing</h1>
+        <h1 class="">Create Role Listing</h1>
     </div>
     
     <hr>
         <div class="container">
             <div class="form-group">
                 <label for="exampleInputEmail1">Name</label>
-                <input type="email" class="form-control" id="jobName" aria-describedby="jobName" placeholder="Enter Job Listing Name">
+                <input type="email" class="form-control" id="jobName" aria-describedby="jobName" placeholder="Enter Role Listing Name" style="margin-bottom: 15px;">
                 <!-- <small id="" class="form-text text-muted">This is a small description</small> -->
             </div>
 
-            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Department</label>
-            <select v-model="selectedDepartments" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
-                <option disabled selected>Choose Department...</option>
-                <option v-for="job in filteredResults" :key="job" :value="job">{{ job.Role_Department }}</option>
-            </select>
 
-            <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Department Name" style="margin-left:10px">
+            <div>
+                Application Deadline <br>
+                <input type="date" id="myDate" value="2023-10-09">
 
-            <br>
-            <label for="exampleFormControlTextarea1">Job Description</label>
+            </div>
+
+            <div>
+                <label class="mr-2" for="inlineFormCustomSelectPref" style="margin-top: 15px;">Department</label>
+                <div>
+                    <select v-model="selectedDepartments" class="custom-select my-1 mr-sm-2 mb-4" id="inlineFormCustomSelectPref">
+                        <option disabled selected>Choose Department...</option>
+                        <option>New</option>
+                        <option v-for="job in filteredResults" :key="job" :value="job">{{ job.Role_Department }}</option>
+                    </select>
+                </div>
+
+                <input v-if="selectedDepartments === 'New'" type="text" placeholder="New Department Name" style="width: 100%;">
+            </div>
+            
+            <div>
+                <label for="exampleFormControlTextarea1">Role Description</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            </div>
+
+            <div>
+                <label for="exampleFormControlTextarea1" style="margin-top: 15px;">Role Expectations</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+            </div>
 
             <!-- Checkboxes -->
             <div class="py-3">
@@ -40,11 +58,13 @@
                 </div>
             </div>
             <br>
-            <textarea v-if="isOtherChecked" placeholder="Please specify the other skill(s)"></textarea>
+            <textarea v-if="isOtherChecked" placeholder="Please specify the other skill(s)" style="width: 100%;"></textarea>
             <br>
-            <button type="submit" class="btn btn-primary">Submit</button>
+
         </div>
     </div>
+
+    
 
 
 </template>
