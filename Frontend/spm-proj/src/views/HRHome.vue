@@ -58,6 +58,8 @@ import axios from 'axios';
         filteredResults:[],
         departments:[],
         skills:[],
+        Email:'',
+        Access:'',
         };
     },
     methods: {
@@ -101,6 +103,10 @@ import axios from 'axios';
         },
     },
     created() {
+        this.Email = sessionStorage.getItem('Email');
+        this.Access = sessionStorage.getItem('Access');
+        console.log("===== Email and access stored in Session =====")
+        console.log("Email:" + this.Email + " == Access:" + this.Access)
           // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
         axios.get('http://localhost:5008/roles/get_all_roles')
             .then((response) => {

@@ -12,12 +12,12 @@
                         v-model="access"
                         class="form-select"
                     >
-                        <option value="Staff">HR</option>
-                        <option value="HR">Staff</option>
+                        <option value="Staff">Staff</option>
+                        <option value="HR">HR</option>
                     </select>
                 </div>
             <div class="forms-inputs mb-4">
-                <label for="email">Email or username</label>
+                <label for="email">Email</label>
                 <input autocomplete="off"
                 type="text"
                 id="email"
@@ -68,7 +68,7 @@ export default {
     components: {},
     data() {
     return {
-        acess: 'staff',
+        access: 'Staff',
         accessRights: '',
         staffID: '',
         password: '',
@@ -78,29 +78,61 @@ export default {
         passwordBlurred: false,  // Corrected the spelling here
     };
     },
+    created() {
+    },
     methods: {
         authenticate() {
-            axios.post('http://localhost:5008/login', {
-                email: this.email,
-                password: this.password,
-                accessRights: this.access, // Send the selected access rights
-            })
-            .then((response) => {
-                console.log(response);
-                if (response.data.message == 'success') {
-                this.submitted = true;
-                if (this.access === 'hr') {
-                    this.$router.push({ name: 'HRHome' }); // Redirect to HR page
-                } else {
-                    this.$router.push({ name: 'StaffHome' }); // Redirect to Staff page
-                }
-                } else {
-                alert('Invalid Credentials');
+            // Check if access is 'Staff'
+            if (this.access === 'Staff') {
+                this.accessRights = 'staff';
+                axios
+                .post('http://localhost:5008/login', {
+                    Email: this.email,
+                    Password: this.password,
+                    Access_Rights: this.access,
+                })
+                .then((response) => {
+                    console.log(response);
+                    if (response.status === 200) {
+                        sessionStorage.setItem('Access', this.access);
+                        sessionStorage.setItem('Email', this.email);
+                        this.$router.push({ name: 'StaffPage' }); // Redirect to Staff page
+                    } else {
+                    alert('Invalid Credentials');
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             }
-    }, (error) => {
-        console.log(error);
-    });
-    },
+            // Check if access is 'HR'
+            else if (this.access === 'HR') {
+                this.accessRights = 'hr';
+                axios
+                .post('http://localhost:5008/login', {
+                    Email: this.email,
+                    Password: this.password,
+                    Access_Rights: this.access,
+                })
+                .then((response) => {
+                    console.log(response);
+                    if (response.status === 200) {
+                        sessionStorage.setItem('Access', this.access);
+                        sessionStorage.setItem('Email', this.email);
+                        this.$router.push({ name: 'HRHome' }); // Redirect to HR page
+                    } else {
+                    alert('Invalid Credentials');
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            } else {
+                // Handle invalid "access" value (e.g., show an error message)
+                alert('Invalid access');
+            }
+            },
+
     validEmail(email) {
       // Implement your email validation logic here
       // For example, you can use a regular expression
@@ -114,6 +146,7 @@ export default {
     },
     },
 };
+
 </script>
 
 <!-- Styling -->

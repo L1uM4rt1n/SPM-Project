@@ -31,16 +31,17 @@ CREATE TABLE IF NOT EXISTS Staff (
     Country VARCHAR(50) NOT NULL,
     Email VARCHAR(50) UNIQUE NOT NULL,
     Access_Rights INT,
+    Password VARCHAR(50) NOT NULL,
     FOREIGN KEY (Access_Rights) REFERENCES AccessRights(Access_Rights_ID)
 );
 
-INSERT INTO Staff (Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights)
+INSERT INTO Staff (Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights, Password)
 VALUES
-    ('John', 'Doe', 'Human Resources', 'Singapore', 'john.doe@g1t7.com', 1),
-    ('Alice', 'Smith', 'Finance', 'Singapore', 'alice.smith@g1t7.com', 2),
-    ('Elena', 'Garcia', 'IT', 'Singapore', 'elena.garcia@g1t7.com', 2),
-    ('Michael', 'Wang', 'Marketing', 'Singapore', 'michael.wang@g1t7.com', 2),
-    ('Sakura', 'Tanaka', 'Operations', 'Japan', 'sakura.tanaka@g1t7.com', 2);
+    ('John', 'Doe', 'Human Resources', 'Singapore', 'john.doe@g1t7.com', 1,'123'),
+    ('Alice', 'Smith', 'Finance', 'Singapore', 'alice.smith@g1t7.com', 2,'123'),
+    ('Elena', 'Garcia', 'IT', 'Singapore', 'elena.garcia@g1t7.com', 2,'123'),
+    ('Michael', 'Wang', 'Marketing', 'Singapore', 'michael.wang@g1t7.com', 2,'123'),
+    ('Sakura', 'Tanaka', 'Operations', 'Japan', 'sakura.tanaka@g1t7.com', 2,'123');
 COMMIT;
 
 
