@@ -77,9 +77,13 @@ import axios from 'axios';
                             role.Role_Skills.includes(selectedSkill)
                         );
 
+                    // Check for a keyword match in both the role name and description
                     const keywordMatch =
-                        role.Role_Name &&
-                        role.Role_Name.toLowerCase().includes(keyword.toLowerCase());
+                    (role.Role_Name &&
+                        role.Role_Name.toLowerCase().includes(keyword.toLowerCase())) ||
+                    (role.Role_Description &&
+                        role.Role_Description.toLowerCase().includes(keyword.toLowerCase()));
+
 
                     return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
                 });
@@ -103,7 +107,7 @@ import axios from 'axios';
             // Check for a successful response (status code 200)
             if (response.status === 200) {
                 // Assuming the data returned is in response.data.data.bookings
-                console.log("==================== response.data ====================")
+                console.log("============= response.data in HRHome.vue ===========")
                 console.log(response.data)
                 this.roleListings = response.data.data.roles_with_details;
                 console.log("============= roleListings in HRHome.vue ============")

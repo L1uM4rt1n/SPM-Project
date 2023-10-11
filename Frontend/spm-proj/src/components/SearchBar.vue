@@ -8,13 +8,13 @@
             <input
                 type="text"
                 class="form-control border-secondary"
-                placeholder="Search for job listings"
+                placeholder="What role listing are you looking for?"
                 v-model="searchKeyword"
                 @keyup.enter = "triggerSearch"
                 style ="border-right: 0; border-color: transparent;"
             />
             <div class="input-group-append">
-                <button class="btn border-secondary" @click="clearSearch" style ="border-left: 0; border-color: transparent; border-radius:0">X
+                <button id="clear-search-button" class="btn border-secondary" @click="clearSearch" style ="border-left: 0; border-color: transparent; border-radius:0">X
                 </button>
             </div>
             <!-- <button type="button" class="btn btn-outline-secondary btn-close" aria-label="Close" @click="clearSearch" ></button> -->

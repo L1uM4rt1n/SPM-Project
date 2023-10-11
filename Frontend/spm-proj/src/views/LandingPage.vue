@@ -1,5 +1,9 @@
 <template>
     <div class="landing-page">
+        <router-link :to="{ name: 'LoginPage' }">
+            <a class=" btn btn-lg btn-secondary border-dark" href="#" role="button">Login</a>
+        </router-link>
+
         <h1 class="m-5">Welcome to the Landing Page</h1>
         <div class="container mx-auto">
             <div class="border p-5  my-3 bg-light rounded">

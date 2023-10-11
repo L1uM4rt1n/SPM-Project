@@ -3,6 +3,7 @@ import HRHome from '../views/HRHome.vue';
 // import createJobListing from '../views/createJobListing.vue';
 import landingPage from '../views/LandingPage.vue';
 import StaffPage from '../views/StaffPage.vue';
+import LoginPage from '../views/LoginPage.vue';
 
 const routes = [
   // Other routes
@@ -29,6 +30,12 @@ const routes = [
     path: '/StaffPage',
     name: 'StaffPage',
     component: StaffPage,
+    },
+
+    {
+      path: '/LoginPage',
+      name: 'LoginPage',
+      component: LoginPage,
     },
 
     // {
