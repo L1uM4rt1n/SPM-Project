@@ -1,17 +1,24 @@
-from flask import Flask, request, jsonify
+import os
+from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_migrate import Migrate
+from flask_session import Session
 from os import environ
 from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/skills_based_role_portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 CORS(app)
+Session(app)
+migrate = Migrate(app, db)
 
 class AccessRights(db.Model):
     __tablename__ = 'AccessRights'
@@ -39,15 +46,17 @@ class Staff(db.Model):
     Country = db.Column(db.String(50), nullable=False)
     Email = db.Column(db.String(50), unique=True, nullable=False)
     Access_Rights = db.Column(db.Integer, db.ForeignKey('AccessRights.Access_Rights_ID'))
+    Password = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights):
+    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights, Password):
         self.Staff_FName = Staff_FName
         self.Staff_LName = Staff_LName
         self.Dept = Dept
         self.Country = Country
         self.Email = Email
         self.Access_Rights = Access_Rights
-        
+        self.Password = Password
+
     def json(self):
         return{
             'Staff_FName': self.Staff_FName,
@@ -55,7 +64,8 @@ class Staff(db.Model):
             'Dept': self.Dept,
             'Country': self.Country,
             'Email': self.Email,
-            'Access_Rights': self.Access_Rights
+            'Access_Rights': self.Access_Rights,
+            'Password': self.Password
         }
 
 class Role(db.Model):
@@ -144,6 +154,40 @@ class Staff_Role_Apply(db.Model):
             'Role_ID': self.Role_ID,
             'Applied': self.Applied
         }
+################ login endpoints ##################################################
+
+# for staff to login
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data['Email']
+    password = data['Password']
+    access_rights = data['Access_Rights']
+
+    staff = Staff.query.filter_by(Email=email).first()
+    if not staff:
+        return jsonify({'message': 'Staff member not found'}), 404
+
+    if staff.Password != password:
+        return jsonify({'message': 'Incorrect password'}), 401
+
+    if access_rights == 'HR':
+        access_rights = 1
+    elif access_rights == 'Staff':
+        access_rights = 2
+
+    #staff.Access_Rights = 1 can access HR and Staff pages
+    #staff.Access_Rights = 2 can only access Staff pages
+
+    if access_rights == 1 and staff.Access_Rights != 1:
+        return jsonify({'message': 'Restricted Access'}), 401
+
+    
+    session['staff_id'] = staff.Staff_ID
+    session['access_rights'] = staff.Access_Rights
+
+    return jsonify(staff.json()), 200
+
 
 ################ role endpoints ##################################################
 
