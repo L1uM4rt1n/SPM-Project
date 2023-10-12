@@ -6,7 +6,7 @@
         <p class="text-white">This is an all-in-one system where you can view and manage your role listing.</p>
         <!-- Login Button -->
         <router-link :to="{ name: 'LoginPage' }">
-        <a class="btn btn-lg btn-light border-light mt-3 px-5" href="#" role="button" :disabled="isButtonDisabled">Login</a>
+        <a class="btn btn-lg btn-light border-light mt-3 px-5" href="#" role="button">Login</a>
         </router-link>
     </div>
     </div>
