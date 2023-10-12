@@ -16,7 +16,6 @@
             <div>
                 Application Deadline <br>
                 <input v-model="NewDeadline" type="date" id="myDate">
-                {{NewDeadline}}
 
             </div>
 
@@ -29,16 +28,21 @@
                     </select>
                 </div>
 
+                <label class="mr-2" for="inlineFormCustomSelectPref" style="margin-top: 15px;">Availability</label>
+                <div>
+                    <textarea v-model="NewAvailability" class="form-control" rows="6"></textarea> 
+                </div>
+
             </div>
             
             <div>
                 <label for="exampleFormControlTextarea1">Role Description</label>
-                <textarea v-model="NewDescription" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+                <textarea v-model="NewDescription" class="form-control" rows="6"></textarea>
             </div>
 
             <div>
                 <label for="exampleFormControlTextarea1" style="margin-top: 15px;">Role Requirements</label>
-                <textarea v-model="NewRequirements" class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+                <textarea v-model="NewRequirements" class="form-control" rows="6"></textarea>
             </div>
             <br>
             <button class="btn btn-success" v-on:click="createrole">Create</button>
@@ -69,6 +73,7 @@ data() {
             NewDescription: '', // the new Role Description
             NewRequirements: '', // the new Role Requirements
             NewDeadline: '', // the new Deadline
+            NewAvailability: '', // the avaiability for new role
             TodaysDate: new Date(),
 
         };
