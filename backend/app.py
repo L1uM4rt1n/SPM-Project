@@ -202,9 +202,10 @@ def search_roles():
         ), 404
 
 # for staff to view individual role details
-@app.route('/role/<int:Role_ID>', methods=['GET'])
-def get_role_details(Role_ID):
-    role = Role.query.filter_by(Role_ID=Role_ID).first()
+@app.route('/role/view_role', methods=['GET'])
+def get_role_details():
+    role_id = request.args.get('role_id')
+    role = Role.query.filter_by(Role_ID=role_id).first()
     if not role:
         return jsonify({'message': 'Role not found'}), 404
 
@@ -232,7 +233,7 @@ def is_valid_date(date_str):
         return False
     
 # for HR to create a new role
-@app.route('/roles/create', methods=['POST'])
+@app.route('/role/create', methods=['POST'])
 def create_role():
     data = request.get_json()
     # check NOTNULL condition
@@ -458,15 +459,25 @@ def create_staff():
 # for HR to view skills of role applicants
 @app.route('/role/<string:role_name>/applicants/skills', methods=['GET'])
 def get_role_applicants_skills(role_name):
-    # find Role_ID based on role name
+    role_name = request.args.get('role_name')
     role = Role.query.filter_by(Role_Name=role_name).first()
     if not role:
-        return jsonify({'message': 'Role not found'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'Role not found'
+            }
+        ), 404
 
     # get staff members who applied for specified role
     role_applicants = Staff_Role_Apply.query.filter_by(Role_ID=role.Role_ID).all()
     if not role_applicants:
-        return jsonify({'message': 'No applicants for this role'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'No applicants for this role'
+            }
+        ), 404
 
     # retrieve the skills of the applicants
     applicant_skills = []
@@ -475,14 +486,25 @@ def get_role_applicants_skills(role_name):
         staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff_member.Staff_ID).all()
         applicant_skills.append({'Staff_Name': f'{staff_member.Staff_FName} {staff_member.Staff_LName}', 'Skills': [skill.Skill_Name for skill in staff_skills]})
 
-    return jsonify(applicant_skills)
+    return jsonify(
+        {
+            'code': 200,
+            'data': applicant_skills
+        }
+    ), 200
 
 # for Staff, to calculate Role-Skill % Match & display matched & skills gap
-@app.route('/staff/<int:staff_id>/role-matches', methods=['GET'])
-def calculate_role_matches(staff_id):
+@app.route('/staff/role-matches', methods=['GET'])
+def calculate_role_matches():
+    staff_id = request.args.get('staff_id')
     staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff_id).all()
     if not staff_skills:
-        return jsonify({'message': 'Staff member not found or has no skills'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'Staff member not found or has no skills'
+            }
+        ), 404
     
     role_matches = []
     roles = Role.query.all()
@@ -507,14 +529,19 @@ def calculate_role_matches(staff_id):
         })
     role_matches.sort(key=lambda x: x['Percentage_Matched'], reverse=True)
 
-    return jsonify(role_matches)
+    return jsonify(
+        {
+            'code': 200,
+            'data': role_matches
+        }
+    ), 200
 
 # when Staff applies for role
 @app.route('/staff/submit_application', methods=['POST'])
 def submit_application():
     staff_id = 3  # discuss how to fetch the staff ID based on the user#######################################
-    role_id = request.form.get('role')
-    # role_id = 1000003
+    role_id = request.form.get('role_id')
+    # role_id = 1000004
     # check if staff has already applied for this role
     existing_application = Staff_Role_Apply.query.filter_by(
         Staff_ID=staff_id,
@@ -543,11 +570,17 @@ def submit_application():
     return "Application submitted successfully."
 
 # for staff to view all roles they have applied for
-@app.route('/staff/<int:Staff_ID>/applied_roles', methods=['GET'])
-def get_applied_roles(Staff_ID):
-    applied_roles = Staff_Role_Apply.query.filter_by(Staff_ID=Staff_ID, Applied='1').all()
+@app.route('/staff/applied_roles', methods=['GET'])
+def get_applied_roles():
+    staff_id = request.args.get('staff_id')
+    applied_roles = Staff_Role_Apply.query.filter_by(Staff_ID=staff_id, Applied='1').all()
     if not applied_roles:
-        return jsonify({'message': 'You have not applied for any roles yet.'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'You have not applied for any roles yet.'
+            }
+        ), 404
 
     results = []
     for applied_role in applied_roles:
@@ -557,7 +590,12 @@ def get_applied_roles(Staff_ID):
         role_details['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
         results.append(role_details)
 
-    return jsonify(results)
+    return jsonify(
+        {
+            'code': 200,
+            'data': results
+        }
+    ), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)
