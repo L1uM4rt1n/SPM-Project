@@ -1,24 +1,17 @@
 <template>
     <div class="app">
-        <!-- dynamic search bar -->
 
         <!-- display of all roles -->
         <div class="container">
-            <div class="card rounded" style="border: 2px solid #ccc;" v-for="role in roles" :key="role.Role_ID">
+            <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in roles" :key="role.Role_ID">
                 <div class="card-body">
                     <h4 class="card-title">{{ role.Role_Name }}</h4>
                     <p class="card-text">Role ID: {{ role.Role_ID }}</p>
-                    <p class="card-text">Application Deadline: {{ role.App_Deadline }}</p>
+                    <p class="card-text">Role Availability: {{ role.Role_Availability }}</p>
+                    <p class="card-text">Application Deadline: {{ getDeadlineYear(role.App_Deadline) }}</p>
                 </div>
             </div>
         </div>
-
-        <!-- tester -->
-        <ul>
-            <li v-for="role in roles" :key="role.role_id">
-                {{ role.role_name }}
-            </li>
-        </ul>
     </div>
 </template>
 
@@ -45,14 +38,15 @@
                 axios.get(`${server.baseURL}/roles/get_all_roles`)
                     .then(
                         (response) => {
-                            // console.log(response)
                             this.roles = response.data.data.bookings
                         }
                     )
-                    // .catch((error) => {
-                    //     console.error(error)
-                    // });
             },
+            getDeadlineYear(deadline) {
+                const date = new Date(deadline)
+                const year = date.getFullYear()
+                return date.toDateString().replace(/\d{4}$/, year)
+            }
         },
     };
 </script>
