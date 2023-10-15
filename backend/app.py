@@ -3,12 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from os import environ
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime
 import logging
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/patient_records'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/patient_records'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/skills_based_role_portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -69,9 +70,10 @@ class Role(db.Model):
     Role_Department = db.Column(db.String(50), nullable=False)
     Role_Description = db.Column(db.String(2600), nullable=False)
     Role_Requirements = db.Column(db.String(2600), nullable=False)
+    Availability = db.Column(db.Integer, nullable=False)
     Role_Name_index = db.Index('Role_Name', Role_Name)
 
-    def __init__(self, Role_ID, Role_Name, Date_Posted, App_Deadline, Role_Department, Role_Description, Role_Requirements):
+    def __init__(self, Role_ID, Role_Name, Date_Posted, App_Deadline, Role_Department, Role_Description, Role_Requirements, Availability):
         self.Role_ID = Role_ID
         self.Role_Name = Role_Name
         self.Date_Posted = Date_Posted
@@ -79,6 +81,7 @@ class Role(db.Model):
         self.Role_Department = Role_Department
         self.Role_Description = Role_Description
         self.Role_Requirements = Role_Requirements
+        self.Availability = Availability
         
     def json(self):
         return{
@@ -88,7 +91,8 @@ class Role(db.Model):
             'App_Deadline': self.App_Deadline,
             'Role_Department': self.Role_Department,
             'Role_Description': self.Role_Description,
-            'Role_Requirements': self.Role_Requirements
+            'Role_Requirements': self.Role_Requirements,
+            'Availability': self.Availability
         }
     
 class Role_Skill(db.Model):
@@ -143,22 +147,28 @@ class Staff_Role_Apply(db.Model):
             'Applied': self.Applied
         }
 
-################ role endpoints ##################################################
+################ 5 role endpoints ##################################################
 
 # for staff to read/view all roles
 @app.route('/roles/get_all_roles', methods=['GET'])
 def get_all():
     role_list = Role.query.all()
-    if len(role_list):
+    roles_with_details = []
+    for role in role_list:
+        role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
+        role_data = role.json()
+        role_data['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
+        roles_with_details.append(role_data)
+
+    if len(roles_with_details) > 0:
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    # we use for book to perform an iteration and create a JSON representation of it using book.json() function.
-                    "bookings": [role.json() for role in role_list]
+                    "roles_with_details": roles_with_details
                 }
             }
-        )
+        ), 200
     return jsonify(
         {
             "code": 404,
@@ -177,7 +187,35 @@ def search_roles():
 
     results = [role.json() for role in roles]
 
-    return jsonify(results)
+    if (results):
+        return jsonify(
+            {
+                "code": 200,
+                "data": results
+            }
+        ), 200
+    else:
+        return jsonify(
+            {
+                "code": 404,
+                "message": "No results found."
+            }
+        ), 404
+
+# for staff to view individual role details
+@app.route('/role/view_role', methods=['GET'])
+def get_role_details():
+    role_id = request.args.get('role_id')
+    role = Role.query.filter_by(Role_ID=role_id).first()
+    if not role:
+        return jsonify({'message': 'Role not found'}), 404
+
+    role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
+    role_details = role.json()
+    role_details['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
+
+    return jsonify(role_details)
+
 
 # to generate Role_ID
 def generate_unique_role_id():
@@ -187,57 +225,75 @@ def generate_unique_role_id():
     next_role_id = max_existing_role + 1
     return next_role_id
 
-# for HR to create new role
-@app.route('/roles/create', methods=['POST'])
+# to validate date format
+def is_valid_date(date_str):
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False
+    
+# for HR to create a new role
+@app.route('/role/create', methods=['POST'])
 def create_role():
     data = request.get_json()
-    
-    try:
-        role_name = data['Role_Name']
-        date_posted = data['Date_Posted']
-        app_deadline = data['App_Deadline']
-        role_department = data['Role_Department']
-        role_description = data['Role_Description']
-        role_requirements = data['Role_Requirements']
-    except KeyError as key_error:
+    # check NOTNULL condition
+    required_fields = ['Role_Name', 'Date_Posted', 'App_Deadline', 'Role_Department', 'Role_Description', 'Role_Requirements', 'Availability', 'Role_Skills']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
         return jsonify(
             {
-                "code": 400,
-                "message": f"Missing required field: {str(key_error)}"
-            }
-        ), 400
-    except ValueError as value_error:
-        return jsonify(
-            {
-                "code": 400,
-                "message": f"Invalid value for field: {str(value_error)}"
+                "code": 400, 
+                "message": f"Missing required fields: {', '.join(missing_fields)}"
             }
         ), 400
 
-    # Check if the role already exists by name
-    if Role.query.filter_by(Role_Name=role_name).first():
+    # check date format
+    date_fields = ['Date_Posted', 'App_Deadline']
+    date_errors = [field for field in date_fields if not is_valid_date(data.get(field, ''))]
+    if date_errors:
+        return jsonify(
+            {
+                "code": 400, 
+                "message": f"Invalid date format for {', '.join(date_errors)}. Please use the format: YYYY-MM-DD."
+            }
+        ), 400
+
+    # check if role already exists
+    role_name = data['Role_Name']
+    existing_role = Role.query.filter_by(Role_Name=role_name).first()
+    if existing_role:
         return jsonify(
             {
                 "code": 400,
                 "message": "Role with this name already exists!"
             }
         ), 400
-
-    # If the role doesn't exist, insert it into the database
-    role_id = generate_unique_role_id()
-    new_role = Role(
-        Role_ID=role_id,
-        Role_Name=role_name,
-        Date_Posted=date_posted,
-        App_Deadline=app_deadline,
-        Role_Department=role_department,
-        Role_Description=role_description,
-        Role_Requirements=role_requirements
-    )
-
+        
     try:
+        # create new role
+        role_id = generate_unique_role_id()
+        new_role_data = {key: data[key] for key in data if key != 'Role_Skills'}
+        new_role = Role(Role_ID=role_id, **new_role_data)
         db.session.add(new_role)
+        
+        # create role_skill entries
+        role_skills = []
+        for skill_name in data['Role_Skills']:
+            role_skill = Role_Skill(Role_Name=role_name, Skill_Name=skill_name)
+            db.session.add(role_skill)
+            role_skills.append(skill_name)
+            
         db.session.commit()
+        response_data = new_role.json()
+        response_data['Role_Skills'] = role_skills
+        return jsonify(
+            {
+                "code": 201,
+                "data": response_data, 
+                "message": "Role listing created successfully."
+            }
+        ), 201
     except IntegrityError as integrity_error:
         db.session.rollback()
         return jsonify(
@@ -257,64 +313,87 @@ def create_role():
     # pylint: disable=W0718
     except Exception as error:
         db.session.rollback()
-        logging.error("An error occurred: %s", str(error))
-        return jsonify({
-            'message': 'An error occurred while creating the role listing. Please try again later.'
+        return jsonify(
+            {
+                'code': 500,
+                'error': str(error)
             }
         ), 500
     # pylint: enable=W0718
-
-    return jsonify(
-        {
-            "code": 201,
-            "data": new_role.json(),
-            "message": "Role listing created successfully"
-        }
-    ), 201
 
 # for HR to update role
 @app.route('/role/update/<int:role_id>', methods=['PUT'])
 def update_role(role_id):
     role = Role.query.get(role_id)
     if not role:
-        return jsonify({'message': 'Role not found'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'Role not found'
+            }
+        ), 404
 
-    # link data to frontend to pass info
     data = request.get_json()
-    role.Role_Name = data['Role_Name']
-    role.Date_Posted = data['Date_Posted']
-    role.App_Deadline = data['App_Deadline']
-    role.Role_Department = data['Role_Department']
-    role.Role_Description = data['Role_Description']
-    role.Role_Requirements = data['Role_Requirements']
+    new_role_name = data.get('Role_Name', role.Role_Name)
 
-    skills = data.get('Role_Skills', [])  # assuming Role_Skills is a list of skill names
-    # clear existing role skills
-    Role_Skill.query.filter_by(Role_Name=role.Role_Name).delete()
-    # add updated role skills
-    for skill_name in skills:
-        role_skill = Role_Skill(Role_Name=role.Role_Name, Skill_Name=skill_name)
-        db.session.add(role_skill)
+    # check date format before processing
+    date_fields = ['Date_Posted', 'App_Deadline']
+    date_errors = [field for field in date_fields if field in data and not is_valid_date(data[field])]
+    if date_errors:
+        return jsonify(
+            {
+                'code': 400,
+                'message': f'Invalid date format for {", ".join(date_errors)}. Please use the format: YYYY-MM-DD.'
+            }
+        ), 400
 
-    db.session.commit()
+    # if role name has changed, create a new role & transfer data
+    # to avoid IntegrityError due to role_skill table
+    if new_role_name != role.Role_Name:
+        # update role table
+        new_role = Role(
+            Role_ID=generate_unique_role_id(),
+            Role_Name=new_role_name,
+            **{key: data.get(key, getattr(role, key)) for key in Role.__table__.columns.keys() if key != 'Role_ID'  and key != 'Role_Name'},
+        )
 
-    return jsonify({'message': 'Role updated successfully'}), 200
+        skills = data.get('Role_Skills', [])
+        db.session.query(Role_Skill).filter_by(Role_Name=role.Role_Name).delete()
+        db.session.add(new_role)
+        # update skill table
+        for skill_name in skills:
+            db.session.add(Role_Skill(Role_Name=new_role.Role_Name, Skill_Name=skill_name))
+
+        db.session.delete(role)
+        db.session.commit()
+        return jsonify(
+            {
+                'code': 201,
+                'message': f'Role updated successfully, new Role_ID ({new_role.Role_ID}) generated\
+                as Role_Name has changed. Old role has been deleted.'
+            }
+        ), 201
+    else:
+        for key in Role.__table__.columns.keys():
+            if key != 'Role_ID':
+                setattr(role, key, data.get(key, getattr(role, key)))
+
+        skills = data.get('Role_Skills', [])
+        db.session.query(Role_Skill).filter_by(Role_Name=role.Role_Name).delete()
+
+        for skill_name in skills:
+            db.session.add(Role_Skill(Role_Name=role.Role_Name, Skill_Name=skill_name))
+
+        db.session.commit()
+        return jsonify(
+            {
+                'code': 200,
+                'message': 'Role updated successfully.'
+            }
+        ), 200
 
 
-# get skills required for the role
-@app.route('/roles/<string:role_name>/skills', methods=['GET'])
-def get_role_skills(role_name):
-    role_skills = Role_Skill.query.filter_by(Role_Name=role_name).all()
-    if not role_skills:
-        return jsonify({'message': 'Role not found'}), 404
-
-    results = [role_skill.json() for role_skill in role_skills]
-
-    return jsonify(results)
-
-
-
-# staff endpoints
+########################## 5 staff endpoints #########################################
 
 # to create new staff
 @app.route('/staff/create', methods=['POST'])
@@ -394,15 +473,25 @@ def create_staff():
 # for HR to view skills of role applicants
 @app.route('/role/<string:role_name>/applicants/skills', methods=['GET'])
 def get_role_applicants_skills(role_name):
-    # find Role_ID based on role name
+    role_name = request.args.get('role_name')
     role = Role.query.filter_by(Role_Name=role_name).first()
     if not role:
-        return jsonify({'message': 'Role not found'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'Role not found'
+            }
+        ), 404
 
     # get staff members who applied for specified role
     role_applicants = Staff_Role_Apply.query.filter_by(Role_ID=role.Role_ID).all()
     if not role_applicants:
-        return jsonify({'message': 'No applicants for this role'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'No applicants for this role'
+            }
+        ), 404
 
     # retrieve the skills of the applicants
     applicant_skills = []
@@ -411,14 +500,25 @@ def get_role_applicants_skills(role_name):
         staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff_member.Staff_ID).all()
         applicant_skills.append({'Staff_Name': f'{staff_member.Staff_FName} {staff_member.Staff_LName}', 'Skills': [skill.Skill_Name for skill in staff_skills]})
 
-    return jsonify(applicant_skills)
+    return jsonify(
+        {
+            'code': 200,
+            'data': applicant_skills
+        }
+    ), 200
 
 # for Staff, to calculate Role-Skill % Match & display matched & skills gap
-@app.route('/staff/<int:staff_id>/role-matches', methods=['GET'])
-def calculate_role_matches(staff_id):
+@app.route('/staff/role-matches', methods=['GET'])
+def calculate_role_matches():
+    staff_id = request.args.get('staff_id')
     staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff_id).all()
     if not staff_skills:
-        return jsonify({'message': 'Staff member not found or has no skills'}), 404
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'Staff member not found or has no skills'
+            }
+        ), 404
     
     role_matches = []
     roles = Role.query.all()
@@ -443,14 +543,19 @@ def calculate_role_matches(staff_id):
         })
     role_matches.sort(key=lambda x: x['Percentage_Matched'], reverse=True)
 
-    return jsonify(role_matches)
+    return jsonify(
+        {
+            'code': 200,
+            'data': role_matches
+        }
+    ), 200
 
 # when Staff applies for role
 @app.route('/staff/submit_application', methods=['POST'])
 def submit_application():
-    staff_id = 1  # discuss how to fetch the staff ID based on the user
-    role_id = request.form.get('role')
-
+    staff_id = 3  # discuss how to fetch the staff ID based on the user#######################################
+    role_id = request.form.get('role_id')
+    # role_id = 1000004
     # check if staff has already applied for this role
     existing_application = Staff_Role_Apply.query.filter_by(
         Staff_ID=staff_id,
@@ -469,10 +574,42 @@ def submit_application():
     db.session.add(new_application)
     db.session.commit()
 
+    role = Role.query.filter_by(Role_ID=role_id).first()
+    role.Availability -= 1
+    db.session.commit()
+    
     # after this, code the js to change status bar to 'Applied', since there's a entry in
     # staff_role_apply table => means staff has applied for the role
 
     return "Application submitted successfully."
+
+# for staff to view all roles they have applied for
+@app.route('/staff/applied_roles', methods=['GET'])
+def get_applied_roles():
+    staff_id = request.args.get('staff_id')
+    applied_roles = Staff_Role_Apply.query.filter_by(Staff_ID=staff_id, Applied='1').all()
+    if not applied_roles:
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'You have not applied for any roles yet.'
+            }
+        ), 404
+
+    results = []
+    for applied_role in applied_roles:
+        role = Role.query.get(applied_role.Role_ID)
+        role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
+        role_details = role.json()
+        role_details['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
+        results.append(role_details)
+
+    return jsonify(
+        {
+            'code': 200,
+            'data': results
+        }
+    ), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)
