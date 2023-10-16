@@ -147,7 +147,7 @@ class Staff_Role_Apply(db.Model):
             'Applied': self.Applied
         }
 
-################ 6 role endpoints ##################################################
+################ 5 role endpoints ##################################################
 
 # for staff to read/view all roles
 @app.route('/roles/get_all_roles', methods=['GET'])
