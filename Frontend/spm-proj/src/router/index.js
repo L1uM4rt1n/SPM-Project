@@ -21,14 +21,6 @@ const routes = [
         name: 'StaffHome',
         component: () => import('../views/Staff/StaffHome.vue')
     },
-
-    // route: individual role listing
-    {
-        path: '/staff-home/role/:id',
-        name: 'roleListing',
-        component: () => import('../views/Staff/RoleListing.vue'),
-        props: (route) => ({ roleId: route.params.id })
-    },
 ];
 
 const router = createRouter(
