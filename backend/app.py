@@ -147,7 +147,7 @@ class Staff_Role_Apply(db.Model):
             'Applied': self.Applied
         }
 
-################ 5 role endpoints ##################################################
+################ 6 role endpoints ##################################################
 
 # for staff to read/view all roles
 @app.route('/roles/get_all_roles', methods=['GET'])
@@ -173,6 +173,28 @@ def get_all():
         {
             "code": 404,
             "message": "There are no roles available."
+        }
+    ), 404
+
+# for staff to view a particular role based on its id
+@app.route('/roles/get_role_by_id/<int:role_id>', methods=['GET'])
+def get_role_by_id(role_id):
+    print ("Is working")
+    role = Role.query.filter_by(Role_ID=role_id)
+    if role:
+        role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
+        role_data = role.json()
+        role_data['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
+        return jsonify(
+            {
+                "code": 200,
+                "data": role_data
+            }
+        ), 200
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Role not found."
         }
     ), 404
 
