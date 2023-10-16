@@ -60,6 +60,12 @@ import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 import axios from 'axios';
+import SQLAlchemy from 'flask_sqlalchemy'; 
+import MySQL from 'mysql.connector';
+
+
+
+
 
 export default {
     name: 'createJobListing',
@@ -82,7 +88,7 @@ data() {
         fetchroles() {
             axios.get("http://127.0.0.1:5000/roles/get_all_roles")
             .then(response => {
-                this.filteredResults = response.data.data.bookings
+                this.filteredResults = response.data.data.roles_with_details
                 console.log(this.filteredResults)
             })
             .catch(error => {
