@@ -1,29 +1,18 @@
-import os
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_migrate import Migrate
-from flask_session import Session
 from os import environ
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
-import logging
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.urandom(24)
-app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 CORS(app)
-Session(app)
-migrate = Migrate(app, db)
-
-# Allow requests from 'http://localhost:8080'
-CORS(app, resources={r"/login": {"origins": "http://localhost:8080"}})
 
 class AccessRights(db.Model):
     __tablename__ = 'AccessRights'
@@ -51,17 +40,15 @@ class Staff(db.Model):
     Country = db.Column(db.String(50), nullable=False)
     Email = db.Column(db.String(50), unique=True, nullable=False)
     Access_Rights = db.Column(db.Integer, db.ForeignKey('AccessRights.Access_Rights_ID'))
-    Password = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights, Password):
+    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights):
         self.Staff_FName = Staff_FName
         self.Staff_LName = Staff_LName
         self.Dept = Dept
         self.Country = Country
         self.Email = Email
         self.Access_Rights = Access_Rights
-        self.Password = Password
-
+        
     def json(self):
         return{
             'Staff_FName': self.Staff_FName,
@@ -69,8 +56,7 @@ class Staff(db.Model):
             'Dept': self.Dept,
             'Country': self.Country,
             'Email': self.Email,
-            'Access_Rights': self.Access_Rights,
-            'Password': self.Password
+            'Access_Rights': self.Access_Rights
         }
 
 class Role(db.Model):
@@ -95,7 +81,6 @@ class Role(db.Model):
         self.Role_Description = Role_Description
         self.Role_Requirements = Role_Requirements
         self.Availability = Availability
-        self.Availability = Availability
         
     def json(self):
         return{
@@ -105,8 +90,6 @@ class Role(db.Model):
             'App_Deadline': self.App_Deadline,
             'Role_Department': self.Role_Department,
             'Role_Description': self.Role_Description,
-            'Role_Requirements': self.Role_Requirements,
-            'Availability': self.Availability,
             'Role_Requirements': self.Role_Requirements,
             'Availability': self.Availability
         }
@@ -163,7 +146,7 @@ class Staff_Role_Apply(db.Model):
             'Applied': self.Applied
         }
 
-################ role endpoints ##################################################
+################ 5 role endpoints ##################################################
 
 # for staff to read/view all roles
 @app.route('/roles/get_all_roles', methods=['GET'])
@@ -233,34 +216,6 @@ def get_role_details():
     return jsonify(role_details)
 
 
-# for staff to view individual role details
-@app.route('/role/<int:Role_ID>', methods=['GET'])
-def get_role_details(Role_ID):
-    role = Role.query.filter_by(Role_ID=Role_ID).first()
-    if not role:
-        return jsonify({'message': 'Role not found'}), 404
-
-    role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
-    role_details = role.json()
-    role_details['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
-
-    return jsonify(role_details)
-
-
-# for staff to view individual role details
-@app.route('/role/<int:Role_ID>', methods=['GET'])
-def get_role_details(Role_ID):
-    role = Role.query.filter_by(Role_ID=Role_ID).first()
-    if not role:
-        return jsonify({'message': 'Role not found'}), 404
-
-    role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
-    role_details = role.json()
-    role_details['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
-
-    return jsonify(role_details)
-
-
 # to generate Role_ID
 def generate_unique_role_id():
     max_existing_role = db.session.query(db.func.max(Role.Role_ID)).scalar()
@@ -281,16 +236,10 @@ def is_valid_date(date_str):
 @app.route('/role/create', methods=['POST'])
 def create_role():
     data = request.get_json()
-    
-    try:
-        role_name = data['Role_Name']
-        date_posted = data['Date_Posted']
-        app_deadline = data['App_Deadline']
-        role_department = data['Role_Department']
-        role_description = data['Role_Description']
-        role_requirements = data['Role_Requirements']
-        availability = data['Availability']
-    except KeyError as e:
+    # check NOTNULL condition
+    required_fields = ['Role_Name', 'Date_Posted', 'App_Deadline', 'Role_Department', 'Role_Description', 'Role_Requirements', 'Availability', 'Role_Skills']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
         return jsonify(
             {
                 "code": 400, 
@@ -319,21 +268,12 @@ def create_role():
                 "message": "Role with this name already exists!"
             }
         ), 400
-
-    # If the role doesn't exist, insert it into the database
-    role_id = generate_unique_role_id()
-    new_role = Role(
-        Role_ID=role_id,
-        Role_Name=role_name,
-        Date_Posted=date_posted,
-        App_Deadline=app_deadline,
-        Role_Department=role_department,
-        Role_Description=role_description,
-        Role_Requirements=role_requirements,
-        Availability=availability
-    )
-
+        
     try:
+        # create new role
+        role_id = generate_unique_role_id()
+        new_role_data = {key: data[key] for key in data if key != 'Role_Skills'}
+        new_role = Role(Role_ID=role_id, **new_role_data)
         db.session.add(new_role)
         
         # create role_skill entries
@@ -353,32 +293,22 @@ def create_role():
                 "message": "Role listing created successfully."
             }
         ), 201
-    except IntegrityError as integrity_error:
+    except IntegrityError as e:
         db.session.rollback()
         return jsonify(
             {
                 "code": 409,
-                "message": "Integrity violation: " + str(integrity_error)
+                "message": "Integrity violation: " + str(e)
             }
         ), 409
-    except ValueError as value_error:
-        db.session.rollback()
-        return jsonify(
-            {
-                "code": 400,
-                "message": "Invalid value: " + str(value_error)
-            }
-        ), 400
-    # pylint: disable=W0718
-    except Exception as error:
+    except Exception as e:
         db.session.rollback()
         return jsonify(
             {
                 'code': 500,
-                'error': str(error)
+                'error': str(e)
             }
         ), 500
-    # pylint: enable=W0718
 
 # for HR to update role
 @app.route('/role/update/<int:role_id>', methods=['PUT'])
@@ -393,28 +323,66 @@ def update_role(role_id):
         ), 404
 
     data = request.get_json()
-    role.Role_Name = data['Role_Name']
-    role.Date_Posted = data['Date_Posted']
-    role.App_Deadline = data['App_Deadline']
-    role.Role_Department = data['Role_Department']
-    role.Role_Description = data['Role_Description']
-    role.Role_Requirements = data['Role_Requirements']
-    role.Availability = data['Availability']
+    new_role_name = data.get('Role_Name', role.Role_Name)
 
-    skills = data.get('Role_Skills', [])  # assuming Role_Skills is a list of skill names
-    # clear existing role skills
-    Role_Skill.query.filter_by(Role_Name=role.Role_Name).delete()
-    # add updated role skills
-    for skill_name in skills:
-        role_skill = Role_Skill(Role_Name=role.Role_Name, Skill_Name=skill_name)
-        db.session.add(role_skill)
+    # check date format before processing
+    date_fields = ['Date_Posted', 'App_Deadline']
+    date_errors = [field for field in date_fields if field in data and not is_valid_date(data[field])]
+    if date_errors:
+        return jsonify(
+            {
+                'code': 400,
+                'message': f'Invalid date format for {", ".join(date_errors)}. Please use the format: YYYY-MM-DD.'
+            }
+        ), 400
 
-    db.session.commit()
+    # if role name has changed, create a new role & transfer data
+    # to avoid IntegrityError due to role_skill table
+    if new_role_name != role.Role_Name:
+        # update role table
+        new_role = Role(
+            Role_ID=generate_unique_role_id(),
+            Role_Name=new_role_name,
+            **{key: data.get(key, getattr(role, key)) for key in Role.__table__.columns.keys() if key != 'Role_ID'  and key != 'Role_Name'},
+        )
 
-    return jsonify({'message': 'Role updated successfully'}), 200
+        skills = data.get('Role_Skills', [])
+        db.session.query(Role_Skill).filter_by(Role_Name=role.Role_Name).delete()
+        db.session.add(new_role)
+        # update skill table
+        for skill_name in skills:
+            db.session.add(Role_Skill(Role_Name=new_role.Role_Name, Skill_Name=skill_name))
+
+        db.session.delete(role)
+        db.session.commit()
+        return jsonify(
+            {
+                'code': 201,
+                'message': f'Role updated successfully, new Role_ID ({new_role.Role_ID}) generated\
+                as Role_Name has changed. Old role has been deleted.'
+            }
+        ), 201
+    else:
+        for key in Role.__table__.columns.keys():
+            if key != 'Role_ID':
+                setattr(role, key, data.get(key, getattr(role, key)))
+
+        skills = data.get('Role_Skills', [])
+        db.session.query(Role_Skill).filter_by(Role_Name=role.Role_Name).delete()
+
+        for skill_name in skills:
+            db.session.add(Role_Skill(Role_Name=role.Role_Name, Skill_Name=skill_name))
+
+        db.session.commit()
+        return jsonify(
+            {
+                'code': 200,
+                'message': 'Role updated successfully.'
+            }
+        ), 200
 
 
-##########################3 staff endpoints #########################################
+########################## 5 staff endpoints #########################################
 
 # to create new staff
 @app.route('/staff/create', methods=['POST'])
@@ -428,18 +396,18 @@ def create_staff():
         country = data['Country']
         email = data['Email']
         access_rights = data['Access_Rights']
-    except KeyError as key_error:
+    except KeyError as e:
         return jsonify(
             {
                 "code": 400,
-                "message": f"Missing required field: {str(key_error)}"
+                "message": f"Missing required field: {str(e)}"
             }
         ), 400
-    except ValueError as value_error:
+    except ValueError as e:
         return jsonify(
             {
                 "code": 400,
-                "message": f"Invalid value for field: {str(value_error)}"
+                "message": f"Invalid value for field: {str(e)}"
             }
         ), 400
 
@@ -465,23 +433,20 @@ def create_staff():
     try:
         db.session.add(new_staff)
         db.session.commit()
-    except IntegrityError as integrity_error:
+    except IntegrityError as e:
         db.session.rollback()
         return jsonify(
             {
                 "code": 409,
-                "message": "Integrity violation: " + str(integrity_error)
+                "message": "Integrity violation: " + str(e)
             }
         ), 409
-    # pylint: disable=W0718
-    except Exception as error:
+    except Exception as e:
         db.session.rollback()
-        logging.error("An error occurred: %s", str(error))
         return jsonify({
-            'message': 'An error occurred while creating the role listing. Please try again later.'
+            'error': str(e)
             }
         ), 500
-    # pylint: enable=W0718
 
     return jsonify(
         {
@@ -575,8 +540,8 @@ def calculate_role_matches():
 @app.route('/staff/submit_application', methods=['POST'])
 def submit_application():
     staff_id = 3  # discuss how to fetch the staff ID based on the user#######################################
-    role_id = request.form.get('role')
-    # role_id = 1000003
+    role_id = request.form.get('role_id')
+    # role_id = 1000004
     # check if staff has already applied for this role
     existing_application = Staff_Role_Apply.query.filter_by(
         Staff_ID=staff_id,

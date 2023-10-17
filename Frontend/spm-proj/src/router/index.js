@@ -10,7 +10,7 @@ const routes = [
     {
         path: '/',
         name: 'landingPage',
-        component: () => import('../views/LandingPage.vue')
+        component: landingPage
     },
 
     // route: HR home page
