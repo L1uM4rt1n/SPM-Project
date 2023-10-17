@@ -186,7 +186,18 @@ def login():
     session['staff_id'] = staff.Staff_ID
     session['access_rights'] = staff.Access_Rights
 
-    return jsonify(staff.json()), 200
+    response_data = {
+        'staff_id': staff.Staff_ID,
+        'Access_Rights': staff.Access_Rights,
+        'Country': staff.Country,
+        'Dept': staff.Dept,
+        'Email': staff.Email,
+        'Password': staff.Password,
+        'Staff_FName': staff.Staff_FName,
+        'Staff_LName': staff.Staff_LName
+    }
+
+    return jsonify(response_data), 200
 
 
 ################ role endpoints ##################################################
