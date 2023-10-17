@@ -23,7 +23,9 @@
                 <br>
                 
                 <h4> Job Requirements </h4>
-                <p> {{ role.Role_Requirements }}</p>
+                <!-- <p> {{ role.Role_Requirements }}</p> -->
+                <p v-html="role.Role_Requirements"></p>
+                <!-- <p v-html="newline_to_br(role.Role_Requirements)"></p> -->
 
                 <!-- have an apply now button in light blue, which will direct to a pop-up confirmation window to be linked later -->
                 <button type="button" class="btn btn-info">Apply Now</button>
@@ -74,6 +76,9 @@
                 const date = new Date(deadline)
                 const year = date.getFullYear()
                 return date.toDateString().replace(/\d{4}$/, year)
+            },
+            newline_to_br(text) {
+                return text.replace(/\n/g, '<br>');
             },
         },
     };
