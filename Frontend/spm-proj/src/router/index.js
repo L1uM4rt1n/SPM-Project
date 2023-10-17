@@ -6,20 +6,14 @@ import StaffPage from '../views/StaffPage.vue';
 import LoginPage from '../views/LoginPage.vue';
 
 const routes = [
-  // Other routes
+    // route: landing page
     {
-    path: '/',
-    name: 'landingPage',
-    component: landingPage,
+        path: '/',
+        name: 'landingPage',
+        component: () => import('../views/LandingPage.vue')
     },
 
-
-    // {
-    // path: '/create-job-listing',
-    // name: 'createJobListing',
-    // component: createJobListing,
-    // },
-
+    // route: HR home page
     {
     path: '/HRHome',
     name: 'HRHome',
@@ -48,9 +42,11 @@ const routes = [
     
 ];
 
-const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
-    routes,
-});
+const router = createRouter(
+    {
+        history: createWebHistory(process.env.BASE_URL),
+        routes,
+    }
+)
 
-export default router;
+export default router

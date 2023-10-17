@@ -16,14 +16,23 @@
 
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css'; 
-import 'jquery/dist/jquery.min.js'; 
-import 'bootstrap/dist/js/bootstrap.min.js'; 
-
-export default {
-name: 'landingPage',
-// Other component options and code
-};
+      import 'bootstrap/dist/css/bootstrap.css'
+      import 'jquery/dist/jquery.min.js'
+      import 'bootstrap/dist/js/bootstrap.min.js'
+      
+      export default {
+            methods: {
+            },
+            mounted() {
+                  document.title = "SBRP Portal";
+            },
+            name: 'landingPage'
+            
+            // created function to test if routing works
+            // created() {
+            //       console.log('LandingPage created');
+            // }
+      };
 </script>
 
 <style>
@@ -59,5 +68,15 @@ name: 'landingPage',
     margin: 0;
 }
 
-/* Additional styling for elements on this page */
+      .btn-lg:hover {
+            transform: scale(1.1);
+      }
+
+      .border-dark {
+            border-color: #2e7166;
+      }
+
+      .border-dark:hover {
+            border-color: #1a4731;
+      }
 </style>
