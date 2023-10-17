@@ -4,6 +4,7 @@ from flask_cors import CORS
 from os import environ
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
+import logging
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
@@ -293,22 +294,32 @@ def create_role():
                 "message": "Role listing created successfully."
             }
         ), 201
-    except IntegrityError as e:
+    except IntegrityError as integrity_error:
         db.session.rollback()
         return jsonify(
             {
                 "code": 409,
-                "message": "Integrity violation: " + str(e)
+                "message": "Integrity violation: " + str(integrity_error)
             }
         ), 409
-    except Exception as e:
+    except ValueError as value_error:
+        db.session.rollback()
+        return jsonify(
+            {
+                "code": 400,
+                "message": "Invalid value: " + str(value_error)
+            }
+        ), 400
+    # pylint: disable=W0718
+    except Exception as error:
         db.session.rollback()
         return jsonify(
             {
                 'code': 500,
-                'error': str(e)
+                'error': str(error)
             }
         ), 500
+    # pylint: enable=W0718
 
 # for HR to update role
 @app.route('/role/update/<int:role_id>', methods=['PUT'])
@@ -396,18 +407,18 @@ def create_staff():
         country = data['Country']
         email = data['Email']
         access_rights = data['Access_Rights']
-    except KeyError as e:
+    except KeyError as key_error:
         return jsonify(
             {
                 "code": 400,
-                "message": f"Missing required field: {str(e)}"
+                "message": f"Missing required field: {str(key_error)}"
             }
         ), 400
-    except ValueError as e:
+    except ValueError as value_error:
         return jsonify(
             {
                 "code": 400,
-                "message": f"Invalid value for field: {str(e)}"
+                "message": f"Invalid value for field: {str(value_error)}"
             }
         ), 400
 
@@ -433,20 +444,23 @@ def create_staff():
     try:
         db.session.add(new_staff)
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError as integrity_error:
         db.session.rollback()
         return jsonify(
             {
                 "code": 409,
-                "message": "Integrity violation: " + str(e)
+                "message": "Integrity violation: " + str(integrity_error)
             }
         ), 409
-    except Exception as e:
+    # pylint: disable=W0718
+    except Exception as error:
         db.session.rollback()
+        logging.error("An error occurred: %s", str(error))
         return jsonify({
-            'error': str(e)
+            'message': 'An error occurred while creating the role listing. Please try again later.'
             }
         ), 500
+    # pylint: enable=W0718
 
     return jsonify(
         {

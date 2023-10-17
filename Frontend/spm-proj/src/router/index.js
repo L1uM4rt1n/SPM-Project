@@ -1,49 +1,33 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import HRHome from '../views/HRHome.vue';
-// import createJobListing from '../views/createJobListing.vue';
-import landingPage from '../views/LandingPage.vue';
-import StaffPage from '../views/StaffPage.vue';
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-  // Other routes
+    // route: landing page
     {
-    path: '/',
-    name: 'landingPage',
-    component: landingPage,
+        path: '/',
+        name: 'landingPage',
+        component: () => import('../views/LandingPage.vue')
     },
 
-
-    // {
-    // path: '/create-job-listing',
-    // name: 'createJobListing',
-    // component: createJobListing,
-    // },
-
+    // route: HR home page
     {
-    path: '/HRHome',
-    name: 'HRHome',
-    component: HRHome,
+        path: '/hr-home',
+        name: 'HRHome',
+        component: () => import('../views/HR/HRHome.vue')
     },
 
+    // route: Staff home page
     {
-    path: '/StaffPage',
-    name: 'StaffPage',
-    component: StaffPage,
+        path: '/staff-home',
+        name: 'StaffHome',
+        component: () => import('../views/Staff/StaffHome.vue')
     },
-
-    // {
-    // path: '/role/:slug',
-    // component: RoleDetails
-    // }
-    
-
-
-    
 ];
 
-const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
-    routes,
-});
+const router = createRouter(
+    {
+        history: createWebHistory(process.env.BASE_URL),
+        routes,
+    }
+)
 
-export default router;
+export default router
