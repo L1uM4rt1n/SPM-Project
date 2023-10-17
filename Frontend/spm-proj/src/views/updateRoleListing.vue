@@ -58,9 +58,6 @@
             <br>
             <textarea v-if="isOtherChecked" placeholder="Please specify the other skill(s)" style="width: 100%;"></textarea>
             <br>
-            <router-link :to="{ name: 'createSuccess' }">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </router-link>
         </div>
     </div>
 
@@ -68,3 +65,49 @@
 
 
 </template>
+
+<script>
+    import axios from 'axios'
+    import { server } from "../../utils/helper.js"
+    import 'bootstrap/dist/css/bootstrap.css'
+    import 'jquery/dist/jquery.min.js'
+    import 'bootstrap/dist/js/bootstrap.min.js'
+
+    export default {
+        name: 'StaffHome',
+        data() {
+            return {
+                editing: false,
+                editedRole: {
+                    name: '',
+                    description: '',
+
+                },
+            };
+        },
+        methods: {
+            getAllRoles() {
+                axios.get(`${server.baseURL}/role/view_role`)
+                    .then(
+                        (response) => {
+                            this.roles = response.data.data.roles_with_details
+                        }
+                    )
+            },
+            editRole(){
+                this.editing = true;
+                // this.editedRole = {{this.previousRole}};
+                axios.get(`${server.baseURL}/role/update/<int:role_id>`)
+                    .then(
+                        (response) => {
+                            this.roles = response.data.data.roles_with_details
+                        }
+                )
+            },
+            saveRole(){
+                this.editing = false;
+            }
+        },
+
+    };
+</script>

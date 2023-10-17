@@ -4,6 +4,7 @@ import createJobListing from '../views/createJobListing.vue';
 import landingPage from '../views/LandingPage.vue';
 import StaffPage from '../views/StaffPage.vue';
 import createSuccess from '../views/createSuccess.vue';
+import updateRoleListing from '../views/updateRoleListing.vue';
 
 const routes = [
   // Other routes
@@ -36,6 +37,12 @@ const routes = [
     name: 'StaffPage',
     component: StaffPage,
     },
+
+    {
+      path: '/updateRoleListing',
+      name: 'updateRoleListing',
+      component: updateRoleListing,
+      },
 
     // {
     // path: '/role/:slug',
