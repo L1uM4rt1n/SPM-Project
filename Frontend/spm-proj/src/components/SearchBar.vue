@@ -191,6 +191,12 @@ import axios from 'axios';
                     // Assuming the data returned is in response.data.data.bookings
                     this.roleListings = response.data.data.roles_with_details;
 
+                    // filter away role that are removed
+                    this.roleListings = this.roleListings.filter((role) => {
+                    const deadline = new Date(role.App_Deadline);
+                    return deadline > new Date();
+                    });
+
                     this.roleListings.forEach((role) => {
                         var department = role.Role_Department;
                         if (!this.departments.includes(department)) {

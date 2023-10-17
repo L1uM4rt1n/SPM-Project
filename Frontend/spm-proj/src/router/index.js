@@ -1,16 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HRHome from '../views/HRHome.vue';
-// import createJobListing from '../views/createJobListing.vue';
-import landingPage from '../views/LandingPage.vue';
-import StaffPage from '../views/StaffPage.vue';
-import LoginPage from '../views/LoginPage.vue';
 
 const routes = [
   // Other routes
     {
     path: '/',
     name: 'landingPage',
-    component: landingPage,
+    component: () => import('../views/LandingPage.vue'),
     },
 
 
@@ -21,21 +16,21 @@ const routes = [
     // },
 
     {
-    path: '/HRHome',
+    path: '/hr-home',
     name: 'HRHome',
-    component: HRHome,
+    component: () => import('../views/HR/HRHome.vue'),
     },
 
     {
-    path: '/StaffPage',
-    name: 'StaffPage',
-    component: StaffPage,
+    path: '/staff-home',
+    name: 'StaffHome',
+    component: () => import('../views/Staff/StaffHome.vue'),
     },
 
     {
-      path: '/LoginPage',
+      path: '/login-page',
       name: 'LoginPage',
-      component: LoginPage,
+      component: () => import('../views/LoginPage.vue'),
     },
 
     // {

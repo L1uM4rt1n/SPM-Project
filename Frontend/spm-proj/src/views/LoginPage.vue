@@ -85,8 +85,7 @@ export default {
             // Check if access is 'Staff'
             if (this.access === 'Staff') {
                 this.accessRights = 'staff';
-                axios
-                .post('http://localhost:5008/login', {
+                axios.post('http://localhost:5008/login', {
                     Email: this.email,
                     Password: this.password,
                     Access_Rights: this.access,
@@ -96,7 +95,7 @@ export default {
                     if (response.status === 200) {
                         sessionStorage.setItem('Access', this.access);
                         sessionStorage.setItem('Email', this.email);
-                        this.$router.push({ name: 'StaffPage' }); // Redirect to Staff page
+                        this.$router.push({ name: 'StaffHome' }); // Redirect to Staff page
                     } else {
                     alert('Invalid Credentials');
                     }
@@ -108,8 +107,7 @@ export default {
             // Check if access is 'HR'
             else if (this.access === 'HR') {
                 this.accessRights = 'hr';
-                axios
-                .post('http://localhost:5008/login', {
+                axios.post('http://localhost:5008/login', {
                     Email: this.email,
                     Password: this.password,
                     Access_Rights: this.access,

@@ -15,7 +15,7 @@
                     <h4 class="card-title">{{ role.Role_Name }}</h4>
                     <h6 class="card-text">Role ID: {{  role.Role_ID }}</h6>
                     <p class="card-text">Availability: {{ role.Availability }}</p>
-                    <p class="card-text">Application Deadline: {{ role.App_Deadline }}</p>
+                    <p class="card-text">Application Deadline: {{ formatDateWithoutTime(role.App_Deadline) }}</p>
                 </div>
             </div>
         </router-link>
@@ -24,14 +24,14 @@
 </template>
 
 <script>
-import SearchBar from '../components/SearchBar.vue';
+import SearchBar from '../../components/SearchBar.vue';
 import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 import axios from 'axios';
 
     export default{
-        name: 'StaffPage',
+        name: 'StaffHome',
         components: {
             SearchBar,
         },
@@ -71,6 +71,16 @@ import axios from 'axios';
                 this.filteredResults = filteredResults;
             }
         },
+        getDeadlineYear(deadline){
+            const date = new Date(deadline);
+            const year = date.getFullYear();
+            return date.toDateString().replace(/\d{4}$/,year)
+        },
+        formatDateWithoutTime(dateString) {
+            const date = new Date(dateString);
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        },
     },
 
     watch: {
@@ -80,17 +90,30 @@ import axios from 'axios';
         },
     },
     created() {
+        
+        // Retrieve the email and access rights from sessionStorage
+        this.Email = sessionStorage.getItem('Email');
+        this.Access = sessionStorage.getItem('Access');
+        console.log("======= Email and access stored in Session ===========")
+        console.log("Email:" + this.Email + "    Access:" + this.Access)
+
           // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
         axios.get('http://localhost:5008/roles/get_all_roles')
             .then((response) => {
             // Check for a successful response (status code 200)
             if (response.status === 200) {
                 // Assuming the data returned is in response.data.data.bookings
-                console.log("==================== response.data ====================")
+                console.log("================= response.data ===================")
                 console.log(response.data)
                 this.roleListings = response.data.data.roles_with_details;
-                console.log("============= roleListings in HRHome.vue ============")
+                console.log("============ roleListings in StaffHome.vue ===========")
                 console.log(this.roleListings)
+                // Filter the roleListings based on the application deadline
+                const today = new Date();
+                this.roleListings = this.roleListings.filter((role) => {
+                    const deadline = new Date(role.App_Deadline);
+                    return deadline > today;
+                });
                 this.filteredResults = this.roleListings;
             }
             })
