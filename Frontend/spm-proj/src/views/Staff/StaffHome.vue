@@ -4,11 +4,11 @@
         <!-- display of all roles -->
         <div class="container">
             <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in filteredRoles" :key="role.Role_ID">
-                <router-link :to="{ name: 'roleListing', params: { id: role.Role_ID } }">
+                <router-link :to="{ name: 'roleListing', params: { id: role.Role_ID} }">
                     <div class="card-body">
                         <h4 class="card-title black-bold">{{ role.Role_Name }}</h4>
                         <p class="card-text black-bold">Role ID: {{ role.Role_ID }}</p>
-                        <p class="card-text black-bold">Role Availability: {{ role.Role_Availability }}</p>
+                        <p class="card-text black-bold">Role Availability: {{ role.Availability }}</p>
                         <p class="card-text black-bold">Application Deadline: {{ getDeadlineYear(role.App_Deadline) }}</p>
                     </div>
                 </router-link>

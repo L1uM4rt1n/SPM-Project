@@ -27,7 +27,6 @@ const routes = [
         path: '/staff-home/role/:id',
         name: 'roleListing',
         component: () => import('../views/Staff/RoleListing.vue'),
-        props: (route) => ({ roleId: route.params.id })
     },
 ];
 
