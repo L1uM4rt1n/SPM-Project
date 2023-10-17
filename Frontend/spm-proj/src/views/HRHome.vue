@@ -93,6 +93,11 @@ import axios from 'axios';
                 this.filteredResults = filteredResults;
             }
         },
+        getDeadlineYear(deadline) {
+                const date = new Date(deadline)
+                const year = date.getFullYear()
+                return date.toDateString().replace(/\d{4}$/, year)
+        }
 
     },
 
@@ -126,6 +131,15 @@ import axios from 'axios';
             console.error('Error fetching data:', error);
             });
     },
+    computed: {
+            filteredRoles() {
+                const today = new Date()
+                return this.roles.filter(role => {
+                    const deadline = new Date(role.App_Deadline)
+                    return deadline >= today
+                })
+            }
+        }
     };
 </script>
 

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HRHome from '../views/HRHome.vue';
 // import createJobListing from '../views/createJobListing.vue';
 import landingPage from '../views/LandingPage.vue';
-import StaffPage from '../views/StaffPage.vue';
+import StaffPage from '../views/StaffHome.vue';
 import LoginPage from '../views/LoginPage.vue';
 
 const routes = [
