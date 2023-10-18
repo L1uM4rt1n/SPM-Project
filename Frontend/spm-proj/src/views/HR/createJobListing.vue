@@ -28,22 +28,29 @@
                     </select>
                 </div>
 
-                <label class="mr-2" for="inlineFormCustomSelectPref" style="margin-top: 15px;">Availability</label>
+                
                 <div>
-                    <textarea v-model="NewAvailability" class="form-control" rows="6"></textarea> 
+                    <label for="inlineFormCustomSelectPref" style="margin-top: 15px;">Availability</label>
+                    <textarea v-model="NewAvailability" class="form-control" ></textarea> 
                 </div>
 
             </div>
             
             <div>
                 <label for="exampleFormControlTextarea1">Role Description</label>
-                <textarea v-model="NewDescription" class="form-control" rows="6"></textarea>
+                <textarea v-model="NewDescription" class="form-control" rows="6" ></textarea>
             </div>
 
             <div>
                 <label for="exampleFormControlTextarea1" style="margin-top: 15px;">Role Requirements</label>
-                <textarea v-model="NewRequirements" class="form-control" rows="6"></textarea>
+                <textarea v-model="NewRequirements" class="form-control" rows="6" ></textarea>
             </div>
+
+            <div>
+                <label for="exampleFormControlTextarea1" style="margin-top: 15px;" >Role Skills</label>
+                <textarea v-model="NewRoleSkills" class="form-control" rows="6" placeholder='Enter All Skills, Each Seperated By A Comma' style='text-align:center'></textarea>
+            </div>
+
             <br>
             <button class="btn btn-success" v-on:click="createrole">Create</button>
 
@@ -78,7 +85,7 @@ data() {
             NewRequirements: '', // the new Role Requirements
             NewDeadline: '', // the new Deadline
             NewAvailability: '', // the avaiability for new role
-            TodaysDate: new Date(),
+            NewRoleSkills: '', // the skills for the new role
 
         };
     },
@@ -103,31 +110,36 @@ data() {
         },
         createrole() {
             const inputDateString = this.NewDeadline
+            
+            // Get the current date
+            const today = new Date();
 
-            // Create a Date object from the input date string
-            const date = new Date(inputDateString);
+            // Get the year, month, and day components
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const day = String(today.getDate()).padStart(2, '0');
 
-            // Create an array of day names and month names
-            const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            // Format the date as YYYY-MM-DD
+            const formattedDateToday = `${year}-${month}-${day}`;
 
-            // Format the date in the desired format
-            const formattedDate = `${dayNames[date.getDay()]} ${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}`;
+            const formattedSkills = this.NewRoleSkills.split(','); 
+ 
 
-            console.log(inputDateString)
             // Prepare the role data to send in the request body
             const roleData = {
-            Role_Name: this.NewRoleName, // Replace with the actual data
-            Date_Posted: this.TodaysDate, // Replace with the actual data
-            App_Deadline: formattedDate, // Replace with the actual data
-            Role_Department: this.NewDepartment, // Replace with the actual data
-            Role_Description: this.NewDescription, // Replace with the actual data
-            Role_Requirements: this.NewRequirements, // Replace with the actual data
+            Role_Name: this.NewRoleName,
+            Date_Posted: formattedDateToday,
+            App_Deadline: inputDateString,
+            Role_Department: this.NewDepartment, 
+            Role_Description: this.NewDescription, 
+            Role_Requirements: this.NewRequirements,
+            Availability: this.NewAvailability,
+            Role_Skills: formattedSkills
 
             };
 
             // Send the PUT request
-            axios.put('/roles/create', roleData)
+            axios.post('http://127.0.0.1:5000/role/create', roleData)
             .then(response => {
                 // Handle the successful response here
                 console.log('Role created:', response.data);

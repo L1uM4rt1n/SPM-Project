@@ -3,10 +3,12 @@
 
         <!-- display of all roles -->
         <div class="container">
-            <!-- create role listing button -->
-            <div class="d-flex flex-row justify-content-end" style="width:100%">
-                <button class="btn btn-secondary border-dark my-2">Create Job Listing</button>
-            </div>
+            <!-- Create Role Listing Button -->
+            <router-link :to="{ name: 'CreateJobListing' }">
+                <div class="d-flex flex-row justify-content-end" style="width:100%">
+                    <button class="btn btn-secondary border-dark my-2">Create Job Listing</button>
+                </div>
+            </router-link>
 
             <div class="container">
             <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in filteredRoles" :key="role.Role_ID">

@@ -21,6 +21,16 @@ const routes = [
         name: 'StaffHome',
         component: () => import('../views/Staff/StaffHome.vue')
     },
+
+    // route: create role listing page
+    {
+        path: '/createJobListing',
+        name: 'CreateJobListing',
+        component: () => import('../views/HR/createJobListing.vue'),
+
+    },
+
+
 ];
 
 const router = createRouter(
