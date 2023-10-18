@@ -18,7 +18,9 @@
                 </div>
                 <!-- Edit Button (Bottom-right corner) -->
                 <div class="position-absolute bottom-0 end-0 m-2 edit-button">
-                    <a :href="'#edit/' + role.id" class="btn btn-link" style="text-decoration: none;">Edit</a>
+                    <router-link :to="{ name: 'updateRoleListing', params: { roleId: role.Role_ID } }">
+                        <div class="btn btn-link" style="text-decoration: none;">Edit</div>
+                    </router-link>
                 </div>
             </div>
         </div>

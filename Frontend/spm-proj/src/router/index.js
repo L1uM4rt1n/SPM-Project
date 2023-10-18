@@ -1,10 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import HRHome from '../views/HRHome.vue';
-import createJobListing from '../views/createJobListing.vue';
-import landingPage from '../views/LandingPage.vue';
-import StaffPage from '../views/StaffPage.vue';
-import createSuccess from '../views/createSuccess.vue';
-import updateRoleListing from '../views/updateRoleListing.vue';
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     // route: landing page
@@ -14,44 +8,26 @@ const routes = [
         component: () => import('../views/LandingPage.vue')
     },
 
+    // route: HR home page
     {
-    path: '/create-job-listing',
-    name: 'createJobListing',
-    component: createJobListing,
+        path: '/hr-home',
+        name: 'HRHome',
+        component: () => import('../views/HR/HRHome.vue')
     },
 
+    // route: Staff home page
     {
-      path: '/create-job-listing/createSuccess',
-      name: 'createSuccess',
-      component: createSuccess,
-      },
-
-    {
-    path: '/HRHome',
-    name: 'HRHome',
-    component: HRHome,
+        path: '/staff-home',
+        name: 'StaffHome',
+        component: () => import('../views/Staff/StaffHome.vue')
     },
 
+    //route: update role listing
     {
-    path: '/StaffPage',
-    name: 'StaffPage',
-    component: StaffPage,
-    },
-
-    {
-      path: '/updateRoleListing',
+      path: '/hr-home/update-role-listing/:roleId',
       name: 'updateRoleListing',
-      component: updateRoleListing,
-      },
-
-    // {
-    // path: '/role/:slug',
-    // component: RoleDetails
-    // }
-    
-
-
-    
+      component: () => import('../views/updateRoleListing.vue')
+  },
 ];
 
 const router = createRouter(
