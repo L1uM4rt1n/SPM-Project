@@ -8,8 +8,8 @@ import logging
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
-#app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -322,8 +322,9 @@ def create_role():
     # pylint: enable=W0718
 
 # for HR to update role
-@app.route('/role/update/<int:role_id>', methods=['PUT'])
-def update_role(role_id):
+@app.route('/role/update', methods=['PUT'])
+def update_role():
+    role_id = request.args.get('role_id')
     role = Role.query.get(role_id)
     if not role:
         return jsonify(

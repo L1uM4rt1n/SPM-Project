@@ -55,7 +55,8 @@
             <br>
                 <textarea v-if="isOtherChecked" placeholder="Please specify the other skill(s)" style="width: 100%;"></textarea>
             <br>
-            <button class="btn btn-secondary" type="submit" @click="submitChanges()">Save Changes</button>
+
+            <button class="btn btn-secondary" type="submit" @click="submitChanges() ">Save Changes</button>
         </div>
     </div>
 
@@ -127,52 +128,34 @@
             saveRole(){
                 this.editing = false;
             },
-            // i want to submit the form under class "form-control" to the backend api endpoint '/role/update/<int:role_id>'
-            submitChanges(){
-                const roleId = this.$route.params.roleId; // Assuming you have the roleId
-
-                const updatedData = {
-                role_name: this.roleData.Role_Name,
-                role_department: this.roleData.Role_Department,
-                role_description: this.roleData.Role_Description,
-                role_requirements: this.roleData.Role_Requirements,
-                app_deadline: this.roleData.App_Deadline,
-                role_availability: this.roleData.Role_Availability,
-                role_skills: this.roleData.Role_Skills,
-                role_id: this.roleData.Role_ID,
-                // Add any other updated data here
+            submitChanges() {
+                const dataToSend = {
+                    Role_Name: this.roleData.Role_Name,
+                    App_Deadline: this.formattedAppDeadline,
+                    Role_Department: this.roleData.Role_Department,
+                    Role_Description: this.roleData.Role_Description,
+                    Role_Requirements: this.roleData.Role_Requirements,
+                    Role_Skills: this.roleData.Role_Skills,
                 };
-                console.log(this.roleData.Role_Name);
-                console.log(this.roleData.Role_Department);
-                console.log(this.roleData.Role_Description);
-                console.log(this.roleData.Role_Requirements);
-                console.log(this.roleData.App_Deadline);
-                console.log(this.roleData.Role_Availability);
-                console.log(this.roleData.Role_Skills);
-                console.log(this.roleData.Role_ID);
-                console.log(roleId)
-                axios.put(`http://localhost:5008/role/update/${roleId}`, updatedData)
-                .then(response => {
-                    // Handle the response after the update
-                    console.log(response.data)
-                })
-                .catch(error => {
-                    // Handle errors
-                    console.log(error)
-                });
-            },
-
+                axios
+                    .put('http://localhost:5008/role/update?role_id=' + this.$route.params.roleId, dataToSend)
+                    .then(response => {
+                    if (response.status === 201) {
+                        // Role updated successfully
+                        alert(response.data.message);
+                        // navigate to listing page
+                    } else if (response.status === 200) {
+                        // Role updated successfully
+                        alert(response.data.message);
+                        // navigate to a listing page
+                    }
+                    })
+                    .catch(error => {
+                    console.error('Error updating role:', error);
+                    alert('Failed to update role. Please try again.');
+                    });
+                },
         },
-            // formatDate(dateString) {
-            //     const date = new Date(dateString);
-            //     const formattedDate = date.toISOString().split('T')[0];
-            //     const day = formattedDate.getDate().toString().padStart(2, '0');
-            //     const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
-            //     const year = formattedDate.getFullYear();
-            //     console.log(`${day}-${month}-${year}`)
-            //     return `${day}-${month}-${year}`;
-
-            // },
     
             mounted() {
             // Use axios to fetch data from Flask API
