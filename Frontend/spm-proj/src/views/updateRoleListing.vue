@@ -16,7 +16,7 @@
 
             <div>
                 Application Deadline <br>
-                <input type="date" class="form-control" id="myDate" v-model="formattedAppDeadline"> 
+                <input type="date" class="form-control" id="myDate" v-model="this.formattedAppDeadline"> 
 
             </div>
 
@@ -76,12 +76,13 @@
             return {
                 roleData: [],
                 filteredResults:[],
-                formattedAppDeadline: '' // Data retrieved from the server
+                formattedAppDeadline: '',
             };
         },
         created() {
             this.getRole();
-            // this.formattedAppDeadline = this.formatDate(this.roleData.App_Deadline);
+            this.formattedAppDeadline = this.formatDate(this.roleData.App_Deadline);
+            console.log(this.formattedAppDeadline)
         },
         methods: {
             getRole() {
@@ -98,7 +99,8 @@
                     this.roleData = response.data; // Store the data
                     // Perform actions with the retrieved data
                     console.log(this.roleData);
-                    console.log(this.roleData.Role_Name);
+                    console.log(this.roleData.App_Deadline);
+                    console.log(typeof this.roleData.App_Deadline);
                 })
                 .catch(error => {
                     console.error('Error fetching role data:', error);
@@ -115,20 +117,12 @@
                     console.error("There was an error fetching the data:", error);
                 });
             },
-            editRole(){
-                this.editing = true;
-                // this.editedRole = {{this.previousRole}};
-                axios.get(`http://localhost:5008/role/update/roleId`)
-                    .then(
-                        (response) => {
-                            this.roles = response.data.data.roles_with_details
-                        }
-                )
-            },
-            saveRole(){
-                this.editing = false;
-            },
             submitChanges() {
+                // i want to ensure all fields are filled up before submitting if not alert user to fill up all fields
+                if (this.roleData.Role_Name == '' || this.roleData.Role_Department == '' || this.roleData.Role_Description == '' || this.roleData.Role_Requirements == '' || this.roleData.Role_Skills == '' || this.formattedAppDeadline == '') {
+                    alert("Please fill up all fields!");
+                    return;
+                }
                 const dataToSend = {
                     Role_Name: this.roleData.Role_Name,
                     App_Deadline: this.formattedAppDeadline,
@@ -147,7 +141,9 @@
                     } else if (response.status === 200) {
                         // Role updated successfully
                         alert(response.data.message);
-                        // navigate to a listing page
+                        // i want to redirect the user back to hr-home after update is successful
+                        this.$router.push({ name: 'HRHome' });
+
                     }
                     })
                     .catch(error => {
@@ -155,6 +151,34 @@
                     alert('Failed to update role. Please try again.');
                     });
                 },
+                // i want to create a function that converts roleData.app_deadline from Fri, 20 Oct 2023 00:00:00 GMT to a date format yyyy-mm-dd
+                formatDate(inputDate) {
+                    const timestamp = Date.parse(inputDate);
+
+                    // Check if the timestamp is a valid number
+                    if (!isNaN(timestamp)) {
+                    const date = new Date(timestamp);
+
+                    // Extract year, month, and day components
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+                    const day = String(date.getDate()).padStart(2, '0');
+
+                    // Format the components into "yyyy-mm-dd" format
+                    const formattedDate = `${year}-${month}-${day}`;
+                    return formattedDate;
+                    } else {
+                    return 'Invalid Date';
+                    }
+                },
+                // i want to create a function addSkill such that a pop up window appears asking for skill name and skill description
+                addSkill() {
+                    const skillName = prompt("Please enter the skill name");
+                    // const skillDescription = prompt("Please enter the skill description", "Skill Description");
+                    this.roleData.Role_Skills.push(skillName);
+                    console.log(this.roleData.Role_Skills);
+                },
+
         },
     
             mounted() {
