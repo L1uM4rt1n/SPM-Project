@@ -30,6 +30,13 @@ const routes = [
 
     },
 
+    //route: profile page
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: ()=> import('../views/profile.vue'),
+
+    }
 
 ];
 

@@ -15,8 +15,11 @@
             <i>Ondeh Ondeh</i>
           </a>
         </router-link>
+
           <a class="navbar-brand" href="#">
-          <img src="./assets/profileIcon.png"  class="rounded-circle" width="50" height="50" alt="">
+          <router-link :to="{ name: 'Profile'}">
+            <img src="./assets/profileIcon.png"  class="rounded-circle" width="50" height="50" alt="">
+          </router-link>
         </a>
       </div>
     </nav>
