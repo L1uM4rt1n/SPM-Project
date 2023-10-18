@@ -61,12 +61,16 @@ import axios from 'axios';
                             role.Role_Skills.includes(selectedSkill)
                         );
 
+                    // Check for a keyword match in both the role name and description
                     const keywordMatch =
-                        role.Role_Name &&
-                        role.Role_Name.toLowerCase().includes(keyword.toLowerCase());
+                    (role.Role_Name &&
+                        role.Role_Name.toLowerCase().includes(keyword.toLowerCase())) ||
+                    (role.Role_Description &&
+                        role.Role_Description.toLowerCase().includes(keyword.toLowerCase()));
+
 
                     return hasSelectedDepartment && hasSelectedSkills && keywordMatch;
-                });
+        });
 
                 this.filteredResults = filteredResults;
             }
@@ -91,11 +95,10 @@ import axios from 'axios';
     },
     created() {
         
-        // Retrieve the email and access rights from sessionStorage
-        this.Email = sessionStorage.getItem('Email');
-        this.Access = sessionStorage.getItem('Access');
-        console.log("======= Email and access stored in Session ===========")
-        console.log("Email:" + this.Email + "    Access:" + this.Access)
+        // Retrieve the staff_ID from sessionStorage
+        this.Staff_ID = sessionStorage.getItem('Staff_ID');
+        console.log("Staff_ID in session: ", this.Staff_ID)
+        console.log("User info stored in session", JSON.parse(sessionStorage.getItem('user')))
 
           // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
         axios.get('http://localhost:5008/roles/get_all_roles')
@@ -103,11 +106,9 @@ import axios from 'axios';
             // Check for a successful response (status code 200)
             if (response.status === 200) {
                 // Assuming the data returned is in response.data.data.bookings
-                console.log("================= response.data ===================")
-                console.log(response.data)
+                console.log("response.data in HRHome.vue: ", response.data)
                 this.roleListings = response.data.data.roles_with_details;
-                console.log("============ roleListings in StaffHome.vue ===========")
-                console.log(this.roleListings)
+                console.log("roleListings in HRHome.vue: ", this.roleListings)
                 // Filter the roleListings based on the application deadline
                 const today = new Date();
                 this.roleListings = this.roleListings.filter((role) => {

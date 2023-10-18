@@ -186,10 +186,15 @@ def login():
         return jsonify({'message': 'Restricted Access'}), 401
 
     
-    session['staff_id'] = staff.Staff_ID
-    session['access_rights'] = staff.Access_Rights
-
-    return jsonify(staff.json()), 200
+    # session['staff_id'] = staff.Staff_ID
+    # session['access_rights'] = staff.Access_Rights
+    staff.Staff_ID = staff.Staff_ID
+    response_data = {
+        'Staff_ID': staff.Staff_ID,
+        **staff.json()  # This assumes staff.json() returns a dictionary
+    }
+    
+    return jsonify(response_data), 200
 
 
 ################ role endpoints ##################################################

@@ -93,8 +93,9 @@ export default {
                 .then((response) => {
                     console.log(response);
                     if (response.status === 200) {
-                        sessionStorage.setItem('Access', this.access);
-                        sessionStorage.setItem('Email', this.email);
+                        console.log(response.data);
+                        sessionStorage.setItem('Staff_ID', JSON.stringify(response.data.Staff_ID));
+                        sessionStorage.setItem('user', JSON.stringify(response.data));
                         this.$router.push({ name: 'StaffHome' }); // Redirect to Staff page
                     } else {
                     alert('Invalid Credentials');

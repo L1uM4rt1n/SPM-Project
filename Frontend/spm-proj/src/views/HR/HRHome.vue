@@ -58,8 +58,7 @@ import axios from 'axios';
         filteredResults:[],
         departments:[],
         skills:[],
-        Email:'',
-        Access:'',
+        Staff_ID: '',
         };
     },
     methods: {
@@ -113,12 +112,10 @@ import axios from 'axios';
         },
     },
     created() {
-        // Retrieve the email and access rights from sessionStorage
-        this.Email = sessionStorage.getItem('Email');
-        this.Access = sessionStorage.getItem('Access');
-
-        console.log("===== Email and access stored in Session =====")
-        console.log("Email:" + this.Email + " == Access:" + this.Access)
+        // Retrieve the staff_ID from sessionStorage
+        this.Staff_ID = sessionStorage.getItem('Staff_ID');
+        console.log("Staff_ID in Session: ", this.Staff_ID)
+        console.log("User info stored in session", JSON.parse(sessionStorage.getItem('user')))
 
 
         // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
@@ -127,11 +124,9 @@ import axios from 'axios';
             // Check for a successful response (status code 200)
             if (response.status === 200) {
                 // Assuming the data returned is in response.data.data.bookings
-                console.log("============= response.data in HRHome.vue ===========")
-                console.log(response.data)
+                console.log("response.data in HRHome.vue: ", response.data)
                 this.roleListings = response.data.data.roles_with_details;
-                console.log("============= roleListings in HRHome.vue ============")
-                console.log(this.roleListings)
+                console.log("roleListings in HRHome.vue: ", this.roleListings)
                 // Filter the roleListings based on the application deadline
                 const today = new Date();
                 this.roleListings = this.roleListings.filter((role) => {
