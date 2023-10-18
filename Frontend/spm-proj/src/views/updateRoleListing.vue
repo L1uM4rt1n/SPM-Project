@@ -16,7 +16,7 @@
 
             <div>
                 Application Deadline <br>
-                <input type="date" id="myDate" v-model="formattedAppDeadline"> 
+                <input type="date" class="form-control" id="myDate" v-model="formattedAppDeadline"> 
 
             </div>
 
@@ -55,7 +55,7 @@
             <br>
                 <textarea v-if="isOtherChecked" placeholder="Please specify the other skill(s)" style="width: 100%;"></textarea>
             <br>
-            <button class="btn btn-secondary" type="submit">Save Changes</button>
+            <button class="btn btn-secondary" type="submit" @click="submitChanges()">Save Changes</button>
         </div>
     </div>
 
@@ -117,7 +117,7 @@
             editRole(){
                 this.editing = true;
                 // this.editedRole = {{this.previousRole}};
-                axios.get(`http://localhost:5008/role/update/<int:role_id>`)
+                axios.get(`http://localhost:5008/role/update/roleId`)
                     .then(
                         (response) => {
                             this.roles = response.data.data.roles_with_details
@@ -127,6 +127,42 @@
             saveRole(){
                 this.editing = false;
             },
+            // i want to submit the form under class "form-control" to the backend api endpoint '/role/update/<int:role_id>'
+            submitChanges(){
+                const roleId = this.$route.params.roleId; // Assuming you have the roleId
+
+                const updatedData = {
+                role_name: this.roleData.Role_Name,
+                role_department: this.roleData.Role_Department,
+                role_description: this.roleData.Role_Description,
+                role_requirements: this.roleData.Role_Requirements,
+                app_deadline: this.roleData.App_Deadline,
+                role_availability: this.roleData.Role_Availability,
+                role_skills: this.roleData.Role_Skills,
+                role_id: this.roleData.Role_ID,
+                // Add any other updated data here
+                };
+                console.log(this.roleData.Role_Name);
+                console.log(this.roleData.Role_Department);
+                console.log(this.roleData.Role_Description);
+                console.log(this.roleData.Role_Requirements);
+                console.log(this.roleData.App_Deadline);
+                console.log(this.roleData.Role_Availability);
+                console.log(this.roleData.Role_Skills);
+                console.log(this.roleData.Role_ID);
+                console.log(roleId)
+                axios.put(`http://localhost:5008/role/update/${roleId}`, updatedData)
+                .then(response => {
+                    // Handle the response after the update
+                    console.log(response.data)
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.log(error)
+                });
+            },
+
+        },
             // formatDate(dateString) {
             //     const date = new Date(dateString);
             //     const formattedDate = date.toISOString().split('T')[0];
@@ -137,11 +173,12 @@
             //     return `${day}-${month}-${year}`;
 
             // },
-        },
-        mounted() {
-        // Use axios to fetch data from Flask API
-        this.fetchroles();
-    },
+    
+            mounted() {
+            // Use axios to fetch data from Flask API
+            this.fetchroles();
+            },
+        };
 
-    };
+    
 </script>
