@@ -7,11 +7,11 @@ import createSuccess from '../views/createSuccess.vue';
 import updateRoleListing from '../views/updateRoleListing.vue';
 
 const routes = [
-  // Other routes
+    // route: landing page
     {
-    path: '/',
-    name: 'landingPage',
-    component: landingPage,
+        path: '/',
+        name: 'landingPage',
+        component: () => import('../views/LandingPage.vue')
     },
 
     {
@@ -54,9 +54,11 @@ const routes = [
     
 ];
 
-const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
-    routes,
-});
+const router = createRouter(
+    {
+        history: createWebHistory(process.env.BASE_URL),
+        routes,
+    }
+)
 
-export default router;
+export default router
