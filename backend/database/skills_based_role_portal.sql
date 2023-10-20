@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Staff (
     FOREIGN KEY (Access_Rights) REFERENCES AccessRights(Access_Rights_ID)
 );
 
-INSERT INTO Staff (Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights)
+INSERT INTO Staff (Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights, Password)
 VALUES
     ('John', 'Doe', 'Human Resources', 'Singapore', 'john.doe@g1t7.com', 1, '123'),
     ('Alice', 'Smith', 'Finance', 'Singapore', 'alice.smith@g1t7.com', 2, '123'),
