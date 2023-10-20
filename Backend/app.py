@@ -161,45 +161,49 @@ class Staff_Role_Apply(db.Model):
 # for staff to login
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    email = data['Email']
-    password = data['Password']
-    access_rights = data['Access_Rights']
+    try: 
+        data = request.get_json()
+        email = data['Email']
+        password = data['Password']
+        access_rights = data['Access_Rights']
 
-    staff = Staff.query.filter_by(Email=email).first()
-    if not staff:
-        return jsonify({'message': 'Staff member not found'}), 404
+        staff = Staff.query.filter_by(Email=email).first()
+        if not staff:
+            return jsonify({'message': 'Staff member not found'}), 404
 
-    if staff.Password != password:
-        return jsonify({'message': 'Incorrect password'}), 401
+        if staff.Password != password:
+            return jsonify({'message': 'Incorrect password'}), 401
 
-    if access_rights == 'HR':
-        access_rights = 1
-    elif access_rights == 'Staff':
-        access_rights = 2
+        if access_rights == 'HR':
+            access_rights = 1
+        elif access_rights == 'Staff':
+            access_rights = 2
 
-    #staff.Access_Rights = 1 can access HR and Staff pages
-    #staff.Access_Rights = 2 can only access Staff pages
+        #staff.Access_Rights = 1 can access HR and Staff pages
+        #staff.Access_Rights = 2 can only access Staff pages
 
-    if access_rights == 1 and staff.Access_Rights != 1:
-        return jsonify({'message': 'Restricted Access'}), 401
+        if access_rights == 1 and staff.Access_Rights != 1:
+            return jsonify({'message': 'Restricted Access'}), 401
 
+        
+        session['staff_id'] = staff.Staff_ID
+        session['access_rights'] = staff.Access_Rights
+
+        response_data = {
+            'staff_id': staff.Staff_ID,
+            'Access_Rights': staff.Access_Rights,
+            'Country': staff.Country,
+            'Dept': staff.Dept,
+            'Email': staff.Email,
+            'Password': staff.Password,
+            'Staff_FName': staff.Staff_FName,
+            'Staff_LName': staff.Staff_LName
+        }
+
+        return jsonify(response_data), 200
     
-    session['staff_id'] = staff.Staff_ID
-    session['access_rights'] = staff.Access_Rights
-
-    response_data = {
-        'staff_id': staff.Staff_ID,
-        'Access_Rights': staff.Access_Rights,
-        'Country': staff.Country,
-        'Dept': staff.Dept,
-        'Email': staff.Email,
-        'Password': staff.Password,
-        'Staff_FName': staff.Staff_FName,
-        'Staff_LName': staff.Staff_LName
-    }
-
-    return jsonify(response_data), 200
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500    
 
 
 ################ 5 role endpoints ##################################################
@@ -461,6 +465,7 @@ def create_staff():
         dept = data['Dept']
         country = data['Country']
         email = data['Email']
+        password = data['Password']
         access_rights = data['Access_Rights']
     except KeyError as key_error:
         return jsonify(
@@ -493,6 +498,7 @@ def create_staff():
         Dept=dept,
         Country=country,
         Email=email,
+        Password=password,
         Access_Rights=access_rights
     )
     
