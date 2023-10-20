@@ -170,10 +170,10 @@ def login():
 
         staff = Staff.query.filter_by(Email=email).first()
         if not staff:
-            return jsonify({'message': 'Staff member not found'}), 404
+            return jsonify({'code': 404,'message': 'Staff member not found'}), 404
 
         if staff.Password != password:
-            return jsonify({'message': 'Incorrect password'}), 401
+            return jsonify({'code': 401,'message': 'Incorrect password'}), 401
 
         if access_rights == 'HR':
             access_rights = 1
@@ -184,27 +184,31 @@ def login():
         #staff.Access_Rights = 2 can only access Staff pages
 
         if access_rights == 1 and staff.Access_Rights != 1:
-            return jsonify({'message': 'Restricted Access'}), 401
+            return jsonify({'code': 401,'message': 'Restricted Access'}), 401
 
         
         session['staff_id'] = staff.Staff_ID
         session['access_rights'] = staff.Access_Rights
 
         response_data = {
-            'staff_id': staff.Staff_ID,
-            'Access_Rights': staff.Access_Rights,
-            'Country': staff.Country,
-            'Dept': staff.Dept,
-            'Email': staff.Email,
-            'Password': staff.Password,
-            'Staff_FName': staff.Staff_FName,
-            'Staff_LName': staff.Staff_LName
+            'code': 200, 
+            'message': 'Login successful',
+            'data':{
+                'staff_id': staff.Staff_ID,
+                'Access_Rights': staff.Access_Rights,
+                'Country': staff.Country,
+                'Dept': staff.Dept,
+                'Email': staff.Email,
+                'Password': staff.Password,
+                'Staff_FName': staff.Staff_FName,
+                'Staff_LName': staff.Staff_LName
+            }   
         }
 
         return jsonify(response_data), 200
     
     except Exception as e:
-        return jsonify({'message': str(e)}), 500    
+        return jsonify({'code': 500,'message': str(e)}), 500    
 
 
 ################ 5 role endpoints ##################################################
