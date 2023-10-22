@@ -115,10 +115,10 @@
         </div>
         </div>
     </div>
-    </template>
-  
-  <script>
-  import "bootstrap/dist/css/bootstrap.min.css"
+</template>
+    
+<script>
+    import "bootstrap/dist/css/bootstrap.min.css"
     import "bootstrap"  
 //   import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 5 CSS
 //   import 'jquery/dist/jquery.min.js'; // Import jQuery
@@ -163,9 +163,9 @@ import axios from 'axios';
         },
         triggerSearch() {
             this.$emit('search-request', {
-            keyword: this.searchKeyword,
-            selectedDepartments: this.selectedDepartments,
-            selectedSkills: this.selectedSkills,
+                keyword: this.searchKeyword,
+                selectedDepartments: this.selectedDepartments,
+                selectedSkills: this.selectedSkills,
             });
         },
         handleClickOutside(event) {
@@ -189,15 +189,15 @@ import axios from 'axios';
                 // Check for a successful response (status code 200)
                 if (response.status === 200) {
                     // Assuming the data returned is in response.data.data.bookings
-                    this.roleListings = response.data.data.roles_with_details;
+                    this.roles = response.data.data.roles_with_details;
 
                     // filter away role that are removed
-                    this.roleListings = this.roleListings.filter((role) => {
+                    this.roles = this.roles.filter((role) => {
                     const deadline = new Date(role.App_Deadline);
                     return deadline > new Date();
                     });
 
-                    this.roleListings.forEach((role) => {
+                    this.roles.forEach((role) => {
                         var department = role.Role_Department;
                         if (!this.departments.includes(department)) {
                             this.departments.push(department);
@@ -236,51 +236,51 @@ import axios from 'axios';
 </script>
 
 <style>
-/* Add component-specific styles here */
-.form-check-input {
-  margin-right: 15px; /* Adjust the margin value as needed */
-}
+    /* Add component-specific styles here */
+    .form-check-input {
+        margin-right: 15px; /* Adjust the margin value as needed */
+    }
 
-.dropdown.dropdown-lg .dropdown-menu {
-margin-top: -1px;
-padding: 6px 20px;
-}
-.input-group-btn .btn-group {
-display: flex !important;
-}
-.btn-group .btn {
-border-radius: 0;
-margin-left: -1px;
-}
-.btn-group .btn:last-child {
-border-top-right-radius: 4px;
-border-bottom-right-radius: 4px;
-}
-.btn-group .form-horizontal .btn[type="submit"] {
-border-top-left-radius: 4px;
-border-bottom-left-radius: 4px;
-}
-.form-horizontal .form-group {
-margin-left: 0;
-margin-right: 0;
-}
-.form-group .form-control:last-child {
-border-top-left-radius: 4px;
-border-bottom-left-radius: 4px;
-}
-
-@media screen and (min-width: 768px) {
-#adv-search {
-    width: 600px;
-    margin: 0 auto;
-}
-.dropdown.dropdown-lg {
-    position: static !important;
-}
-.dropdown.dropdown-lg .dropdown-menu {
-    min-width: 300px;
-}
-}
+    .dropdown.dropdown-lg .dropdown-menu {
+        margin-top: -1px;
+        padding: 6px 20px;
+    }
+    .input-group-btn .btn-group {
+        display: flex !important;
+    }
+    .btn-group .btn {
+        border-radius: 0;
+        margin-left: -1px;
+    }
+    .btn-group .btn:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+    .btn-group .form-horizontal .btn[type="submit"] {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    .form-horizontal .form-group {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .form-group .form-control:last-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    
+    @media screen and (min-width: 768px) {
+        #adv-search {
+            width: 600px;
+            margin: 0 auto;
+        }
+        .dropdown.dropdown-lg {
+            position: static !important;
+        }
+        .dropdown.dropdown-lg .dropdown-menu {
+            min-width: 300px;
+        }
+    }
 
 .secondary-dropdown-menu {
 margin-top: -1px;

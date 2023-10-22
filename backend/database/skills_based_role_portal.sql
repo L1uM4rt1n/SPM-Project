@@ -37,11 +37,11 @@ CREATE TABLE IF NOT EXISTS Staff (
 
 INSERT INTO Staff (Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights, Password)
 VALUES
-    ('John', 'Doe', 'Human Resources', 'Singapore', 'john.doe@g1t7.com', 1,'123'),
-    ('Alice', 'Smith', 'Finance', 'Singapore', 'alice.smith@g1t7.com', 2,'123'),
-    ('Elena', 'Garcia', 'IT', 'Singapore', 'elena.garcia@g1t7.com', 2,'123'),
-    ('Michael', 'Wang', 'Marketing', 'Singapore', 'michael.wang@g1t7.com', 2,'123'),
-    ('Sakura', 'Tanaka', 'Operations', 'Japan', 'sakura.tanaka@g1t7.com', 2,'123');
+    ('John', 'Doe', 'Human Resources', 'Singapore', 'john.doe@g1t7.com', 1, '123'),
+    ('Alice', 'Smith', 'Finance', 'Singapore', 'alice.smith@g1t7.com', 2, '123'),
+    ('Elena', 'Garcia', 'IT', 'Singapore', 'elena.garcia@g1t7.com', 2, '123'),
+    ('Michael', 'Wang', 'Marketing', 'Singapore', 'michael.wang@g1t7.com', 2, '123'),
+    ('Sakura', 'Tanaka', 'Operations', 'Japan', 'sakura.tanaka@g1t7.com', 2, '123');
 COMMIT;
 
 

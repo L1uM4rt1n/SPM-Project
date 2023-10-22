@@ -6,20 +6,20 @@
             :selectedDepartments="selectedDepartments"
             @search-request="performSearch"
     />
-
-    <!-- Display Job Listings -->
+    <!-- display of all roles -->
     <div class="container">
-        <router-link to="'/role/' + role.slug" class="card-link" v-for="role in filteredResults" :key="role.role_ID">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">{{ role.Role_Name }}</h4>
-                    <h6 class="card-text">Role ID: {{  role.Role_ID }}</h6>
-                    <p class="card-text">Availability: {{ role.Availability }}</p>
-                    <p class="card-text">Application Deadline: {{ formatDateWithoutTime(role.App_Deadline) }}</p>
-                </div>
+            <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in filteredRoles" :key="role.Role_ID">
+                <!-- <router-link :to="{ name: 'roleListing', params: { id: role.Role_ID} }"> -->
+                    <div class="card-body">
+                        <h4 class="card-title black-bold">{{ role.Role_Name }}</h4>
+                        <p class="card-text black-bold">Role ID: {{ role.Role_ID }}</p>
+                        <p class="card-text black-bold">Role Availability: {{ role.Availability }}</p>
+                        <p class="card-text black-bold">Application Deadline: {{ getDeadlineYear(role.App_Deadline) }}</p>
+                    </div>
+                <!-- </router-link> -->
             </div>
-        </router-link>
-    </div>
+        </div>
+
 
 </template>
 
@@ -29,6 +29,7 @@ import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap 4 CSS
 import 'jquery/dist/jquery.min.js'; // Import jQuery
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap 4 JS
 import axios from 'axios';
+import { server } from "../../utils/helper.js"
 
     export default{
         name: 'StaffHome',
@@ -40,7 +41,7 @@ import axios from 'axios';
             selectedSkills: [],
             selectedDepartments: [],
             searchKeyword: '', // Add a data property for search keyword
-            roleListings: [], // Initialize an empty array for job listings
+            roles: [], // Initialize an empty array for role listings
             filteredResults:[],
         };
     },
@@ -50,7 +51,7 @@ import axios from 'axios';
                 const { keyword, selectedDepartments, selectedSkills } = payload;
 
                 // Filter the role listings based on selected departments, skills, and keyword
-                const filteredResults = this.roleListings.filter((role) => {
+                const filteredResults = this.roles.filter((role) => {
                     const hasSelectedDepartment =
                         selectedDepartments.length === 0 ||
                         selectedDepartments.includes(role.Role_Department);
@@ -75,15 +76,19 @@ import axios from 'axios';
                 this.filteredResults = filteredResults;
             }
         },
-        getDeadlineYear(deadline){
-            const date = new Date(deadline);
-            const year = date.getFullYear();
-            return date.toDateString().replace(/\d{4}$/,year)
+        getAllRoles() {
+            axios.get(`${server.baseURL}/roles/get_all_roles`)
+                .then(
+                    (response) => {
+                        this.roles = response.data.data.roles_with_details
+                        this.filteredResults = this.roles;
+                    }
+                )
         },
-        formatDateWithoutTime(dateString) {
-            const date = new Date(dateString);
-            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
+        getDeadlineYear(deadline) {
+            const date = new Date(deadline)
+            const year = date.getFullYear()
+            return date.toDateString().replace(/\d{4}$/, year)
         },
     },
 
@@ -94,34 +99,18 @@ import axios from 'axios';
         },
     },
     created() {
-        
-        // Retrieve the staff_ID from sessionStorage
-        this.Staff_ID = sessionStorage.getItem('Staff_ID');
-        console.log("Staff_ID in session: ", this.Staff_ID)
+        this.getAllRoles();
         console.log("User info stored in session", JSON.parse(sessionStorage.getItem('user')))
 
-          // Make an HTTP GET request to the '/roles/get_all_roles' endpoint
-        axios.get('http://localhost:5008/roles/get_all_roles')
-            .then((response) => {
-            // Check for a successful response (status code 200)
-            if (response.status === 200) {
-                // Assuming the data returned is in response.data.data.bookings
-                console.log("response.data in HRHome.vue: ", response.data)
-                this.roleListings = response.data.data.roles_with_details;
-                console.log("roleListings in HRHome.vue: ", this.roleListings)
-                // Filter the roleListings based on the application deadline
-                const today = new Date();
-                this.roleListings = this.roleListings.filter((role) => {
-                    const deadline = new Date(role.App_Deadline);
-                    return deadline > today;
-                });
-                this.filteredResults = this.roleListings;
+    },
+    computed: {
+            filteredRoles() {
+                const today = new Date()
+                return this.roles.filter(role => {
+                    const deadline = new Date(role.App_Deadline)
+                    return deadline >= today
+                })
             }
-            })
-            .catch((error) => {
-            // Handle any errors or show a message to the user
-            console.error('Error fetching data:', error);
-            });
     },
 
     }
@@ -138,6 +127,14 @@ import axios from 'axios';
 
     .card-link{
         text-decoration: none;
+    }
+
+    .black-bold {
+        color: black;
+    }
+    .black-bold:hover {
+        color: black;
+        font-weight: bold;
     }
 
 </style>

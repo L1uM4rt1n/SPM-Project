@@ -94,7 +94,6 @@ export default {
                     console.log(response);
                     if (response.status === 200) {
                         console.log(response.data);
-                        sessionStorage.setItem('Staff_ID', JSON.stringify(response.data.Staff_ID));
                         sessionStorage.setItem('user', JSON.stringify(response.data));
                         this.$router.push({ name: 'StaffHome' }); // Redirect to Staff page
                     } else {

@@ -1,92 +1,100 @@
 <template>
-
   <div id="app">
-    <!-- Header content -->
+
+    <!-- header content -->
     <header>
 
     </header>
-
-
-    <!-- Navigation Bar content-->
-    <nav class="navbar navbar-light border-bottom border-dark">
+    
+    <!-- navBar -->
+    <nav class="navbar navbar-light navbar-expand-lg border-bottom border-dark">
       <div class="container-fluid">
         <router-link :to="{ name: 'landingPage' }">
-        <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;">
-          <img src="./assets/ondeh.jpeg" class="rounded-circle mx-2" width="50" height="50" alt=""><i>Ondeh Ondeh</i>
+          <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;">
+            <img src="./assets/companyLogo.jpeg" class="mx-2 rounded" width="120" height="80" alt="">
+            <i>Ondeh Ondeh</i>
           </a>
         </router-link>
           <a class="navbar-brand" href="#">
-          <img src="./assets/user.png"  class="rounded-circle" width="50" height="50" alt="">
+          <img src="./assets/profileIcon.png"  class="rounded-circle" width="50" height="50" alt="">
         </a>
       </div>
     </nav>
 
+    <hr class="my-0">
+
     <main>
-        <!-- Contains the main content of the webpage-->
       <div>
-        <!-- Router View to display components based on routes -->
+        <!-- rendering component based on current route -->
         <router-view></router-view>
       </div>
-
     </main>
-
-    <footer>
-      <!-- Footer content -->
-    </footer>
 
   </div>
 </template>
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css';
-import 'jquery/dist/jquery.min.js';
-import 'bootstrap/dist/js/bootstrap.min.js';
+  import 'bootstrap/dist/css/bootstrap.css'
+  import 'bootstrap/dist/js/bootstrap'
+  import 'jquery/dist/jquery.min.js'
+  import { createRouter, createWebHistory } from 'vue-router'
 
-// import router from "./router";
-import { createRouter, createWebHistory } from 'vue-router';
-import landingPage from './views/LandingPage.vue';
-
-
-export default {
-  name: 'App',
-  methods: {
-  },
-
-  // Configure the Vue Router instance
-  router: createRouter({
-      history: createWebHistory(process.env.BASE_URL),
-      routes: [
-        // Define your routes here
-        {
-          path: '/',
-          name: 'landingPage',
-          component: landingPage, // Example: Import your Home component
-        },
-      ],
-    }),
+  export default {
+    name: 'App',
+    methods: {
+    },
+    router: createRouter(
+      {
+        history: createWebHistory(process.env.BASE_URL),
+        routes: [
+          {
+            path: "/",
+            name: "landingPage",
+            component: () => import('./views/LandingPage.vue')
+          }
+        ]
+      }
+    )
   }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
-  color: #2c3e50;
-  margin-top: 0px;
-};
-a{
-  text-decoration: none;
-}
-a:hover {
-  color: blue;
-}
-.navbar-brand {
+  a{
     text-decoration: none;
+  }
+  a:hover {
+    color: blue;
+  }
+  .navbar-brand {
+      text-decoration: none;
+      outline: none;
+  }
+  a:focus {
     outline: none;
-}
-a:focus {
-  outline: none;
-}
+  }
+  .navbar {
+    background-color: #fff;
+  }
+  .navbar-brand:hover img {
+    transform: scale(1.1);
+  }
+
+  .rounded-circle:hover {
+    transform: scale(1.1);
+  }
+  .main-content {
+    margin-top: 1rem;
+  }
+  .rounded-rect {
+    border: 2px solid black;
+    border-radius: 10px;
+  }
+  #app {
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 0px;
+  }
 </style>

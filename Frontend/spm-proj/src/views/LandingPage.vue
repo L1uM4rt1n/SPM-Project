@@ -16,14 +16,23 @@
 
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css'; 
-import 'jquery/dist/jquery.min.js'; 
-import 'bootstrap/dist/js/bootstrap.min.js'; 
-
-export default {
-name: 'landingPage',
-// Other component options and code
-};
+      import 'bootstrap/dist/css/bootstrap.css'
+      import 'jquery/dist/jquery.min.js'
+      import 'bootstrap/dist/js/bootstrap.min.js'
+      
+      export default {
+            methods: {
+            },
+            mounted() {
+                  document.title = "SBRP Portal";
+            },
+            name: 'landingPage'
+            
+            // created function to test if routing works
+            // created() {
+            //       console.log('LandingPage created');
+            // }
+      };
 </script>
 
 <style>
