@@ -1,152 +1,141 @@
-<!-- Template -->
 <template>
     <div class="container mt-5">
-    <div class="row d-flex justify-content-center">
-        <div class="col-md-6">
-        <div class="card px-5 py-5" id="form1">
-            <div class="form-data">
-                <div class="forms-inputs mb-4">
-                    <label for="access">Select Access</label>
-                    <select
-                        id="access"
-                        v-model="access"
-                        class="form-select"
-                    >
-                        <option value="Staff">Staff</option>
-                        <option value="HR">HR</option>
-                    </select>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6">
+                <div class="card px-5 py-5">
+                    <h2 class="text-center mb-4">Login</h2>
+                    <form @submit.prevent="authenticate">
+                        <!-- access rights -->
+                        <div class="form-group m-3">
+                            <label for="access">Select Access</label>
+                            <select id="access" v-model="access" class="form-control">
+                                <option value="Staff">Staff</option>
+                                <option value="HR">HR</option>
+                            </select>
+                        </div>
+                        <!-- email field -->
+                        <div class="form-group m-3">
+                            <label for="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                v-model="email"
+                                class="form-control"
+                                :class="{'is-invalid': emailBlurred && !validEmail(email)}"
+                                @blur="emailBlurred = true"
+                                required
+                            />
+                            <div class="invalid-feedback">A valid email is required!</div>
+                        </div>
+                        <!-- password field -->
+                        <div class="form-group m-3">
+                            <label for="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                v-model="password"
+                                class="form-control"
+                                :class="{'is-invalid': passwordBlurred && !validPassword(password)}"
+                                @blur="passwordBlurred = true"
+                                required
+                            />
+                            <div class="invalid-feedback">A valid password is required!</div>
+                        </div>
+                        <!-- login button -->
+                        <button @click="authenticate" class="btn btn-dark w-auto m-3">Login</button>
+                    </form>
                 </div>
-            <div class="forms-inputs mb-4">
-                <label for="email">Email</label>
-                <input autocomplete="off"
-                type="text"
-                id="email"
-                v-model="email"
-                :class="{'form-control': true, 'is-invalid': emailBlurred && !validEmail(email)}"
-                @blur="emailBlurred = true"
-                />
-                <div class="invalid-feedback">A valid email is required!</div>
-            </div>
-            <div class="forms-inputs mb-4">
-                <label for="password">Password</label>
-                <input
-                autocomplete="off"
-                type="password"
-                id="password"
-                v-model="password"
-                :class="{'form-control': true, 'is-invalid': passwordBlurred && !validPassword(password)}"
-                @blur="passwordBlurred = true"
-                />
-                <div class="invalid-feedback">Password must be at least 3 characters long!</div>
-            </div>
-            <div class="mb-3">
-                <button @click="authenticate" class="btn btn-dark w-100">Login</button>
-            </div>
-            </div>
-            <div class="success-data" v-if="submitted">
-            <div class="text-center d-flex flex-column">
-                <i class="bx bxs-badge-check"></i>
-                <span class="text-center fs-1">You have been logged in <br> Successfully</span>
-            </div>
             </div>
         </div>
-        </div>
-    </div>
     </div>
 </template>
 
-
-<!-- Script -->
 <script>
-import 'bootstrap/dist/css/bootstrap.css';
-import 'jquery/dist/jquery.min.js';
-import 'bootstrap/dist/js/bootstrap.min.js';
-import axios from 'axios';
+    import axios from 'axios'
+    import { server } from "../utils/helper.js"
 
-export default {
-    name: 'LoginPage',
-    components: {},
-    data() {
-    return {
-        access: 'Staff',
-        accessRights: '',
-        staffID: '',
-        password: '',
-        email: '', // Add an email data property
-        submitted: false,
-        emailBlurred: false,  // Corrected the spelling here
-        passwordBlurred: false,  // Corrected the spelling here
-    };
-    },
-    created() {
-    },
-    methods: {
-        authenticate() {
-            // Check if access is 'Staff'
-            if (this.access === 'Staff') {
-                this.accessRights = 'staff';
-                axios.post('http://localhost:5008/login', {
-                    Email: this.email,
-                    Password: this.password,
-                    Access_Rights: this.access,
-                })
-                .then((response) => {
-                    console.log(response);
-                    if (response.status === 200) {
-                        console.log(response.data);
-                        sessionStorage.setItem('user', JSON.stringify(response.data));
-                        this.$router.push({ name: 'StaffHome' }); // Redirect to Staff page
-                    } else {
-                    alert('Invalid Credentials');
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+    export default {
+        name: 'LoginPage',
+        data() {
+            return {
+                access: 'Staff',
+                accessRights: '',
+                staffID: '',
+                password: '',
+                email: '',
+                submitted: false,
+                emailBlurred: false,
+                passwordBlurred: false,
+                // flag to prevent 2x output of data in console to reduce load
+                isAuthenticating: false,
             }
-            // Check if access is 'HR'
-            else if (this.access === 'HR') {
-                this.accessRights = 'hr';
-                axios.post('http://localhost:5008/login', {
-                    Email: this.email,
-                    Password: this.password,
-                    Access_Rights: this.access,
-                })
-                .then((response) => {
-                    console.log(response);
-                    if (response.status === 200) {
-                        sessionStorage.setItem('Access', this.access);
-                        sessionStorage.setItem('Email', this.email);
-                        this.$router.push({ name: 'HRHome' }); // Redirect to HR page
-                    } else {
-                    alert('Invalid Credentials');
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-            } else {
-                // Handle invalid "access" value (e.g., show an error message)
-                alert('Invalid access');
-            }
+        },
+        methods: {
+            authenticate() {
+                if (this.isAuthenticating) {
+                    return
+                }
+
+                this.isAuthenticating = true
+                // Check if access is 'Staff' or 'HR'
+                if (this.access === 'Staff' || this.access === 'HR') {
+                    this.accessRights = this.access
+                    axios.post(`${server.baseURL}/login`, {
+                        Email: this.email,
+                        Password: this.password,
+                        Access_Rights: this.access,
+                    })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            const data = response.data.data
+                            if (data.Access_Rights === 1) {
+                                sessionStorage.setItem('user', JSON.stringify(data))
+                                this.$router.push({ name: 'HRHome' })
+                            } else if (data.Access_Rights === 2) {
+                                sessionStorage.setItem('user', JSON.stringify(data));
+                                this.$router.push({ name: 'StaffHome' })
+                            }
+                        } else if (response.status === 404) {
+                            alert('Please enter valid credentials')
+                        } else if (response.status === 401) {
+                            if (response.data.message === "Incorrect password") {
+                                alert("Please enter a valid password")
+                            } else if (response.data.message === "Restricted Access") {
+                                alert("Please select the correct access")
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+                } else {
+                    // Handle invalid "access" value (e.g., show an error message)
+                    alert('Invalid access');
+                }
             },
-
-    validEmail(email) {
-      // Implement your email validation logic here
-      // For example, you can use a regular expression
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    },
-    validPassword(password) {
-      // Implement your password validation logic here
-      // For example, check if the password has a minimum length
-        return password.length >= 3;
-    },
-    },
-};
-
+            validEmail(email) {
+                return axios.post(`${server.baseURL}/validate-email`, { email })
+                    .then((response) => {
+                        return response.data.valid;
+                })
+                    .catch((error) => {
+                        console.log(error);
+                        return false;
+                });
+            },
+            validPassword(password) {
+                return axios.post(`${server.baseURL}/validate-password`, { password })
+                    .then((response) => {
+                        return response.data.valid;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        return false;
+                    });
+            },
+        }
+    }
 </script>
 
-<!-- Styling -->
 <style>
 </style>
