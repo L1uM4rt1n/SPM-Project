@@ -8,7 +8,7 @@
     />
     <!-- display of all roles -->
     <div class="container">
-            <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in filteredRoles" :key="role.Role_ID">
+            <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in filteredResults" :key="role.Role_ID">
                 <!-- <router-link :to="{ name: 'roleListing', params: { id: role.Role_ID} }"> -->
                     <div class="card-body">
                         <h4 class="card-title black-bold">{{ role.Role_Name }}</h4>
@@ -81,7 +81,9 @@ import { server } from "../../utils/helper.js"
                 .then(
                     (response) => {
                         this.roles = response.data.data.roles_with_details
+                        console.log(this.roles)
                         this.filteredResults = this.roles;
+                        console.log(this.filteredResults)
                     }
                 )
         },

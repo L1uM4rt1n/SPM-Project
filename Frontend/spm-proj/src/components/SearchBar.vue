@@ -137,7 +137,7 @@ import axios from 'axios';
         selectedDepartments: [],
         selectedSkills:[],
         searchKeyword: '',
-        roleListings:[],
+        roles:[],
         RoleSkill:'',
     };
     },
@@ -162,6 +162,7 @@ import axios from 'axios';
             this.triggerSearch()
         },
         triggerSearch() {
+            console.log('Search button clicked');
             this.$emit('search-request', {
                 keyword: this.searchKeyword,
                 selectedDepartments: this.selectedDepartments,
