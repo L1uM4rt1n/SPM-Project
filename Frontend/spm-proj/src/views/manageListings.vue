@@ -1,6 +1,12 @@
 <template>
+    <h2 style="margin: 10px;">{{roleName}}</h2>
     <p>Role ID: {{ $route.params.roleId }}</p>
-    <table class="table table-hover">
+    <router-link to="/hr-home">
+      <button class="btn btn-light top-left-button">Back</button>
+    </router-link>
+
+    <div class="table-container m-5">
+        <table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">Application ID</th>
@@ -9,24 +15,29 @@
                 <th scope="col">Applicant Department</th>
                 <th scope="col">Applicant Country</th>
                 <th scope="col">Applicant Skills</th>
+                <th scope="col">Percentage Skill Match</th>
                 
             </tr>
         </thead>
         <tbody>
             <tr v-for="app in application" :key="app.Application_ID">
-                <th scope="row">{{ app.Application_ID }}</th>
-                <td>{{ app.Staff_Name }}</td>
+                <th scope="row">{{ app.Applicant_ID }}</th>
+                <td>{{ app.Applicant_Name}}</td>
                 <td>{{ app.Applicant_Email }}</td>
-                <td>{{ app.Applicant_Contact }}</td>
+                <td>{{ app.Applicant_Department }}</td>
                 <td>{{ app.Applicant_Country }}</td>
                 <td>
                     <ul style="list-style-type: none; margin: 0; padding: 0;">
-                    <li v-for="skill in app.Skills" :key="skill">{{ skill }}</li>
+                    <li v-for="skill in app.Applicant_Skills" :key="skill">{{ skill }}</li>
                     </ul>
                 </td>
+                <td>{{ app.Applicant_Skills_Percentage_Matched }}</td>
             </tr>
         </tbody>
     </table>
+
+    </div>
+
 </template>
 
 <script>
@@ -121,3 +132,12 @@
     };
 
 </script>
+
+<style>
+  .top-left-button {
+    position: absolute;
+    top: 120px;
+    left: 50px;
+    margin: 10px; /* Add margin for spacing */
+  }
+</style>
