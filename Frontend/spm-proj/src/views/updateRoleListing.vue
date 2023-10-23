@@ -16,7 +16,7 @@
 
             <div>
                 Application Deadline <br>
-                <input type="date" class="form-control" id="myDate" v-model="this.formattedAppDeadline"> 
+                <input type="date" class="form-control" id="myDate" v-model="formattedDate"> 
 
             </div>
 
@@ -76,13 +76,11 @@
             return {
                 roleData: [],
                 filteredResults:[],
-                formattedAppDeadline: '',
+                formattedDate: '',
             };
         },
         created() {
             this.getRole();
-            this.formattedAppDeadline = this.formatDate(this.roleData.App_Deadline);
-            console.log(this.formattedAppDeadline)
         },
         methods: {
             getRole() {
@@ -99,8 +97,15 @@
                     this.roleData = response.data; // Store the data
                     // Perform actions with the retrieved data
                     console.log(this.roleData);
-                    console.log(this.roleData.App_Deadline);
-                    console.log(typeof this.roleData.App_Deadline);
+                    const gmtDateString = this.roleData.App_Deadline;
+                    const gmtDate = new Date(gmtDateString);
+                    const year = gmtDate.getUTCFullYear();
+                    const month = (gmtDate.getUTCMonth() + 1).toString().padStart(2, '0');
+                    const day = gmtDate.getUTCDate().toString().padStart(2, '0');
+                    const formattedDate = `${year}-${month}-${day}`;
+                    this.formattedDate = formattedDate;
+
+                    console.log(formattedDate); // you can use this formatted date to show in your app deadline
                 })
                 .catch(error => {
                     console.error('Error fetching role data:', error);
@@ -125,7 +130,7 @@
                 }
                 const dataToSend = {
                     Role_Name: this.roleData.Role_Name,
-                    App_Deadline: this.formattedAppDeadline,
+                    App_Deadline: this.formattedDate,
                     Role_Department: this.roleData.Role_Department,
                     Role_Description: this.roleData.Role_Description,
                     Role_Requirements: this.roleData.Role_Requirements,
@@ -151,27 +156,6 @@
                     alert('Failed to update role. Please try again.');
                     });
                 },
-                // i want to create a function that converts roleData.app_deadline from Fri, 20 Oct 2023 00:00:00 GMT to a date format yyyy-mm-dd
-                formatDate(inputDate) {
-                    const timestamp = Date.parse(inputDate);
-
-                    // Check if the timestamp is a valid number
-                    if (!isNaN(timestamp)) {
-                    const date = new Date(timestamp);
-
-                    // Extract year, month, and day components
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-                    const day = String(date.getDate()).padStart(2, '0');
-
-                    // Format the components into "yyyy-mm-dd" format
-                    const formattedDate = `${year}-${month}-${day}`;
-                    return formattedDate;
-                    } else {
-                    return 'Invalid Date';
-                    }
-                },
-                // i want to create a function addSkill such that a pop up window appears asking for skill name and skill description
                 addSkill() {
                     const skillName = prompt("Please enter the skill name");
                     // const skillDescription = prompt("Please enter the skill description", "Skill Description");

@@ -12,9 +12,12 @@
             <!-- Display Title and Create Listing Button -->
             <div class="d-flex flex-row justify-content-between align-items-center">
             <h1 class="mb-0"></h1>
-            <!-- <router-link :to="{ name: 'createJobListing' }"> -->
-                <button class="btn btn-secondary border-dark my-2">Create Job Listing</button>
-            <!-- </router-link> -->
+            <router-link :to="{ name: 'manageListings' }">
+                <button class="btn btn-secondary border-dark my-2">Manage Listings</button>
+            </router-link>
+            <router-link :to="{ name: 'createJobListing' }">
+                <button class="btn btn-secondary border-dark my-2">Create Role Listing</button>
+            </router-link>
             </div>
 
             <!-- Display Job Listings -->

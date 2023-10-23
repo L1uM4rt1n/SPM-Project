@@ -472,8 +472,8 @@ def create_staff():
     ), 202
 
 # for HR to view skills of role applicants
-@app.route('/role/<string:role_name>/applicants/skills', methods=['GET'])
-def get_role_applicants_skills(role_name):
+@app.route('/role_application/applicants/skills', methods=['GET'])
+def get_role_applicants_skills():
     role_name = request.args.get('role_name')
     role = Role.query.filter_by(Role_Name=role_name).first()
     if not role:

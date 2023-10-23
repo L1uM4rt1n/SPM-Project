@@ -28,6 +28,21 @@ const routes = [
       name: 'updateRoleListing',
       component: () => import('../views/updateRoleListing.vue')
   },
+
+    // route: create job listing page
+    {
+        path: '/hr-home/create-job-listing',
+        name: 'createJobListing',
+        component: () => import('../views/createJobListing.vue')
+    },
+
+    // route: manage listings page
+    {
+        path: '/hr-home/manage-listings/:roleId',
+        name: 'manageListings',
+        component: () => import('../views/manageListings.vue')
+    },
+
 ];
 
 const router = createRouter(
