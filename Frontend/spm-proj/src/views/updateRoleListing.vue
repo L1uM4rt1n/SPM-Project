@@ -5,6 +5,9 @@
         <h1 class="">Update Role Listing</h1>
         <p>Role ID: {{ $route.params.roleId }}</p>
     </div>
+    <router-link to="/hr-home">
+      <button class="btn btn-light top-left-button">Back</button>
+    </router-link>
     
     <hr>
         <div class="container" style="text-align: left;">
@@ -173,3 +176,12 @@
 
     
 </script>
+
+<style>
+  .top-left-button {
+    position: absolute;
+    top: 150px;
+    left: 50px;
+    margin: 10px; /* Add margin for spacing */
+  }
+</style>
