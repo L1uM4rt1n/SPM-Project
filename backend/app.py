@@ -479,7 +479,10 @@ def calculate_percentage_matched(staff_skills, role_skills):
     total_skills = len(role_skills)
     if total_skills == 0:
         return 0
-    return (len(matched_skills) / total_skills) * 100
+    
+    percentage_matched = (len(matched_skills) / total_skills) * 100
+    formatted_percentage = f"{round(percentage_matched, 2)}%"
+    return formatted_percentage
 
 # for Staff, to calculate Role-Skill % Match & display matched & skills gap for all roles
 @app.route('/staff/role-matches', methods=['GET'])
