@@ -17,7 +17,7 @@
         </router-link>
 
           <a class="navbar-brand" href="#">
-          <router-link :to="{ name: 'Profile'}">
+          <router-link :to="{ name: 'profile-page'}">
             <img src="./assets/profileIcon.png"  class="rounded-circle" width="50" height="50" alt="">
           </router-link>
         </a>
