@@ -1,4 +1,12 @@
-GRANT FILE ON *.* TO 'root'@'127.0.0.1';
+-- set your username & hostname
+SET @username := 'root';
+SET @hostname := 'localhost';
+SET @grant_sql := CONCAT('GRANT FILE ON *.* TO ''', @username, '''@''', @hostname, ''';');
+PREPARE stmt FROM @grant_sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+-- retrieve value of your secure_file_priv
+SET @csv_directory = (SELECT @@secure_file_priv);
+SELECT @csv_directory;
+-- see your directory, then move cleaned_csv_folders into that directory
 
 CREATE DATABASE IF NOT EXISTS skills_based_role_portal;
 USE skills_based_role_portal;
@@ -11,17 +19,20 @@ DROP TABLE IF EXISTS Skill;
 DROP TABLE IF EXISTS Staff;
 DROP TABLE IF EXISTS Access_Control;
 
-
 -- ACCESS RIGHTS --------------------------------
 CREATE TABLE IF NOT EXISTS Access_Control (
     Access_ID INT PRIMARY KEY,
     Access_Control_Name VARCHAR(50) NOT NULL
 );
 
-LOAD DATA INFILE './customer_csv_files/Final_Access_Control.csv'
+SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Access_Control.csv');
+SELECT @csv_file_path;
+-- LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Access_Control.csv'
+LOAD DATA INFILE @csv_file_path
 INTO TABLE Access_Control
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
+IGNORE 1 LINES
 (Access_ID, Access_Control_Name);
 
 
@@ -37,10 +48,12 @@ CREATE TABLE IF NOT EXISTS Staff (
     FOREIGN KEY (Access_Role) REFERENCES Access_Control(Access_ID)
 );
 
-LOAD DATA INFILE './customer_csv_files/Final_Staff.csv'
+SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Staff.csv');
+LOAD DATA INFILE @csv_file_path
 INTO TABLE Staff
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
+IGNORE 1 LINES
 (Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role);
 
 
@@ -50,10 +63,12 @@ CREATE TABLE IF NOT EXISTS Skill (
     Skill_Desc VARCHAR(2600) NOT NULL
 );
 
-LOAD DATA INFILE './customer_csv_files/Final_Skill.csv'
+SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Skill.csv');
+LOAD DATA INFILE @csv_file_path
 INTO TABLE Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
+IGNORE 1 LINES
 (Skill_Name, Skill_Desc);
 
 
@@ -68,10 +83,12 @@ CREATE TABLE IF NOT EXISTS Role (
     INDEX (Role_Name)
 );
 
-LOAD DATA INFILE './customer_csv_files/Final_Role.csv'
+SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Role.csv');
+LOAD DATA INFILE @csv_file_path
 INTO TABLE Role
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
+IGNORE 1 LINES
 (Role_ID, Role_Name, Role_Department, Date_Posted, App_Deadline, Role_Description);
 
 
@@ -85,10 +102,12 @@ CREATE TABLE IF NOT EXISTS Role_Skill (
     -- INDEX (Skill_Name)
 );
 
-LOAD DATA INFILE './customer_csv_files/Final_Role_Skill.csv'
+SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Role_Skill.csv');
+LOAD DATA INFILE @csv_file_path
 INTO TABLE Role_Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
+IGNORE 1 LINES
 (Role_Name, Skill_Name);
 
 
@@ -101,10 +120,12 @@ CREATE TABLE IF NOT EXISTS Staff_Skill (
     FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name)
 );
 
-LOAD DATA INFILE './customer_csv_files/Final_Staff_Skill.csv'
+SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Staff_Skill.csv');
+LOAD DATA INFILE @csv_file_path
 INTO TABLE Staff_Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
+IGNORE 1 LINES
 (Staff_ID, Skill_Name);
 
 
