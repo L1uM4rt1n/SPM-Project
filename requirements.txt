@@ -1,0 +1,8 @@
+# List of Python packages required for the project
+Flask
+Flask-Cors
+Flask-SQLAlchemy
+SQLAlchemy
+mysql-connector-python
+Flask-Migrate
+Flask-Session
