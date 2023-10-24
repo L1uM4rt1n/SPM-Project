@@ -9,7 +9,7 @@ import logging
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/skills_based_role_portal'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8809/skills_based_role_portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -322,8 +322,9 @@ def create_role():
     # pylint: enable=W0718
 
 # for HR to update role
-@app.route('/role/update/<int:role_id>', methods=['PUT'])
-def update_role(role_id):
+@app.route('/role/update', methods=['PUT'])
+def update_role():
+    role_id = request.args.get('role_id')
     role = Role.query.get(role_id)
     if not role:
         return jsonify(
@@ -470,44 +471,20 @@ def create_staff():
         }
     ), 202
 
-# for HR to view skills of role applicants
-@app.route('/role/<string:role_name>/applicants/skills', methods=['GET'])
-def get_role_applicants_skills(role_name):
-    role_name = request.args.get('role_name')
-    role = Role.query.filter_by(Role_Name=role_name).first()
-    if not role:
-        return jsonify(
-            {
-                'code': 404,
-                'message': 'Role not found'
-            }
-        ), 404
+# to calculate the percentage skills matched for 2 endpoints
+def calculate_percentage_matched(staff_skills, role_skills):
+    matched_skills = set(staff_skill.Skill_Name for staff_skill in staff_skills).intersection(
+        set(role_skill.Skill_Name for role_skill in role_skills))
 
-    # get staff members who applied for specified role
-    role_applicants = Staff_Role_Apply.query.filter_by(Role_ID=role.Role_ID).all()
-    if not role_applicants:
-        return jsonify(
-            {
-                'code': 404,
-                'message': 'No applicants for this role'
-            }
-        ), 404
+    total_skills = len(role_skills)
+    if total_skills == 0:
+        return 0
+    
+    percentage_matched = (len(matched_skills) / total_skills) * 100
+    formatted_percentage = f"{round(percentage_matched, 2)}%"
+    return formatted_percentage
 
-    # retrieve the skills of the applicants
-    applicant_skills = []
-    for applicant in role_applicants:
-        staff_member = Staff.query.get(applicant.Staff_ID)
-        staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff_member.Staff_ID).all()
-        applicant_skills.append({'Staff_Name': f'{staff_member.Staff_FName} {staff_member.Staff_LName}', 'Skills': [skill.Skill_Name for skill in staff_skills]})
-
-    return jsonify(
-        {
-            'code': 200,
-            'data': applicant_skills
-        }
-    ), 200
-
-# for Staff, to calculate Role-Skill % Match & display matched & skills gap
+# for Staff, to calculate Role-Skill % Match & display matched & skills gap for all roles
 @app.route('/staff/role-matches', methods=['GET'])
 def calculate_role_matches():
     staff_id = request.args.get('staff_id')
@@ -519,20 +496,15 @@ def calculate_role_matches():
                 'message': 'Staff member not found or has no skills'
             }
         ), 404
-    
+        
     role_matches = []
     roles = Role.query.all()
     for role in roles:
         role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
         matched_skills = set(staff_skill.Skill_Name for staff_skill in staff_skills).intersection(
             set(role_skill.Skill_Name for role_skill in role_skills))
-
-        total_skills = len(role_skills)
-        if total_skills == 0:
-            percentage_matched = 0
-        else:
-            percentage_matched = (len(matched_skills) / total_skills) * 100
-
+        
+        percentage_matched = calculate_percentage_matched(staff_skills, role_skills)
         gap_skills = set(role_skill.Skill_Name for role_skill in role_skills) - matched_skills
         
         role_matches.append({
@@ -550,10 +522,65 @@ def calculate_role_matches():
         }
     ), 200
 
+# for HR to view skills (& details) of role applicants
+@app.route('/role_application/applicants/skills', methods=['GET'])
+def get_role_applicants_skills():
+    role_name = request.args.get('role_name')
+    role_skills = Role_Skill.query.filter_by(Role_Name=role_name).all()
+    role = Role.query.filter_by(Role_Name=role_name).first()
+    if not role:
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'Role not found'
+            }
+        ), 404
+
+    role_applicants = (
+        db.session.query(Staff, Staff_Role_Apply)
+        .join(Staff_Role_Apply, Staff_Role_Apply.Staff_ID == Staff.Staff_ID)
+        .filter(Staff_Role_Apply.Role_ID == role.Role_ID)
+        .all()
+    )
+    # print(role_applicants)
+    if not role_applicants:
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'No applicants for this role'
+            }
+        ), 404
+
+    applicant_details = []
+    for staff, apply in role_applicants:
+        staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff.Staff_ID).all()
+        percentage_matched = calculate_percentage_matched(staff_skills, role_skills)
+        applicant_details.append(
+            {
+                'Applicant_ID': staff.Staff_ID,
+                'Applicant_Email': staff.Email,
+                'Applicant_Department': staff.Dept,
+                'Applicant_Country': staff.Country,
+                'Applicant_Name': f'{staff.Staff_FName} {staff.Staff_LName}',
+                'Applicant_Skills': [s.Skill_Name for s in staff_skills],
+                'Applicant_Skills_Percentage_Matched': percentage_matched
+            }
+        )
+
+    return jsonify(
+        {
+            'code': 200,
+            'data': applicant_details
+        }
+    ), 200
+
 # when Staff applies for role
 @app.route('/staff/submit_application', methods=['POST'])
 def submit_application():
-    staff_id = 3  # discuss how to fetch the staff ID based on the user#######################################
+    # staff_id = 1
+    staff_id = request.args.get('staff_id') # make sure to pass in the staff_id to the endpoint, based on user session
+    ##################### check how to retrieve
+    # staff_id = session.get('staff_id')
     role_id = request.form.get('role_id')
     # role_id = 1000004
     # check if staff has already applied for this role
