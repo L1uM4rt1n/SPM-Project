@@ -36,8 +36,8 @@
                 selectedSkills: [],
                 selectedDepartments: [],
                 searchKeyword: '',
-                roles: [],
-                filteredResults:[],
+                roles: [], // All roles from the database
+                filteredResults:[], // roles filtered by App_deadline and based potential search filtering
                 user: null,
             };
         },
