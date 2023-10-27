@@ -1,9 +1,3 @@
--- set your username & hostname
-SET @username := 'root';
-SET @hostname := 'localhost';
-SET @grant_sql := CONCAT('GRANT FILE ON *.* TO ''', @username, '''@''', @hostname, ''';');
-PREPARE stmt FROM @grant_sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
--- retrieve value of your secure_file_priv
 SET @csv_directory = (SELECT @@secure_file_priv);
 SELECT @csv_directory;
 -- see your directory, then move cleaned_csv_folders into that directory
@@ -25,10 +19,7 @@ CREATE TABLE IF NOT EXISTS Access_Control (
     Access_Control_Name VARCHAR(50) NOT NULL
 );
 
-SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Access_Control.csv');
-SELECT @csv_file_path;
--- LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Access_Control.csv'
-LOAD DATA INFILE @csv_file_path
+LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Access_Control.csv'
 INTO TABLE Access_Control
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -43,13 +34,12 @@ CREATE TABLE IF NOT EXISTS Staff (
     Staff_LName VARCHAR(50) NOT NULL,
     Dept VARCHAR(50) NOT NULL,
     Country VARCHAR(50) NOT NULL,
-    Email VARCHAR(50) UNIQUE NOT NULL,
+    Email VARCHAR(50) NOT NULL,
     Access_Role INT,
     FOREIGN KEY (Access_Role) REFERENCES Access_Control(Access_ID)
 );
 
-SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Staff.csv');
-LOAD DATA INFILE @csv_file_path
+LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Staff.csv'
 INTO TABLE Staff
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -63,8 +53,7 @@ CREATE TABLE IF NOT EXISTS Skill (
     Skill_Desc VARCHAR(2600) NOT NULL
 );
 
-SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Skill.csv');
-LOAD DATA INFILE @csv_file_path
+LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Skill.csv'
 INTO TABLE Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -83,8 +72,7 @@ CREATE TABLE IF NOT EXISTS Role (
     INDEX (Role_Name)
 );
 
-SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Role.csv');
-LOAD DATA INFILE @csv_file_path
+LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Role.csv'
 INTO TABLE Role
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -98,12 +86,11 @@ CREATE TABLE IF NOT EXISTS Role_Skill (
     Skill_Name VARCHAR(50),
     PRIMARY KEY (Role_Name, Skill_Name),
     FOREIGN KEY (Role_Name) REFERENCES Role(Role_Name),
-    FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name)
-    -- INDEX (Skill_Name)
+    FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name),
+    INDEX (Skill_Name)
 );
 
-SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Role_Skill.csv');
-LOAD DATA INFILE @csv_file_path
+LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Role_Skill.csv'
 INTO TABLE Role_Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -120,8 +107,7 @@ CREATE TABLE IF NOT EXISTS Staff_Skill (
     FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name)
 );
 
-SET @csv_file_path := CONCAT(@csv_directory, 'cleaned_csv_files\Final_Staff_Skill.csv');
-LOAD DATA INFILE @csv_file_path
+LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Staff_Skill.csv'
 INTO TABLE Staff_Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -133,13 +119,33 @@ IGNORE 1 LINES
 CREATE TABLE IF NOT EXISTS Staff_Role_Apply (
     Staff_ID INT,
     Role_ID INT,
-    Applied VARCHAR(1) NOT NULL,
     PRIMARY KEY (Staff_ID, Role_ID),
     FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID),
     FOREIGN KEY (Role_ID) REFERENCES Role(Role_ID)
 );
 
--- INSERT INTO Staff_Role_Apply (Staff_ID, Role_ID, Applied)
--- VALUES
---     (4, 1000004, '1');
--- COMMIT;
+INSERT INTO Staff_Role_Apply (Staff_ID, Role_ID)
+VALUES
+    (210039, 1000005);
+    (210040, 1000005);
+    (210041, 1000005);
+    (210042, 1000005);
+    (210043, 1000005);
+    (210040, 1000015);
+    (140003, 1000015);
+    (130001, 1000001),
+    (130002, 1000002),
+    (140001, 1000003),
+    (140002, 1000004),
+    (140004, 1000006),
+    (140008, 1000010),
+    (140015, 1000015),
+    (140025, 1000001),
+    (140036, 1000002),
+    (140078, 1000003),
+    (140102, 1000004),
+    (140103, 1000005),
+    (140108, 1000006),
+    (140115, 1000007),
+    (140525, 1000008);
+COMMIT;
