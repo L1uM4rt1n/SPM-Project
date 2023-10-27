@@ -18,17 +18,17 @@ CORS(app)
 class AccessRights(db.Model):
     __tablename__ = 'AccessRights'
 
-    Access_Rights_ID = db.Column(db.Integer, primary_key=True)
-    Access_Rights_Label = db.Column(db.String(50), nullable=False)
+    Access_ID = db.Column(db.Integer, primary_key=True)
+    Access_Control_Name = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, Access_Rights_ID, Access_Rights_Label):
-        self.Access_Rights_ID = Access_Rights_ID
-        self.Access_Rights_Label = Access_Rights_Label
+    def __init__(self, Access_ID, Access_Control_Name):
+        self.Access_ID = Access_ID
+        self.Access_Control_Name = Access_Control_Name
         
     def json(self):
         return {
-            'Access_Rights_ID': self.Access_Rights_ID,
-            'Access_Rights_Label': self.Access_Rights_Label
+            'Access_ID': self.Access_ID,
+            'Access_Control_Name': self.Access_Control_Name
         }
         
 class Staff(db.Model):
@@ -40,15 +40,17 @@ class Staff(db.Model):
     Dept = db.Column(db.String(50), nullable=False)
     Country = db.Column(db.String(50), nullable=False)
     Email = db.Column(db.String(50), unique=True, nullable=False)
-    Access_Rights = db.Column(db.Integer, db.ForeignKey('AccessRights.Access_Rights_ID'))
+    Access_Role = db.Column(db.Integer, db.ForeignKey('AccessRights.Access_ID'))
+    Password = db.Column(db.String(50), nullable=True)
 
-    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Rights):
+    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role, Password):
         self.Staff_FName = Staff_FName
         self.Staff_LName = Staff_LName
         self.Dept = Dept
         self.Country = Country
         self.Email = Email
-        self.Access_Rights = Access_Rights
+        self.Access_Role = Access_Role
+        self.Password = Password
         
     def json(self):
         return{
@@ -57,57 +59,68 @@ class Staff(db.Model):
             'Dept': self.Dept,
             'Country': self.Country,
             'Email': self.Email,
-            'Access_Rights': self.Access_Rights
+            'Access_Role': self.Access_Role,
+            'Password': self.Password
         }
 
+class Skill(db.Model):
+    __tablename__ = 'Skill'
+    
+    Skill_Name = db.Column(db.String(50), primary_key=True)
+    Skill_Desc = db.Column(db.String(2600), nullable=False)
+    
+    def __init__(self, Skill_Name, Skill_Desc):
+        self.Skill_Name = Skill_Name
+        self.Skill_Desc = Skill_Desc
+        
+    def json(self):
+        return{
+            'Skill_Name': self.Skill_Name,
+            'Skill_Desc': self.Skill_Desc
+        }
+        
 class Role(db.Model):
     __tablename__ = 'Role'
 
     Role_ID = db.Column(db.Integer, primary_key=True)
     Role_Name = db.Column(db.String(50), nullable=False)
+    Role_Department = db.Column(db.String(50), nullable=False)
     Date_Posted = db.Column(db.Date, nullable=False)
     App_Deadline = db.Column(db.Date, nullable=False)
-    Role_Department = db.Column(db.String(50), nullable=False)
     Role_Description = db.Column(db.String(2600), nullable=False)
-    Role_Requirements = db.Column(db.String(2600), nullable=False)
-    Availability = db.Column(db.Integer, nullable=False)
     Role_Name_index = db.Index('Role_Name', Role_Name)
 
-    def __init__(self, Role_ID, Role_Name, Date_Posted, App_Deadline, Role_Department, Role_Description, Role_Requirements, Availability):
+    def __init__(self, Role_ID, Role_Name, Role_Department, Date_Posted, App_Deadline, Role_Description):
         self.Role_ID = Role_ID
         self.Role_Name = Role_Name
+        self.Role_Department = Role_Department
         self.Date_Posted = Date_Posted
         self.App_Deadline = App_Deadline
-        self.Role_Department = Role_Department
         self.Role_Description = Role_Description
-        self.Role_Requirements = Role_Requirements
-        self.Availability = Availability
         
     def json(self):
         return{
             'Role_ID': self.Role_ID,
             'Role_Name': self.Role_Name,
+            'Role_Department': self.Role_Department,
             'Date_Posted': self.Date_Posted,
             'App_Deadline': self.App_Deadline,
-            'Role_Department': self.Role_Department,
-            'Role_Description': self.Role_Description,
-            'Role_Requirements': self.Role_Requirements,
-            'Availability': self.Availability
+            'Role_Description': self.Role_Description
         }
     
 class Role_Skill(db.Model):
     __tablename__ = 'Role_Skill'
 
     Role_Name = db.Column(db.String(50), db.ForeignKey('Role.Role_Name'), primary_key=True)
-    Skill_Name = db.Column(db.String(50), primary_key=True)
-    Skill_Name_index = db.Index('Skill_Name', Skill_Name)
-    
+    Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'), primary_key=True),
+    # Skill_Name_index = db.Index('Skill_Name'),
+
     def __init__(self, Role_Name, Skill_Name):
         self.Role_Name = Role_Name
         self.Skill_Name = Skill_Name
-        
+
     def json(self):
-        return{
+        return {
             'Role_Name': self.Role_Name,
             'Skill_Name': self.Skill_Name
         }
@@ -116,7 +129,7 @@ class Staff_Skill(db.Model):
     __tablename__ = 'Staff_Skill'
 
     Staff_ID = db.Column(db.Integer, db.ForeignKey('Staff.Staff_ID'), primary_key=True)
-    Skill_Name = db.Column(db.String(50), primary_key=True)
+    Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'), primary_key=True)
 
     def __init__(self, Staff_ID, Skill_Name):
         self.Staff_ID = Staff_ID
@@ -133,18 +146,15 @@ class Staff_Role_Apply(db.Model):
 
     Staff_ID = db.Column(db.Integer, db.ForeignKey('Staff.Staff_ID'), primary_key=True)
     Role_ID = db.Column(db.Integer, db.ForeignKey('Role.Role_ID'), primary_key=True)
-    Applied = db.Column(db.String(1), nullable=False)
 
-    def __init__(self, Staff_ID, Role_ID, Applied):
+    def __init__(self, Staff_ID, Role_ID):
         self.Staff_ID = Staff_ID
         self.Role_ID = Role_ID
-        self.Applied = Applied
         
     def json(self):
         return{
             'Staff_ID': self.Staff_ID,
-            'Role_ID': self.Role_ID,
-            'Applied': self.Applied
+            'Role_ID': self.Role_ID
         }
 
 ################ 5 role endpoints ##################################################
@@ -238,7 +248,7 @@ def is_valid_date(date_str):
 def create_role():
     data = request.get_json()
     # check NOTNULL condition
-    required_fields = ['Role_Name', 'Date_Posted', 'App_Deadline', 'Role_Department', 'Role_Description', 'Role_Requirements', 'Availability', 'Role_Skills']
+    required_fields = ['Role_Name', 'Role_Department', 'Date_Posted', 'App_Deadline', 'Role_Description', 'Role_Skills']
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
         return jsonify(
@@ -407,7 +417,10 @@ def create_staff():
         dept = data['Dept']
         country = data['Country']
         email = data['Email']
-        access_rights = data['Access_Rights']
+        Access_Role = data['Access_Role']
+        # no need password to be sent, null values allowed
+        # if existing staff, it'll be retrieved from db
+        # else, staff can set his own password later
     except KeyError as key_error:
         return jsonify(
             {
@@ -423,23 +436,35 @@ def create_staff():
             }
         ), 400
 
-    # Check if staff member already exists by email
-    if Staff.query.filter_by(Email=email).first():
-        return jsonify(
-            {
-                "code": 400,
-                "message": "Staff member with this email already exists!"
-            }
-        ), 400
+    existing_staff_email = Staff.query.filter_by(Email=email).first()
+    if existing_staff_email:
+        # check if staff member, with ALL exact details, already exists
+        if (
+            existing_staff_email.Staff_FName == staff_fname and
+            existing_staff_email.Staff_LName == staff_lname and
+            existing_staff_email.Dept == dept and
+            existing_staff_email.Country == country and
+            existing_staff_email.Access_Role == Access_Role
+        ):
+            return jsonify(
+                {
+                    "code": 400,
+                    "message": "Staff member with the same attributes already exists!"
+                }
+            ), 400
+        else:
+            Password = existing_staff_email.Password
+    else:
+        Password = None
 
-    # If staff member doesn't exist, insert into the database
     new_staff = Staff(
         Staff_FName=staff_fname,
         Staff_LName=staff_lname,
         Dept=dept,
         Country=country,
         Email=email,
-        Access_Rights=access_rights
+        Access_Role=Access_Role,
+        Password=Password
     )
     
     try:
@@ -551,6 +576,7 @@ def get_role_applicants_skills():
             }
         ), 404
 
+    ################### need to test see what role_applicants print
     applicant_details = []
     for staff, apply in role_applicants:
         staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff.Staff_ID).all()
@@ -577,7 +603,7 @@ def get_role_applicants_skills():
 # when Staff applies for role
 @app.route('/staff/submit_application', methods=['POST'])
 def submit_application():
-    # staff_id = 1
+    # staff_id = 140008
     staff_id = request.args.get('staff_id') # make sure to pass in the staff_id to the endpoint, based on user session
     ##################### check how to retrieve
     # staff_id = session.get('staff_id')
@@ -594,15 +620,13 @@ def submit_application():
 
     new_application = Staff_Role_Apply(
         Staff_ID=staff_id,
-        Role_ID=role_id,
-        Applied='1'
+        Role_ID=role_id
     )
 
     db.session.add(new_application)
     db.session.commit()
 
     role = Role.query.filter_by(Role_ID=role_id).first()
-    role.Availability -= 1
     db.session.commit()
     
     # after this, code the js to change status bar to 'Applied', since there's a entry in
@@ -614,7 +638,7 @@ def submit_application():
 @app.route('/staff/applied_roles', methods=['GET'])
 def get_applied_roles():
     staff_id = request.args.get('staff_id')
-    applied_roles = Staff_Role_Apply.query.filter_by(Staff_ID=staff_id, Applied='1').all()
+    applied_roles = Staff_Role_Apply.query.filter_by(Staff_ID=staff_id).all()
     if not applied_roles:
         return jsonify(
             {
@@ -638,5 +662,20 @@ def get_applied_roles():
         }
     ), 200
 
+
+######################## skill endpoint ###################################
+# get all skill names
+@app.route('/skills/get_all_skills', methods=['GET'])
+def get_all_skills():
+    skill_names = [skill.skill_name for skill in Skill.query.all()]
+    return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "skill_names": skill_names
+                }
+            }
+        ), 200
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)
