@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS Staff (
     Country VARCHAR(50) NOT NULL,
     Email VARCHAR(50) NOT NULL,
     Access_Role INT,
+    Password VARCHAR(50),
     FOREIGN KEY (Access_Role) REFERENCES Access_Control(Access_ID)
 );
 
@@ -44,7 +45,7 @@ INTO TABLE Staff
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role);
+(Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role, Password);
 
 
 -- SKILL DETAILS --------------------------------
@@ -87,7 +88,7 @@ CREATE TABLE IF NOT EXISTS Role_Skill (
     PRIMARY KEY (Role_Name, Skill_Name),
     FOREIGN KEY (Role_Name) REFERENCES Role(Role_Name),
     FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name),
-    INDEX (Skill_Name)
+    -- INDEX (Skill_Name)
 );
 
 LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Role_Skill.csv'
@@ -101,7 +102,7 @@ IGNORE 1 LINES
 -- STAFF SKILLS --------------------------------
 CREATE TABLE IF NOT EXISTS Staff_Skill (
     Staff_ID INT,
-    Skill_Name VARCHAR(50) NOT NULL,
+    Skill_Name VARCHAR(50),
     PRIMARY KEY (Staff_ID, Skill_Name),
     FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID),
     FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name)
