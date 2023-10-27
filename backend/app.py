@@ -496,6 +496,32 @@ def create_staff():
         }
     ), 202
 
+# get staff profile, including staff skill
+@app.route('/staff/get_profile', methods=['GET'])
+def get_staff_profile():
+    staff_id = request.args.get('staff_id')
+    staff = Staff.query.get(staff_id)
+    if not staff:
+        return jsonify(
+            {
+                'code': 404,
+                'message': 'Staff not found'
+            }
+        ), 404
+
+    staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff_id).all()
+    staff_details = staff.json()
+    staff_details['Staff_Skills'] = [staff_skill.Skill_Name for staff_skill in staff_skills]
+
+    return jsonify(
+        {
+            
+            'code': 200,
+            'staff_profile': staff_details
+        }
+    ), 200
+
+
 # to calculate the percentage skills matched for 2 endpoints
 def calculate_percentage_matched(staff_skills, role_skills):
     matched_skills = set(staff_skill.Skill_Name for staff_skill in staff_skills).intersection(
