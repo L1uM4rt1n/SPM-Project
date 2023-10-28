@@ -34,7 +34,7 @@ class AccessRights(db.Model):
 class Staff(db.Model):
     __tablename__ = 'Staff'
 
-    Staff_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Staff_ID = db.Column(db.Integer, primary_key=True)
     Staff_FName = db.Column(db.String(50), nullable=False)
     Staff_LName = db.Column(db.String(50), nullable=False)
     Dept = db.Column(db.String(50), nullable=False)
@@ -43,7 +43,8 @@ class Staff(db.Model):
     Access_Role = db.Column(db.Integer, db.ForeignKey('AccessRights.Access_ID'))
     Password = db.Column(db.String(50), nullable=True)
 
-    def __init__(self, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role, Password):
+    def __init__(self, Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role, Password):
+        self.Staff_ID = Staff_ID
         self.Staff_FName = Staff_FName
         self.Staff_LName = Staff_LName
         self.Dept = Dept
@@ -54,6 +55,7 @@ class Staff(db.Model):
         
     def json(self):
         return{
+            'Staff_ID': self.Staff_ID,
             'Staff_FName': self.Staff_FName,
             'Staff_LName': self.Staff_LName,
             'Dept': self.Dept,
@@ -112,8 +114,7 @@ class Role_Skill(db.Model):
     __tablename__ = 'Role_Skill'
 
     Role_Name = db.Column(db.String(50), db.ForeignKey('Role.Role_Name'), primary_key=True)
-    Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'), primary_key=True),
-    # Skill_Name_index = db.Index('Skill_Name'),
+    Skill_Name = db.Column(db.String(50), db.ForeignKey('Skill.Skill_Name'), primary_key=True)
 
     def __init__(self, Role_Name, Skill_Name):
         self.Role_Name = Role_Name
@@ -163,13 +164,14 @@ class Staff_Role_Apply(db.Model):
 @app.route('/roles/get_all_roles', methods=['GET'])
 def get_all():
     role_list = Role.query.all()
-    roles_with_details = []
+    roles_with_details = []   
+    
     for role in role_list:
         role_skills = Role_Skill.query.filter_by(Role_Name=role.Role_Name).all()
         role_data = role.json()
         role_data['Role_Skills'] = [role_skill.Skill_Name for role_skill in role_skills]
         roles_with_details.append(role_data)
-
+        
     if len(roles_with_details) > 0:
         return jsonify(
             {
@@ -405,6 +407,13 @@ def update_role():
 
 
 ########################## 5 staff endpoints #########################################
+# to generate Staff_ID
+def generate_unique_staff_id():
+    current_year = datetime.now().year % 100
+    max_existing_staff = db.session.query(db.func.max(Staff.Staff_ID)).scalar()
+    next_staff_id = (current_year * 10000 + 1) if max_existing_staff is None \
+            else max(max_existing_staff + 1, current_year * 10000 + 1)
+    return next_staff_id
 
 # to create new staff
 @app.route('/staff/create', methods=['POST'])
@@ -436,6 +445,7 @@ def create_staff():
             }
         ), 400
 
+    staff_id = generate_unique_staff_id()
     existing_staff_email = Staff.query.filter_by(Email=email).first()
     if existing_staff_email:
         # check if staff member, with ALL exact details, already exists
@@ -458,6 +468,7 @@ def create_staff():
         Password = None
 
     new_staff = Staff(
+        Staff_ID=staff_id,
         Staff_FName=staff_fname,
         Staff_LName=staff_lname,
         Dept=dept,
@@ -556,15 +567,19 @@ def calculate_role_matches():
             set(role_skill.Skill_Name for role_skill in role_skills))
         
         percentage_matched = calculate_percentage_matched(staff_skills, role_skills)
+        if isinstance(percentage_matched, int):
+            formatted_percentage = "0%"
+        else:
+            formatted_percentage = percentage_matched
         gap_skills = set(role_skill.Skill_Name for role_skill in role_skills) - matched_skills
         
         role_matches.append({
             'Role_Name': role.Role_Name,
-            'Percentage_Matched': percentage_matched,
+            'Percentage_Matched': formatted_percentage,
             'Skills_Matched': list(matched_skills),
             'Skills_Gap': list(gap_skills)
         })
-    role_matches.sort(key=lambda x: x['Percentage_Matched'], reverse=True)
+    role_matches.sort(key=lambda x: float(x['Percentage_Matched'].strip('%')), reverse=True)
 
     return jsonify(
         {
@@ -574,7 +589,7 @@ def calculate_role_matches():
     ), 200
 
 # for HR to view skills (& details) of role applicants
-@app.route('/role_application/applicants/skills', methods=['GET'])
+@app.route('/role_application/view_applicants', methods=['GET'])
 def get_role_applicants_skills():
     role_name = request.args.get('role_name')
     role_skills = Role_Skill.query.filter_by(Role_Name=role_name).all()
@@ -601,8 +616,7 @@ def get_role_applicants_skills():
                 'message': 'No applicants for this role'
             }
         ), 404
-
-    ################### need to test see what role_applicants print
+        
     applicant_details = []
     for staff, apply in role_applicants:
         staff_skills = Staff_Skill.query.filter_by(Staff_ID=staff.Staff_ID).all()
@@ -618,7 +632,7 @@ def get_role_applicants_skills():
                 'Applicant_Skills_Percentage_Matched': percentage_matched
             }
         )
-
+        
     return jsonify(
         {
             'code': 200,
@@ -693,7 +707,7 @@ def get_applied_roles():
 # get all skill names
 @app.route('/skills/get_all_skills', methods=['GET'])
 def get_all_skills():
-    skill_names = [skill.skill_name for skill in Skill.query.all()]
+    skill_names = [skill.Skill_Name for skill in Skill.query.all()]
     return jsonify(
             {
                 "code": 200,
