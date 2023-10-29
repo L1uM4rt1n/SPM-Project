@@ -1,6 +1,9 @@
-from flask import Flask, request, jsonify
+import os
+from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_migrate import Migrate
+from flask_session import Session
 from os import environ
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
@@ -11,9 +14,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8809/skills_based_role_portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 CORS(app)
+Session(app)
+migrate = Migrate(app, db)
 
 class AccessRights(db.Model):
     __tablename__ = 'AccessRights'
@@ -716,6 +723,86 @@ def get_all_skills():
                 }
             }
         ), 200
+    
+################ login endpoints ##################################################
+
+# for staff to login
+@app.route('/login', methods=['POST'])
+def login():
+    try: 
+        data = request.get_json()
+        email = data['Email']
+        password = data['Password']
+        access_rights = data['Access_Rights']
+
+        staff = Staff.query.filter_by(Email=email).first()
+        if not staff:
+            return jsonify({'code': 404,'message': 'Staff member not found'}), 404
+
+        if staff.Password != password:
+            return jsonify({'code': 401,'message': 'Incorrect password'}), 401
+
+        if access_rights == 'HR':
+            if staff.Access_Rights != 1:
+                return jsonify({'message': 'Restricted Access'}), 401
+        elif access_rights == 'Staff':
+            if staff.Access_Rights != 2:
+                return jsonify({'message': 'Restricted Access'}), 401
+
+        session['staff_id'] = staff.Staff_ID
+        session['access_rights'] = staff.Access_Rights
+
+        response_data = {
+            'code': 200, 
+            'message': 'Login successful',
+            'data':{
+                'staff_id': staff.Staff_ID,
+                'Access_Rights': staff.Access_Rights,
+                'Country': staff.Country,
+                'Dept': staff.Dept,
+                'Email': staff.Email,
+                'Password': staff.Password,
+                'Staff_FName': staff.Staff_FName,
+                'Staff_LName': staff.Staff_LName
+            }   
+        }
+
+        return jsonify(response_data), 200
+    
+    except Exception as e:
+        return jsonify({'code': 500,'message': str(e)}), 500
+
+# for validation of email if in database
+@app.route('/validate-email', methods=['POST'])
+def validate_email():
+    try:
+        data = request.get_json()
+        email = data['email']
+        staff = Staff.query.filter_by(Email=email).first()
+        if staff:
+            return jsonify({'valid': True}), 200
+        else:
+            return jsonify({'valid': False}), 200
+    except KeyError as key_error:
+        return jsonify({'message': str(key_error)}), 400
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+
+# for validation of password if in database
+@app.route('/validate-password', methods=['POST'])
+def validate_password():
+    try:
+        data = request.get_json()
+        password = data['password']
+        staff = Staff.query.filter_by(Password=password).first()
+        if staff:
+            return jsonify({'valid': True}), 200
+        else:
+            return jsonify({'valid': False}), 200
+    except KeyError as key_error:
+        return jsonify({'message': str(key_error)}), 400
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)
