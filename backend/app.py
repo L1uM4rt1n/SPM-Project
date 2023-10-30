@@ -732,44 +732,54 @@ def login():
         data = request.get_json()
         email = data['Email']
         password = data['Password']
-        access_rights = data['Access_Rights']
+        access_role = data['Access_Role']
 
         staff = Staff.query.filter_by(Email=email).first()
         if not staff:
-            return jsonify({'code': 404,'message': 'Staff member not found'}), 404
+            return jsonify(
+                {
+                    'code': 404,
+                    'message': 'Staff member not found'
+                }
+            ), 404
 
         if staff.Password != password:
-            return jsonify({'code': 401,'message': 'Incorrect password'}), 401
+            return jsonify(
+                {
+                    'code': 401,
+                    'message': 'Incorrect password'
+                }
+            ), 401
 
-        if access_rights == 'HR':
-            if staff.Access_Rights != 1:
-                return jsonify({'message': 'Restricted Access'}), 401
-        elif access_rights == 'Staff':
-            if staff.Access_Rights != 2:
-                return jsonify({'message': 'Restricted Access'}), 401
+        if access_role == 'HR':
+            if staff.Access_Role != 4:
+                return jsonify(
+                    {
+                        'code': 401,
+                        'message': 'Staff has no HR Rights'
+                    }
+                ), 401
 
-        session['staff_id'] = staff.Staff_ID
-        session['access_rights'] = staff.Access_Rights
+        elif access_role == 'Staff':
+            if staff.Access_Role != 2:
+                return jsonify(
+                    {
+                        'code': 401,
+                        'message': 'HR has no Staff Rights'
+                    }
+                ), 401
 
-        response_data = {
-            'code': 200, 
-            'message': 'Login successful',
-            'data':{
-                'staff_id': staff.Staff_ID,
-                'Access_Rights': staff.Access_Rights,
-                'Country': staff.Country,
-                'Dept': staff.Dept,
-                'Email': staff.Email,
-                'Password': staff.Password,
-                'Staff_FName': staff.Staff_FName,
-                'Staff_LName': staff.Staff_LName
-            }   
-        }
-
-        return jsonify(response_data), 200
-    
+        return jsonify(
+            {
+                'code': 200,
+                'message': 'Login successful',
+                'data': staff.json()
+            }
+        ), 200
+    except KeyError as key_error:
+        return jsonify({'message': str(key_error)}), 400
     except Exception as e:
-        return jsonify({'code': 500,'message': str(e)}), 500
+        return jsonify({'message': str(e)}), 500
 
 # for validation of email if in database
 @app.route('/validate-email', methods=['POST'])
