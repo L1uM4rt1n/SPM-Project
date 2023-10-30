@@ -43,10 +43,9 @@ CREATE TABLE IF NOT EXISTS Staff (
 LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Staff.csv'
 INTO TABLE Staff
 FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
 (Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role, Password);
-
 
 -- SKILL DETAILS --------------------------------
 CREATE TABLE IF NOT EXISTS Skill (
