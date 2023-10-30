@@ -6,35 +6,37 @@
     </router-link>
 
     <div class="table-container m-5">
-        <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Application ID</th>
-                <th scope="col">Applicant Name</th>
-                <th scope="col">Applicant Email</th>
-                <th scope="col">Applicant Department</th>
-                <th scope="col">Applicant Country</th>
-                <th scope="col">Applicant Skills</th>
-                <th scope="col">Percentage Skill Match</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="app in application" :key="app.Application_ID">
-                <th scope="row">{{ app.Applicant_ID }}</th>
-                <td>{{ app.Applicant_Name}}</td>
-                <td>{{ app.Applicant_Email }}</td>
-                <td>{{ app.Applicant_Department }}</td>
-                <td>{{ app.Applicant_Country }}</td>
-                <td>
-                    <ul style="list-style-type: none; margin: 0; padding: 0;">
-                    <li v-for="skill in app.Applicant_Skills" :key="skill">{{ skill }}</li>
-                    </ul>
-                </td>
-                <td>{{ app.Applicant_Skills_Percentage_Matched }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="table-scroll">
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Application ID</th>
+                    <th scope="col">Applicant Name</th>
+                    <th scope="col">Applicant Email</th>
+                    <th scope="col">Applicant Department</th>
+                    <th scope="col">Applicant Country</th>
+                    <th scope="col">Applicant Skills</th>
+                    <th scope="col">Percentage Skill Match</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="app in application" :key="app.Application_ID">
+                    <th scope="row">{{ app.Applicant_ID }}</th>
+                    <td>{{ app.Applicant_Name}}</td>
+                    <td>{{ app.Applicant_Email }}</td>
+                    <td>{{ app.Applicant_Department }}</td>
+                    <td>{{ app.Applicant_Country }}</td>
+                    <td>
+                        <ul style="list-style-type: none; margin: 0; padding: 0;">
+                        <li v-for="skill in app.Applicant_Skills" :key="skill">{{ skill }}</li>
+                        </ul>
+                    </td>
+                    <td>{{ app.Applicant_Skills_Percentage_Matched }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     </div>
 
@@ -83,24 +85,6 @@
                 });
 
             },
-            // getApplication(roleName){
-            //     if (!roleName) {
-            //         console.error('Role name is not set.');
-            //         return;
-            //     }
-            //     axios.get(`http://localhost:5008/role/${roleName}/applicants/skills`, {
-            //         params: {
-            //             role_name: roleName
-            //         }
-            //     })
-            //     .then(response => {
-            //         console.log(roleName)
-            //         this.application = response.data; // Store the data
-            //         console.log(this.application);
-            //     })
-            //     .catch(error => {
-            //         console.error('Error fetching role data:', error);
-            //     });
             
             getApplication(roleName) {
             axios.get('http://localhost:5008/role_application/applicants/skills', {
@@ -134,10 +118,45 @@
 </script>
 
 <style>
+.top-left-button {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  top: /* Height of your navbar */ 150px;
+  left: 30px; /* Adjust this value to control the horizontal position */
+  z-index: 1; /* Ensures the button is above other content */
+}
+
+/* Responsive styles for smaller screens (e.g., screens with a max width of 768px) */
+@media (max-width: 768px) {
   .top-left-button {
-    position: absolute;
-    top: 120px;
-    left: 50px;
-    margin: 10px; /* Add margin for spacing */
+    font-size: 14px;
+    padding: 8px 16px;
   }
+}
+
+/* Responsive styles for even smaller screens (e.g., screens with a max width of 480px) */
+@media (max-width: 480px) {
+  .top-left-button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* CSS to make the table scrollable */
+.table-scroll {
+  overflow-x: auto; /* Add horizontal scrollbar when content overflows */
+  max-width: 100%; /* Ensure the table doesn't overflow its container */
+}
+
+/* Optional: Add a minimum width to the table so it doesn't collapse too much */
+.table-scroll table {
+  min-width: 600px; /* Adjust this value as needed */
+}
+
 </style>

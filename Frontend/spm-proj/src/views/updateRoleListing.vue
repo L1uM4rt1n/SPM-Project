@@ -39,10 +39,6 @@
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" v-model="roleData.Role_Description"></textarea>
             </div>
 
-            <div>
-                <label for="exampleFormControlTextarea1" style="margin-top: 15px;">Role Requirements</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" v-model="roleData.Role_Requirements"></textarea>
-            </div>
 
             <!-- Checkboxes -->
             <div class="py-3">
@@ -53,7 +49,14 @@
                 </div>
                     
                 <!-- Additional 'Other' checkbox -->
-                <input class="btn btn-secondary" type="button" value="+ Add Skills" @click="addSkill()">
+                <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dropdown button
+                </button>
+                <ul class="dropdown-menu" v-for="skill in skills" :key="skill">
+                    <li><a class="dropdown-item" @click="addSkill">{{ skill }}</a></li>
+                </ul>
+                </div>
             </div>
             <br>
                 <textarea v-if="isOtherChecked" placeholder="Please specify the other skill(s)" style="width: 100%;"></textarea>
@@ -80,6 +83,7 @@
                 roleData: [],
                 filteredResults:[],
                 formattedDate: '',
+                skills: [],
             };
         },
         created() {
@@ -136,7 +140,6 @@
                     App_Deadline: this.formattedDate,
                     Role_Department: this.roleData.Role_Department,
                     Role_Description: this.roleData.Role_Description,
-                    Role_Requirements: this.roleData.Role_Requirements,
                     Role_Skills: this.roleData.Role_Skills,
                 };
                 axios
@@ -160,11 +163,17 @@
                     });
                 },
                 addSkill() {
-                    const skillName = prompt("Please enter the skill name");
-                    // const skillDescription = prompt("Please enter the skill description", "Skill Description");
+                    const skillName = event.target.innerText;
                     this.roleData.Role_Skills.push(skillName);
                     console.log(this.roleData.Role_Skills);
                 },
+                getSkills(){
+                    axios.get('http://localhost:5008/skills/get_all_skills')
+                    .then(response => {
+                        this.skills = response.data.data.skills
+                        console.log(this.skills)
+                    })
+                }
 
         },
     
@@ -178,10 +187,35 @@
 </script>
 
 <style>
+/* Default styles for the button */
+.top-left-button {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  top: /* Height of your navbar */ 150px;
+  left: 30px; /* Adjust this value to control the horizontal position */
+  z-index: 1; /* Ensures the button is above other content */
+}
+
+/* Responsive styles for smaller screens (e.g., screens with a max width of 768px) */
+@media (max-width: 768px) {
   .top-left-button {
-    position: absolute;
-    top: 150px;
-    left: 50px;
-    margin: 10px; /* Add margin for spacing */
+    font-size: 14px;
+    padding: 8px 16px;
   }
+}
+
+/* Responsive styles for even smaller screens (e.g., screens with a max width of 480px) */
+@media (max-width: 480px) {
+  .top-left-button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
 </style>

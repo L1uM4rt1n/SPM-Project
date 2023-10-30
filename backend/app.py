@@ -94,7 +94,23 @@ class Role(db.Model):
             'Role_Requirements': self.Role_Requirements,
             'Availability': self.Availability
         }
+
+class Skill(db.Model):
+    __tablename__ = 'Skill'
     
+    Skill_Name = db.Column(db.String(50), primary_key=True)
+    Skill_Desc = db.Column(db.String(2600), nullable=False)
+    
+    def __init__(self, Skill_Name, Skill_Desc):
+        self.Skill_Name = Skill_Name
+        self.Skill_Desc = Skill_Desc
+        
+    def json(self):
+        return{
+            'Skill_Name': self.Skill_Name,
+            'Skill_Desc': self.Skill_Desc
+        }
+
 class Role_Skill(db.Model):
     __tablename__ = 'Role_Skill'
 
@@ -637,6 +653,20 @@ def get_applied_roles():
             'data': results
         }
     ), 200
+
+######################## skill endpoint ###################################
+# get all skill names
+@app.route('/skills/get_all_skills', methods=['GET'])
+def get_all_skills():
+    skill_names = [skill.skill_name for skill in Skill.query.all()]
+    return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "skill_names": skill_names
+                }
+            }
+        ), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)
