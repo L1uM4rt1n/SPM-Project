@@ -88,7 +88,6 @@
                     .then((response) => {
                         if (response.status === 200) {
                             const data = response.data.data
-                            console.log(data)
                             if (data.Access_Role === 4) {
                                 sessionStorage.setItem('user', JSON.stringify(data))
                                 this.$router.push({ name: 'HRHome' })
