@@ -235,7 +235,6 @@ def get_role_details():
 
     return jsonify(role_details)
 
-
 # to generate Role_ID
 def generate_unique_role_id():
     max_existing_role = db.session.query(db.func.max(Role.Role_ID)).scalar()
