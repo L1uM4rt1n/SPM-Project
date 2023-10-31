@@ -9,22 +9,28 @@
         />
         <!-- display of all roles -->
         <div class="container">
-            <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in filteredResults" :key="role.Role_ID">
-                <router-link :to="{ name: 'roleListing', params: { id: role.Role_ID } }">
-                    <div class="card-body">
-                        <h4 class="card-title black-bold">{{ role.Role_Name }}</h4>
-                        <p class="card-text black-bold">Role ID: {{ role.Role_ID }}</p>
-                        <p class="card-text black-bold">Application Deadline: {{ getDeadlineYear(role.App_Deadline) }}</p>
-                        <div class="skills-matched">
-                            <div v-if="getRelevantPercentageMatch(role.Role_Name) > 0" class="circle" :class="{ 'green': getRelevantPercentageMatch(role.Role_Name) >= 50, 'red': getRelevantPercentageMatch(role.Role_Name) < 50}">
-                                {{  getRelevantPercentageMatch(role.Role_Name) }}%
+            <div class="row">
+                <div class="col-6" v-for="role in filteredResults" :key="role.Role_ID">
+                    <div class="card rounded m-2" style="border: 2px solid #ccc;">
+                        <router-link :to="{ name: 'roleListing', params: { id: role.Role_ID } }">
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div>
+                                    <h4 class="card-title black-bold">{{ role.Role_Name }}</h4>
+                                    <p class="card-text black-bold">Role ID: {{ role.Role_ID }}</p>
+                                    <p class="card-text black-bold">Application Deadline: {{ getDeadlineYear(role.App_Deadline) }}</p>
+                                </div>
+                                <div class="skills-matched align-items-right">
+                                    <div v-if="getRelevantPercentageMatch(role.Role_Name) > 0" class="circle" :class="{ 'green': getRelevantPercentageMatch(role.Role_Name) >= 50, 'red': getRelevantPercentageMatch(role.Role_Name) < 50}">
+                                        {{  getRelevantPercentageMatch(role.Role_Name) }}%
+                                    </div>
+                                    <div v-else class="circle red">
+                                        0%
+                                    </div>
+                                </div>
                             </div>
-                            <div v-else class="circle red">
-                                0%
-                            </div>
-                        </div>
+                        </router-link>
                     </div>
-                </router-link>
+                </div>
             </div>
         </div>
     </div>
@@ -138,7 +144,6 @@
         justify-content: center;
         align-items: center;
         color: white;
-        right: 20px,
     }
 
     .red {
@@ -147,6 +152,12 @@
 
     .green {
         background-color: rgb(123, 232, 123);
+    }
+
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .card-link{
@@ -161,5 +172,8 @@
         font-weight: bold;
     }
 
+    .skills_matched {
+        margin-bottom: 3rem;
+    }
 </style>
 
