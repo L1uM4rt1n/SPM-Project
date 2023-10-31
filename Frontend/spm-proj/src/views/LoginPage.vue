@@ -83,15 +83,15 @@
                     axios.post(`${server.baseURL}/login`, {
                         Email: this.email,
                         Password: this.password,
-                        Access_Rights: this.access,
+                        Access_Role: this.access,
                     })
                     .then((response) => {
                         if (response.status === 200) {
                             const data = response.data.data
-                            if (data.Access_Rights === 1) {
+                            if (data.Access_Role === 4) {
                                 sessionStorage.setItem('user', JSON.stringify(data))
                                 this.$router.push({ name: 'HRHome' })
-                            } else if (data.Access_Rights === 2) {
+                            } else if (data.Access_Role === 2) {
                                 sessionStorage.setItem('user', JSON.stringify(data));
                                 this.$router.push({ name: 'StaffHome' })
                             }
