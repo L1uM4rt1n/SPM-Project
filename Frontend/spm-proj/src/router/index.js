@@ -42,16 +42,26 @@ const routes = [
         path: '/profile',
         name: 'profile-page',
         component: ()=> import('../views/profile.vue'),
+        
 
     }
 
 ];
+const router = createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    routes,
+  });
+  
+  // Global navigation guards
+  router.beforeEach((to, from, next) => {
+    // Logic for beforeEach guard
+    next();
+  });
+  
+  router.beforeResolve((to, from, next) => {
+    // Logic for beforeResolve guard
+    next();
+  });
+  
+  export default router;
 
-const router = createRouter(
-    {
-        history: createWebHistory(process.env.BASE_URL),
-        routes,
-    }
-)
-
-export default router
