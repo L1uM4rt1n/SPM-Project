@@ -20,15 +20,15 @@ class LoginEndpointTest(unittest.TestCase):
 
         # Send a POST request to the login endpoint
         response = self.app.post('/login', data=json.dumps({
-            'Email': 'Susan.Goh@allinone.com.sg',
-            'Password': 'nCK8Xe18',
-            'Access_Rights': 'Staff'
+            "Email": "Susan.Goh@allinone.com.sg",
+            "Password": "nCK8Xe18",
+            "Access_Role": "Staff"
         }), content_type='application/json')
 
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data['message'], 'Login successful')
+        self.assertEqual(data["message"], "Login successful")
 
     def test_successful_login_staff_hr(self):
         # Create a test staff member in the database
@@ -36,15 +36,15 @@ class LoginEndpointTest(unittest.TestCase):
 
         # Send a POST request to the login endpoint
         response = self.app.post('/login', data=json.dumps({
-            'Email': 'Sophia.Fu@allinone.com.sg',
-            'Password': 'FhJxXgEV',
-            'Access_Rights': 'HR'
+            "Email": "Sophia.Fu@allinone.com.sg",
+            "Password": "FhJxXgEV",
+            "Access_Role": "HR"
         }), content_type='application/json')
 
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data['message'], 'Login successful')
+        self.assertEqual(data["message"], "Login successful")
 
     def test_unsuccessful_login_staff_hr(self):
         # Create a test staff member in the database
@@ -52,15 +52,15 @@ class LoginEndpointTest(unittest.TestCase):
 
         # Send a POST request with incorrect password
         response = self.app.post('/login', data=json.dumps({
-            'Email': 'Sophia.Fu@allinone.com.sg',
-            'Password': 'FhjkXgEV1',
-            'Access_Rights': 'HR'
+            "Email": "Sophia.Fu@allinone.com.sg",
+            "Password": "FhjkXgEV1",
+            "Access_Role": "HR"
         }), content_type='application/json')
 
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data['message'], 'Incorrect password')
+        self.assertEqual(data["message"], "Incorrect password")
 
     def test_unsuccessful_login_staff_trying_hr_access(self):
         # Create a test staff member in the database
@@ -68,15 +68,15 @@ class LoginEndpointTest(unittest.TestCase):
 
         # Send a POST request trying to access 'HR'
         response = self.app.post('/login', data=json.dumps({
-            'Email': 'Susan.Goh@allinone.com.sg',
-            'Password': 'nCK8Xe18',
-            'Access_Rights': 'HR'
+            "Email": "Susan.Goh@allinone.com.sg",
+            "Password": "nCK8Xe18",
+            "Access_Role": "HR"
         }), content_type='application/json')
 
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data['message'], 'Restricted Access')
+        self.assertEqual(data["message"], "Restricted Access")
 
 
 
