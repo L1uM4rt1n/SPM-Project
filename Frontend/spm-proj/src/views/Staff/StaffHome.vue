@@ -10,11 +10,21 @@
         <!-- display of all roles -->
         <div class="container">
             <div class="card rounded m-2" style="border: 2px solid #ccc;" v-for="role in filteredResults" :key="role.Role_ID">
-                <div class="card-body">
-                    <h4 class="card-title black-bold">{{ role.Role_Name }}</h4>
-                    <p class="card-text black-bold">Role ID: {{ role.Role_ID }}</p>
-                    <p class="card-text black-bold">Application Deadline: {{ getDeadlineYear(role.App_Deadline) }}</p>
-                </div>
+                <router-link :to="{ name: 'roleListing', params: { id: role.Role_ID } }">
+                    <div class="card-body">
+                        <h4 class="card-title black-bold">{{ role.Role_Name }}</h4>
+                        <p class="card-text black-bold">Role ID: {{ role.Role_ID }}</p>
+                        <p class="card-text black-bold">Application Deadline: {{ getDeadlineYear(role.App_Deadline) }}</p>
+                        <div class="skills-matched">
+                            <div v-if="getRelevantPercentageMatch(role.Role_Name) > 0" class="circle" :class="{ 'green': getRelevantPercentageMatch(role.Role_Name) >= 50, 'red': getRelevantPercentageMatch(role.Role_Name) < 50}">
+                                {{  getRelevantPercentageMatch(role.Role_Name) }}%
+                            </div>
+                            <div v-else class="circle red">
+                                0%
+                            </div>
+                        </div>
+                    </div>
+                </router-link>
             </div>
         </div>
     </div>
@@ -36,10 +46,17 @@
                 selectedDepartments: [],
                 searchKeyword: '',
                 roles: [],
-                filteredResults:[],
-                user: null,
+                filteredResults: [],
+                user_id: JSON.parse(sessionStorage.getItem('user')).Staff_ID,
+                skillsMatched: []
             };
         },
+
+        created() {
+            this.getAllRoles()
+            this.getPercentageMatch()
+        },
+
         methods: {
             performSearch(payload) {
                 if (payload) {
@@ -88,6 +105,18 @@
                 const year = date.getFullYear()
                 return date.toDateString().replace(/\d{4}$/, year)
             },
+            getPercentageMatch() {
+                axios.get(`${server.baseURL}/staff/role-matches?staff_id=${this.user_id}`)
+                    .then(
+                        (response) => {
+                            this.skillsMatched = response.data.data
+                        }
+                    )
+            },
+            getRelevantPercentageMatch(roleName) {
+                const role = this.skillsMatched.find(role => role.Role_Name === roleName)
+                return role ? parseFloat(role.Percentage_Matched) : 0;
+            }
         },
 
         watch: {
@@ -96,21 +125,28 @@
                 this.performSearch(); // Call the performSearch method when searchKeyword changes
             },
         },
-
-        created() {
-            this.getAllRoles();
-            this.user = JSON.parse(sessionStorage.getItem('user'))
-
-        }
     }
 </script>
 
 <style>
     .circle{
-        width: 10px;
-        height: auto;
+        width: 70px;
+        height: 70px;
         border-radius: 50%;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        right: 20px,
+    }
+
+    .red {
+        background-color: rgb(255, 89, 89);
+    }
+
+    .green {
+        background-color: rgb(123, 232, 123);
     }
 
     .card-link{
