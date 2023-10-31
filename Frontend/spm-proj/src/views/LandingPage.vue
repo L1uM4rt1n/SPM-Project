@@ -1,80 +1,63 @@
 <template>
-      <div class="landing-page">
-            <h1 class="page-title m-5"> Welcome to the SBRP Portal </h1>
-            <div class="container mx-auto">
-                  <div class="border p-5  my-3 bg-light rounded">
-                        <h1 class="display-4">HR Home!</h1>
-                        <hr class="my-4">
-                        <p class="lead">
-                              <!-- HR Home Button -->
-                              <router-link :to="{ name: 'HRHome' }">
-                                    <a class=" btn btn-lg btn-secondary border-dark" href="#" role="button">To HR Home Page</a>
-                              </router-link>
-                        </p>
-                  </div>
-                  <div class="border p-5  my-3 bg-light rounded">
-                        <h1 class="display-4">Staff Home!</h1>
-                        <hr class="my-4">
-
-                        <p class="lead">
-                              <!-- HR Home Button -->
-                              <router-link :to="{ name: 'StaffHome' }">
-                                    <a class=" btn btn-lg btn-secondary border-dark" href="#" role="button">To Staff Home Page</a>
-                              </router-link>
-                        </p>
-                  </div>
-            </div>
+  <div class="landing-page">
+    <div class="background-image">
+      <div class="content">
+        <h1 class="text-white" style="font-weight: bold;  font-size: 55px;">All-in-One Learning Management System</h1>
+        <p class="text-white">This is an all-in-one system where you can view and manage your role listing.</p>
+        <!-- Login Button -->
+        <router-link :to="{ name: 'LoginPage' }">
+          <a class="btn btn-lg btn-light border-light mt-3 px-5" href="#" role="button">Login</a>
+        </router-link>
       </div>
+    </div>
+  </div>
 </template>
 
+
+
 <script>
-      import 'bootstrap/dist/css/bootstrap.css'
-      import 'jquery/dist/jquery.min.js'
-      import 'bootstrap/dist/js/bootstrap.min.js'
-      
-      export default {
-            methods: {
-            },
-            mounted() {
-                  document.title = "SBRP Portal";
-            },
-            name: 'landingPage'
-            
-            // created function to test if routing works
-            // created() {
-            //       console.log('LandingPage created');
-            // }
-      };
+  import 'bootstrap/dist/css/bootstrap.css'
+  import 'jquery/dist/jquery.min.js'
+  import 'bootstrap/dist/js/bootstrap.min.js'
+  
+  export default {
+        methods: {
+        },
+        mounted() {
+              document.title = "SBRP Portal";
+        },
+        name: 'landingPage'
+  }
 </script>
 
 <style>
-      .new-page {
-      text-align: center;
-      padding: 20px;
-      }
-      .page-title {
-            font-size: 3rem;
-            text-align: center;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            color: #2e7166;
-      }
-      .btn-lg {
-            font-size: 1.5rem;
-            padding: 1rem 2rem;
-            border-radius: 2rem;
-            transition: all 0.3s ease-in-out;
-      }
+  .landing-page {
+    background-color: #0a74da;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-      .btn-lg:hover {
-            transform: scale(1.1);
-      }
+  .background-image {
+    background-image: url('../assets/LandingBackground.jpeg');
+    background-size: cover;
+    background-position: center center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    opacity: 0.8;
+  }
 
-      .border-dark {
-            border-color: #2e7166;
-      }
+  .content {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(75, 75, 75, 0.6);
+    border-radius: 10px;
+  }
 
-      .border-dark:hover {
-            border-color: #1a4731;
-      }
+  .text-white {
+    color: #fff;
+      margin: 0;
+  }
 </style>
