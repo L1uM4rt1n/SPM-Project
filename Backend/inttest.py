@@ -1,24 +1,36 @@
-import io
-import os
+import sqlite3
 import unittest
-import json
-from app import app, db
+import os
+from app import app
+import json  # Don't forget to import the json module
 
-class LoginEndpointTest(unittest.TestCase):
+class IntegrationTest(unittest.TestCase):
     def setUp(self):
+        # Create a test database by executing the SQL script
+        # Ensure the script is located in the same directory as this test script
+        test_db_filename = 'test.db'
+        script_filename = 'test.sql'
+
+        # Use SQLite to execute the SQL script
+        conn = sqlite3.connect(test_db_filename)
+        cursor = conn.cursor()
+        with open(script_filename, 'r') as script_file:
+            cursor.executescript(script_file.read())
+        conn.commit()
+        conn.close()
+
+        # Set Flask configuration to use the test database
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{test_db_filename}'
         app.config['TESTING'] = True
         self.app = app.test_client()
-        db.create_all()
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-    
-    def test_successful_login_staff(self):
-        # Create a test staff member in the database
-        # Add the necessary data for a staff with 'Staff' access rights
+        # Cleanup the test database
+        os.remove('test.db')
 
+    def test_successful_login_staff(self):
         # Send a POST request to the login endpoint
+        print("Test Start")
         response = self.app.post('/login', data=json.dumps({
             "Email": "Susan.Goh@allinone.com.sg",
             "Password": "nCK8Xe18",
@@ -26,9 +38,10 @@ class LoginEndpointTest(unittest.TestCase):
         }), content_type='application/json')
 
         data = json.loads(response.data)
-
+        print(data["message"])
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["message"], "Login successful")
+        print("Test End")
 
     def test_successful_login_staff_hr(self):
         # Create a test staff member in the database
@@ -76,9 +89,7 @@ class LoginEndpointTest(unittest.TestCase):
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(data["message"], "Restricted Access")
-
-
+        self.assertEqual(data["message"], "Staff has no HR Rights")
 
 if __name__ == '__main__':
-    unittest.main()       
+    unittest.main()

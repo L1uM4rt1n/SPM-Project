@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS Staff (
 LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\customer_csv_files\\Final_Staff.csv'
 INTO TABLE Staff
 FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
 (Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_Role, Password);
 
@@ -108,14 +108,14 @@ CREATE TABLE IF NOT EXISTS Staff_Skill (
     Staff_ID INT,
     Skill_Name VARCHAR(50),
     PRIMARY KEY (Staff_ID, Skill_Name),
-    FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID)
---     FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name)
+    FOREIGN KEY (Staff_ID) REFERENCES Staff(Staff_ID),
+    FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name)
 );
 
 LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\customer_csv_files\\Final_Staff_Skill.csv'
 INTO TABLE Staff_Skill
 FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
 (Staff_ID, Skill_Name);
 
