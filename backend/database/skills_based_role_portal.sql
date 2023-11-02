@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS Access_Control (
     Access_Control_Name VARCHAR(50) NOT NULL
 );
 
-LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Access_Control.csv'
+LOAD DATA LOCAL INFILE '/Users/tanshanmei/Downloads/IS212 - Software Project Management/project/SPM-Project/SPM-Project/backend/databasecleaned_csv_files/Final_Access_Control.csv'
 INTO TABLE Access_Control
 FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
 (Access_ID, Access_Control_Name);
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS Staff (
     FOREIGN KEY (Access_Role) REFERENCES Access_Control(Access_ID)
 );
 
-LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Staff.csv'
+LOAD DATA  LOCAL INFILE '/Users/tanshanmei/Downloads/IS212 - Software Project Management/project/SPM-Project/SPM-Project/backend/database/cleaned_csv_files/Final_Skill.csv'
 INTO TABLE Staff
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS Skill (
     Skill_Desc VARCHAR(2600) NOT NULL
 );
 
-LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Skill.csv'
+LOAD DATA LOCAL INFILE '/Users/tanshanmei/Downloads/IS212 - Software Project Management/project/SPM-Project/SPM-Project/backend/database/cleaned_csv_files/Final_Skill.csv'
 INTO TABLE Skill
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS Role (
     INDEX (Role_Name)
 );
 
-LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Role.csv'
+LOAD DATA INFILE '/Users/tanshanmei/Downloads/IS212 - Software Project Management/project/SPM-Project/SPM-Project/backend/database/cleaned_csv_files/Final_Role.csv'
 INTO TABLE Role
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS Role_Skill (
     -- INDEX (Skill_Name)
 );
 
-LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Role_Skill.csv'
+LOAD DATA  LOCAL INFILE '/Users/tanshanmei/Downloads/IS212 - Software Project Management/project/SPM-Project/SPM-Project/backend/database/cleaned_csv_files/Final_Role_Skill.csv'
 INTO TABLE Role_Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS Staff_Skill (
     FOREIGN KEY (Skill_Name) REFERENCES Skill(Skill_Name)
 );
 
-LOAD DATA INFILE 'C:/wamp64/tmp/cleaned_csv_files/Final_Staff_Skill.csv'
+LOAD DATA LOCAL INFILE '/Users/tanshanmei/Downloads/IS212 - Software Project Management/project/SPM-Project/SPM-Project/backend/database/cleaned_csv_files/Final_Staff_Skill.csv'
 INTO TABLE Staff_Skill
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
