@@ -1,13 +1,15 @@
 <template>
-      <div class="createJobListing container my-5">
+      <div class="profile container my-5">
     <div class="text-center">
         <h1 class="">Your Profile</h1>
+        <h6> Staff ID: {{staff_id}} </h6>
     </div>
     
     <hr>
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
+                <h4> My Details </h4>
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="row">
@@ -49,12 +51,36 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+                    <h4 class="material-icons mr-2">My Skills</h4>
                     <div class="card mb-3">
                         <div class="card-body text-center">
-                        <h3 class="material-icons text-success mr-2">My Skills</h3>
                         <div v-for="skill in staff_skills" :key="skill" class="mx-auto">{{ skill }}<hr></div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h4> My Applications </h4>
+            <div class="card">
+                <div class="table-scroll">
+                    <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Role ID</th>
+                            <th scope="col">Role Name</th>
+                            <th scope="col">Role Department</th>  
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="app in filteredapplied" :key="app.Application_ID">
+                            <th scope="row">{{ app.Role_ID }}</th>
+                            <td>{{ app.Role_Name}}</td>
+                            <td>{{ app.Role_Department }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 v-if="filteredapplied.length ==0" style="text-align: center;"> {{noApp}} </h5>
                 </div>
             </div>
         </div>
@@ -82,6 +108,7 @@ export default {
         filteredResults: '',
         staff_skills: [],
         filteredapplied: '',
+        noApp: '',
         
 
     };
@@ -120,6 +147,7 @@ export default {
         })
         .catch(error => {
         console.error("There was an error fetching the data:", error);
+        this.noApp = error.response.data.message
         });
     },
     },

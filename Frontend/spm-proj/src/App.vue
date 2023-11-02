@@ -11,7 +11,7 @@
         <router-link :to="{ name: 'landingPage' }">
           <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;">
             <img src="./assets/companyLogo.jpeg" class="mx-2 rounded" width="120" height="80" alt="">
-            <i>Ondeh Ondeh</i>
+            <i>SBRP</i>
           </a>
         </router-link>
 

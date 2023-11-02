@@ -53,7 +53,6 @@
                 <input type="checkbox" :value="addedskill" v-model="selectedSkills"> {{ addedskill }}
             </label>
         </div>
-        {{selectedSkills}}
 
             <br>
             <button class="btn btn-success" v-on:click="createrole">Create</button>
@@ -135,6 +134,10 @@ export default {
 
     },
     createrole() {
+    if (this.NewRole_Name == '' || this.NewDepartment == '' || this.NewDescription == '' || this.selectedSkills == '') {
+        alert("Please fill up all fields!");
+        return;
+        }
       const inputDateString = this.NewDeadline;
 
       // Get the current date
@@ -163,6 +166,7 @@ export default {
         .then(response => {
           // Handle the successful response here
           console.log('Role created:', response.data);
+          this.$router.push({ name: 'HRHome' });
         })
         .catch(error => {
           // Handle any errors here

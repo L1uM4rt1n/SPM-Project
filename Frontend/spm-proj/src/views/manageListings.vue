@@ -35,8 +35,9 @@
                     <td>{{ app.Applicant_Skills_Percentage_Matched }}</td>
                 </tr>
             </tbody>
-            <p v-if="application.length == 0"> {{noApp}} </p>
+            
         </table>
+        <h5 v-if="application.length == 0" style="text-align: center;"> {{noApp}} </h5>
     </div>
 
     </div>
@@ -104,11 +105,12 @@
                 } else {
                     console.error('Error:', response.data.message);
                     // Handle other response codes if needed
-                    this.noApp = response.data.message;
+
                 }
             })
             .catch(error => {
                 console.error('Error fetching applicant skills data:', error);
+                this.noApp = error.response.data.message
                 
             });
                 

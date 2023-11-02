@@ -156,7 +156,7 @@
             },
             submitChanges() {
                 // i want to ensure all fields are filled up before submitting if not alert user to fill up all fields
-                if (this.roleData.Role_Name == '' || this.roleData.Role_Department == '' || this.roleData.Role_Description == '' || this.roleData.Role_Requirements == '' || this.roleData.Role_Skills == '' || this.formattedAppDeadline == '') {
+                if (this.roleData.Role_Name == '' || this.roleData.Role_Department == '' || this.roleData.Role_Description == '' ||  this.roleData.Role_Skills == '' || this.formattedAppDeadline == '') {
                     alert("Please fill up all fields!");
                     return;
                 }
