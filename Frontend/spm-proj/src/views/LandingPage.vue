@@ -2,7 +2,7 @@
   <div class="landing-page">
     <div class="background-image">
       <div class="content">
-        <h1 class="text-white" style="font-weight: bold;  font-size: 55px;">All-in-One Learning Management System</h1>
+        <h1 class="text-white" style="font-weight: bold; font-size: 55px;">All-in-One Learning Management System</h1>
         <p class="text-white">This is an all-in-one system where you can view and manage your role listing.</p>
         <!-- Login Button -->
         <router-link :to="{ name: 'LoginPage' }">
@@ -12,6 +12,7 @@
     </div>
   </div>
 </template>
+
 
 
 
@@ -58,6 +59,25 @@
 
   .text-white {
     color: #fff;
-      margin: 0;
+    margin: 0;
+  }
+
+  /* Adjust font size based on screen width */
+  @media (max-width: 768px) {
+    .content h1 {
+      font-size: 30px;
+    }
+    .content p {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .content h1 {
+      font-size: 20px;
+    }
+    .content p {
+      font-size: 14px;
+    }
   }
 </style>
