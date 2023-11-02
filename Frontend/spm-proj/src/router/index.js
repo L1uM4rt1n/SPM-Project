@@ -44,7 +44,21 @@ const routes = [
         component: ()=> import('../views/profile.vue'),
         
 
-    }
+    },
+    {
+        path: '/hr-home/update-role-listing/:roleId',
+        name: 'updateRoleListing',
+        component: () => import('../views/HR/updateRoleListing.vue')
+    },
+
+  
+      // route: manage listings page
+      {
+          path: '/hr-home/manage-listings/:roleId',
+          name: 'manageListings',
+          component: () => import('../views/manageListings.vue')
+      },
+
 
 ];
 const router = createRouter({

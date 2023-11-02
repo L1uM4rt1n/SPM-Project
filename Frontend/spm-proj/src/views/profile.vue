@@ -51,7 +51,7 @@
                 <div class="col-md-6">
                     <div class="card mb-3">
                         <div class="card-body text-center">
-                        <i class="material-icons text-info mr-2">My Skills</i>
+                        <h3 class="material-icons text-success mr-2">My Skills</h3>
                         <div v-for="skill in staff_skills" :key="skill" class="mx-auto">{{ skill }}<hr></div>
                         </div>
                     </div>

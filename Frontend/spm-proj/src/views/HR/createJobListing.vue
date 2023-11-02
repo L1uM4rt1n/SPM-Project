@@ -4,9 +4,12 @@
     <div class="text-center">
         <h1 class="">Create Role Listing</h1>
     </div>
+    <router-link to="/hr-home">
+      <button class="btn btn-light top-left-button">Back</button>
+    </router-link>
     
     <hr>
-        <div class="container">
+        <div class="container" style="text-align: left;">
             <div class="form-group">
                 <label for="exampleInputEmail1">Name</label>
                 <input v-model="NewRoleName" type="email" class="form-control" id="jobName" aria-describedby="jobName" placeholder="Enter Role Listing Name" style="margin-bottom: 15px;">
@@ -35,16 +38,22 @@
                 <textarea v-model="NewDescription" class="form-control" rows="6" ></textarea>
             </div>
 
-            <div>
-                <label for="exampleFormControlTextarea1" style="margin-top: 15px;">Role Skills</label>
-                <div class="checkboxes">
-                    <label v-for="skill in allskills" :key="skill">
-                        <input type="checkbox" v-model="selectedSkills" :value="skill"> {{ skill }}
-                    </label>
-                </div>
-                {{ selectedSkills }}
-            </div>
+        <div>
+            <label for="exampleFormControlTextarea1" style="margin-top: 15px;">Role Skills</label>
+            <br>
+            <label for="allSkills">Select Skill</label>
+            <select v-model="selectedSkill" @change="addSkillToSelectedSkills">
+                <option value="">Select a skill</option>
+                <option v-for="skill in allskills" :key="skill" :value="skill">{{ skill }}</option>
+            </select>
+        </div>
 
+        <div class="checkboxes">
+            <label v-for="addedskill in selectedSkills" :key="addedskill">
+                <input type="checkbox" :value="addedskill" v-model="selectedSkills"> {{ addedskill }}
+            </label>
+        </div>
+        {{selectedSkills}}
 
             <br>
             <button class="btn btn-success" v-on:click="createrole">Create</button>
@@ -76,7 +85,9 @@ export default {
       NewDescription: '',
       NewDeadline: '',
       NewRoleSkills: '',
-      selectedSkills: [],
+      FinalSkills: [],
+      selectedskill: "",
+      selectedSkills:[],
     };
   },
   methods: {
@@ -95,6 +106,12 @@ export default {
           console.error("There was an error fetching the data:", error);
         });
     },
+     addSkillToSelectedSkills() {
+      if (this.selectedSkill) {
+        this.selectedSkills.push(this.selectedSkill);
+        this.selectedSkill = ""; // Reset the selected skill
+      }
+    },
     fetchskills() {
       axios.get(`${server.baseURL}/skills/get_all_skills`)
         .then(response => {
@@ -110,6 +127,12 @@ export default {
       console.log(this.NewDepartment);
       console.log(this.NewDescription);
       console.log(this.NewRoleName);
+    },
+    addSelectedSkills() {
+      // Perform any action with the selected skills, for example, you can add them to another array or perform an API call.
+      this.FinalSkills.push(this.selectedSkills[0])
+      console.log('Selected Skills:', this.FinalSkills);
+
     },
     createrole() {
       const inputDateString = this.NewDeadline;
@@ -164,6 +187,18 @@ export default {
     text-align: center;
     padding: 20px;
 } */
-
+.top-left-button {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  top: /* Height of your navbar */ 150px;
+  left: 30px; /* Adjust this value to control the horizontal position */
+  z-index: 1; /* Ensures the button is above other content */
+}
 /* Additional styling for elements on this page */
 </style>
