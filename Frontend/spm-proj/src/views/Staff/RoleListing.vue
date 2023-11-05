@@ -1,5 +1,5 @@
 <template>
-    <div class="app">
+    <div class="app" v-if="role && percentageMatch != null">
         <div class="row m-3">
             <!-- back button to route back to the StaffHome page -->
             <div class="container-fluid back-btn col-3">
@@ -33,6 +33,9 @@
 
             <!-- displaying the skills-matched percentage score -->
             <div class="container-fluid skills-matched col-3"> 
+                <div class="circle" :class="{ 'green': parseFloat(percentageMatch.replace('%', '')) >= 50, 'red': parseFloat(percentageMatch.replace('%', '')) < 50 }">
+                    {{ percentageMatch }}
+                </div>
             </div>
         </div>
     </div>
@@ -46,7 +49,7 @@
         name: 'roleListing',
         data() {
             return {
-                role: {},
+                role: null,
                 user_id: JSON.parse(sessionStorage.getItem('user')).Staff_ID,
                 percentageMatch: null,
                 skillsMatched: [],
@@ -107,9 +110,30 @@
 
 <style>
     .back-btn {
-        text-align: right
+        text-align: center
     }
     .main {
         text-align: left
+    }
+    .circle{
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        z-index: 1000;
+    }
+    .red {
+        background-color: rgb(255, 89, 89);
+    }
+    .green {
+        background-color: rgb(61, 176, 61);
+    }
+    .skills-matched {
+        text-align: center;
+        z-index: 1000;
     }
 </style>
