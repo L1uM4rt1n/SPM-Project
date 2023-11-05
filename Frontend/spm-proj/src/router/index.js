@@ -28,13 +28,54 @@ const routes = [
         name: 'StaffHome',
         component: () => import('../views/Staff/StaffHome.vue'),
     },
-];
 
-const router = createRouter(
+    // route: create role listing page
     {
-        history: createWebHistory(process.env.BASE_URL),
-        routes,
-    }
-)
+        path: '/createJobListing',
+        name: 'CreateJobListing',
+        component: () => import('../views/HR/createJobListing.vue'),
 
-export default router
+    },
+
+    //route: profile page
+    {
+        path: '/profile',
+        name: 'profile-page',
+        component: ()=> import('../views/profile.vue'),
+        
+
+    },
+    {
+        path: '/hr-home/update-role-listing/:roleId',
+        name: 'updateRoleListing',
+        component: () => import('../views/HR/updateRoleListing.vue')
+    },
+
+  
+      // route: manage listings page
+      {
+          path: '/hr-home/manage-listings/:roleId',
+          name: 'manageListings',
+          component: () => import('../views/manageListings.vue')
+      },
+
+
+];
+const router = createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    routes,
+  });
+  
+  // Global navigation guards
+  router.beforeEach((to, from, next) => {
+    // Logic for beforeEach guard
+    next();
+  });
+  
+  router.beforeResolve((to, from, next) => {
+    // Logic for beforeResolve guard
+    next();
+  });
+  
+  export default router;
+

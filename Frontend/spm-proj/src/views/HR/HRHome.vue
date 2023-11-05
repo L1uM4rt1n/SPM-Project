@@ -9,10 +9,12 @@
         />
 
         <div class="container">
-            <!-- create role listing button -->
-            <div class="d-flex flex-row justify-content-end" style="width:100%">
-                <button class="btn btn-secondary border-dark my-2">Create Job Listing</button>
-            </div>
+            <!-- Create Role Listing Button -->
+            <router-link :to="{ name: 'CreateJobListing' }">
+                <div class="d-flex flex-row justify-content-end" style="width:100%">
+                    <button class="btn btn-secondary border-dark my-2">Create Job Listing</button>
+                </div>
+            </router-link>
 
             <!-- display of all roles -->
             <div class="container">
@@ -24,8 +26,14 @@
                     </div>
 
                     <!-- Edit Button (Bottom-right corner) -->
-                    <div class="position-absolute bottom-0 end-0 m-2 edit-button">
-                        <a :href="'#edit/' + role.id" class="btn btn-link" style="text-decoration: none;">Edit</a>
+                    <div class="position-absolute bottom-0 end-0 m-1 edit-button">
+                        <router-link :to="{ name: 'manageListings', params: { roleId: role.Role_ID } }">
+                        <div class="btn btn-link" style="text-decoration: none;">View Applications</div>
+                    </router-link>
+
+                    <router-link :to="{ name: 'updateRoleListing', params: { roleId: role.Role_ID } }">
+                        <div class="btn btn-link" style="text-decoration: none;">Edit</div>
+                    </router-link>
                     </div>
                 </div>
             </div>
@@ -87,7 +95,7 @@
                     .then(
                         (response) => {
                             this.roles = response.data.data.roles_with_details
-
+                            console.log(this.roles)
                             const today = new Date()
                             this.filteredResults = this.roles.filter(role => {
                                 const deadline = new Date(role.App_Deadline)
