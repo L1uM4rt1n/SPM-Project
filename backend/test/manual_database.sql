@@ -1,9 +1,5 @@
 
--- Create the test database
-DROP DATABASE IF EXISTS skills_based_role_portal;
-CREATE DATABASE skills_based_role_portal;
 
-USE skills_based_role_portal;
 DROP TABLE IF EXISTS Staff_Role_Apply;
 DROP TABLE IF EXISTS Staff_Skill;
 DROP TABLE IF EXISTS Role_Skill;

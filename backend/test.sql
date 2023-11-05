@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS test_db;
-USE test_db;
 
 DROP TABLE IF EXISTS Staff_Role_Apply;
 DROP TABLE IF EXISTS Staff_Skill;

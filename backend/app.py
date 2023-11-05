@@ -8,11 +8,17 @@ from os import environ
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 import logging
+import sqlite3
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8809/skills_based_role_portal'
+
+if os.environ.get('FLASK_ENV') == 'testing': 
+    database_uri = 'sqlite:///test.db'
+else:
+    database_uri = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
