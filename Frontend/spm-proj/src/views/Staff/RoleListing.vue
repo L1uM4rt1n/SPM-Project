@@ -22,13 +22,17 @@
                 <p>{{ role.Role_Description }}</p>
                 <br>
 
+                <!-- displaying the skillsMatched in green and skillsGap in red, all under 1 single Skills Required header -->
+                <h4> Skills Matched </h4>
+                <p v-for="(skill, index) in skillsMatched" :key="'matched-' + index" style="color: rgb(61, 176, 61);"> {{ skill }} </p>
+                <p v-for="(skill, index) in skillsGap" :key="'gap-' + index" style="color: rgb(255, 0, 0);"> {{ skill }} </p>
+
                 <!-- have an apply now button in light blue, which will direct to a pop-up confirmation window to be linked later -->
                 <button type="button" class="btn btn-info">Apply Now</button>
             </div>
 
             <!-- displaying the skills-matched percentage score -->
-            <div class="container-fluid col-3">
-
+            <div class="container-fluid skills-matched col-3"> 
             </div>
         </div>
     </div>
@@ -43,6 +47,10 @@
         data() {
             return {
                 role: {},
+                user_id: JSON.parse(sessionStorage.getItem('user')).Staff_ID,
+                percentageMatch: null,
+                skillsMatched: [],
+                skillsGap: [],
             };
         },
         computed: {
@@ -51,7 +59,8 @@
             },
         },
         created() {
-            this.getRole()
+            this.getRole(),
+            this.getPercentageMatch()
         },
         methods: {
             getRole() {
@@ -72,8 +81,25 @@
                 const year = date.getFullYear()
                 return date.toDateString().replace(/\d{4}$/, year)
             },
-            newline_to_br(text) {
-                return text.replace(/\n/g, '<br>');
+            getPercentageMatch() {
+                axios.get(`${server.baseURL}/staff/role-matches?staff_id=${this.user_id}`)
+                    .then(
+                        (response) => {
+                            // console.log(response.data.data)
+                            for (let tempRole of response.data.data) {
+                                if (tempRole.Role_Name === this.role.Role_Name) {
+                                    this.percentageMatch = tempRole.Percentage_Matched
+                                    this.skillsMatched = tempRole.Skills_Matched
+                                    this.skillsGap = tempRole.Skills_Gap
+                                }
+                            }
+                        }
+                    )
+                    .catch(
+                        (error) => {
+                            console.error(error)
+                        }
+                    )
             },
         },
     };
