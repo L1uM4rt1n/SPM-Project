@@ -127,7 +127,7 @@ def person_by_id(person_id):
     else:
         return jsonify({
             "message": "Person not found."
-        }), 404
+        }), 
 
 
 @app.route("/doctors")

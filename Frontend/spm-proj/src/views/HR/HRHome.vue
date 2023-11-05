@@ -95,7 +95,7 @@
                     .then(
                         (response) => {
                             this.roles = response.data.data.roles_with_details
-
+                            console.log(this.roles)
                             const today = new Date()
                             this.filteredResults = this.roles.filter(role => {
                                 const deadline = new Date(role.App_Deadline)
