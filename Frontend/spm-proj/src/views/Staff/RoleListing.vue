@@ -2,14 +2,14 @@
     <div class="app" v-if="role && percentageMatch != null">
         <div class="row m-3">
             <!-- back button to route back to the StaffHome page -->
-            <div class="container-fluid back-btn col-3">
+            <div class="container-fluid back-btn col-3" style="margin-left: 0; margin-right: 0;">
                 <router-link to="/staff-home">
                     <button type="button" class="btn btn-secondary">Back</button>
                 </router-link>
             </div>
 
             <!-- main body of role details -->
-            <div class="container-fluid main col-6">
+            <div class="container-fluid main col-6" style="margin-left: 0; margin-right: 0;">
                 <h2>{{ role.Role_Name }}</h2>
                 <p style="color: grey;">Department: {{ role.Role_Department }} | Role ID: {{ role.Role_ID }}</p>
                 <br>
@@ -67,7 +67,7 @@
             this.getPercentageMatch()
         },
         methods: {
-            getRole() {
+            async getRole() {
                 axios.get(`${server.baseURL}/role/view_role?role_id=${this.roleId}`)
                     .then(
                         (response) => {
@@ -85,7 +85,7 @@
                 const year = date.getFullYear()
                 return date.toDateString().replace(/\d{4}$/, year)
             },
-            getPercentageMatch() {
+            async getPercentageMatch() {
                 axios.get(`${server.baseURL}/staff/role-matches?staff_id=${this.user_id}`)
                     .then(
                         (response) => {

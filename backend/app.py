@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_session import Session
 from os import environ
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
@@ -19,7 +18,6 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 CORS(app)
-Session(app)
 migrate = Migrate(app, db)
 
 class AccessRights(db.Model):
