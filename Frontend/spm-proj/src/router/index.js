@@ -58,31 +58,30 @@ const routes = [
         component: () => import('../views/HR/updateRoleListing.vue')
     },
 
-  
-      // route: manage listings page
-      {
-          path: '/hr-home/manage-listings/:roleId',
-          name: 'manageListings',
-          component: () => import('../views/manageListings.vue')
-      },
+    // route: manage listings page
+    {
+        path: '/hr-home/manage-listings/:roleId',
+        name: 'manageListings',
+        component: () => import('../views/manageListings.vue')
+    },
 
 
 ];
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
-  });
-  
-  // Global navigation guards
-  router.beforeEach((to, from, next) => {
-    // Logic for beforeEach guard
-    next();
-  });
-  
-  router.beforeResolve((to, from, next) => {
-    // Logic for beforeResolve guard
-    next();
-  });
-  
-  export default router;
+});
+
+    // Global navigation guards
+    router.beforeEach((to, from, next) => {
+        // Logic for beforeEach guard
+        next();
+    });
+
+    router.beforeResolve((to, from, next) => {
+        // Logic for beforeResolve guard
+        next();
+    });
+
+export default router;
 
