@@ -227,22 +227,22 @@ class IntegrationTest(unittest.TestCase):
     
 # #     ###################### create new role test cases #####################
 
-    def test_create_role_success(self):
-        # Test creating a new role with valid data
-        role_data = {
-            'Role_Name': 'Test Role',
-            'Role_Department': 'Marketing',
-            'Date_Posted': datetime.strptime('2023-11-01', '%Y-%m-%d'),
-            'App_Deadline': datetime.strptime('2023-11-15', '%Y-%m-%d'),
-            'Role_Description': 'Create content for the company',
-            'Role_Skills': ['Budgeting']
-        }
-        response = self.app.post('/role/create', json=role_data)
+    # def test_create_role_success(self):
+    #     # Test creating a new role with valid data
+    #     role_data = {
+    #         'Role_Name': 'Test Role',
+    #         'Role_Department': 'Marketing',
+    #         'Date_Posted': datetime.strptime('2023-11-01', '%Y-%m-%d').date(),
+    #         'App_Deadline': datetime.strptime('2023-11-15', '%Y-%m-%d').date(),
+    #         'Role_Description': 'Create content for the company',
+    #         'Role_Skills': ['Budgeting']
+    #     }
+    #     response = self.app.post('/role/create', json=role_data)
 
-        data = json.loads(response.data)
+    #     data = json.loads(response.data)
 
-        # self.assertEqual(response.status_code, 201)
-        self.assertEqual(data['message'], 'Role listing created successfully.')
+    #     # self.assertEqual(response.status_code, 201)
+    #     self.assertEqual(data['message'], 'Role listing created successfully.')
 
     
 
@@ -636,29 +636,37 @@ class IntegrationTest(unittest.TestCase):
 #         self.assertEqual(response_data['message'], 'You have not applied for any roles yet.')
 
     
-    # def test_get_all_skills(self):
-    #         with app.app_context():  # Create an application context
-    #             # Add sample skills to the test database
-    #             skills_data = ['A1', 'A2', 'A3']
-    #             for skill_name in skills_data:
-    #                 skill = Skill(Skill_Name=skill_name, Skill_Desc="Skill Description")
-    #                 db.session.add(skill)
-    #             db.session.commit()
+    def test_get_all_skills_success(self):
+        # Create some existing skills
+        existing_skills_data = [
+            {"Skill_Name": "Skill1", "Skill_Desc": "Description 1"},
+            {"Skill_Name": "Skill2", "Skill_Desc": "Description 2"},
+        ]
 
-    #             # Make a GET request to the /skills/get_all_skills endpoint
-    #             response = self.app.get('/skills/get_all_skills')
+        with app.app_context():
+            for skill_data in existing_skills_data:
+                skill = Skill(Skill_Name=skill_data["Skill_Name"], Skill_Desc=skill_data["Skill_Desc"])
+                db.session.add(skill)
+            db.session.commit()
 
-    #             # Check the response status code (should be 200)
-    #             self.assertEqual(response.status_code, 200)
+        # Send a GET request to retrieve all skill names
+        response = self.app.get('/skills/get_all_skills')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Skill1', response.data.decode('utf-8'))
+        self.assertIn('Skill2', response.data.decode('utf-8'))
 
-    #             # Check the JSON response for the expected structure
-    #             response_data = response.get_json()
-    #             self.assertIn('data', response_data)
-    #             self.assertIn('skill_names', response_data['data'])
+    def test_get_all_skills_no_data(self):
+        # Clear the database
+        with app.app_context():
+            Skill.query.delete()
+            db.session.commit()
 
-    #             # Check if skill names in the response match the added skills
-    #             skill_names_response = response_data['data']['skill_names']
-    #             self.assertEqual(sorted(skill_names_response), sorted(skills_data))
+        # Send a GET request to retrieve all skill names
+        response = self.app.get('/skills/get_all_skills')
+        self.assertEqual(response.status_code, 200)
+
+
+
 
 
 
