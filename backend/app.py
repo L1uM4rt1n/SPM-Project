@@ -18,7 +18,6 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 CORS(app)
-Session(app)
 migrate = Migrate(app, db)
 
 class AccessRights(db.Model):
