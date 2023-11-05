@@ -7,16 +7,41 @@ from app import Role, Staff, Skill, Role_Skill, Staff_Skill
 from datetime import datetime 
 
 
+os.environ['FLASK_ENV'] = 'testing'
+
+
 class IntegrationTest(unittest.TestCase):
     def setUp(self):
-        test_db_filename = 'test.db'
+        # Create a test database by executing the SQL script
+        # Ensure the script is located in the same directory as this test script
+        test_db_filename = 'instance/test.db' 
         script_filename = 'test.sql'
+        print(test_db_filename)
+        print("Current working directory:", os.getcwd())
+        # Use SQLite to execute the SQL script
+
+        # Set Flask configuration to use the test database
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///'
         app.config['TESTING'] = True
         self.app = app.test_client()
+        
+        with app.app_context():
+            db.create_all()
+
+        
+        conn = sqlite3.connect(test_db_filename)
+        cursor = conn.cursor()
+        with open(script_filename, 'r') as script_file:
+            cursor.executescript(script_file.read())
+        conn.commit()
+        conn.close()
+ 
+
 
     def tearDown(self):
         # Clear data from the test database
-        conn = sqlite3.connect('test.db')
+        test_db_filename = 'instance/test.db'
+        conn = sqlite3.connect(test_db_filename)
         cursor = conn.cursor()
 
         # Clear data from all the tables
@@ -32,7 +57,6 @@ class IntegrationTest(unittest.TestCase):
 
         for table_name in tables:
             cursor.execute(f'DELETE FROM {table_name};')
-
         conn.commit()
         conn.close()
     
