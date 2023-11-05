@@ -48,13 +48,15 @@
                 roles: [],
                 filteredResults: [],
                 user_id: JSON.parse(sessionStorage.getItem('user')).Staff_ID,
-                skillsMatched: []
+                skillsMatched: [],
+                appliedRoles: [],
             };
         },
 
         created() {
             this.getAllRoles()
             this.getPercentageMatch()
+            this.getAppliedRoles()
         },
 
         methods: {
@@ -86,6 +88,14 @@
                     this.filteredResults = filteredResults;
                 }
             },
+            getAppliedRoles() {
+                axios.get(`${server.baseURL}/staff/applied_roles?staff_id=${this.user_id}`)
+                    .then(
+                        (response) => {
+                            this.appliedRoles = response.data.data
+                        }
+                    )
+            },
             getAllRoles() {
                 axios.get(`${server.baseURL}/roles/get_all_roles`)
                     .then(
@@ -95,7 +105,8 @@
                             const today = new Date()
                             this.filteredResults = this.roles.filter(role => {
                                 const deadline = new Date(role.App_Deadline)
-                                return deadline >= today
+                                const notApplied = !this.appliedRoles.some(appliedRole => appliedRole.Role_ID === role.Role_ID)
+                                return deadline >= today && notApplied
                             })
                         }
                     )
@@ -116,7 +127,7 @@
             getRelevantPercentageMatch(roleName) {
                 const role = this.skillsMatched.find(role => role.Role_Name === roleName)
                 return role ? parseFloat(role.Percentage_Matched) : 0;
-            }
+            },
         },
 
         watch: {
@@ -166,4 +177,3 @@
         margin: 30px;
     }
 </style>
-
