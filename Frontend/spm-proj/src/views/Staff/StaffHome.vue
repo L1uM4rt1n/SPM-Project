@@ -145,7 +145,7 @@
     }
 
     .green {
-        background-color: rgb(123, 232, 123);
+        background-color: rgb(61, 176, 61);
     }
 
     .card-link{
