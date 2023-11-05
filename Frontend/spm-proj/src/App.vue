@@ -11,12 +11,16 @@
         <router-link :to="{ name: 'landingPage' }">
           <a class="navbar-brand btn" href="#" style="text-decoration: none; outline: none;">
             <img src="./assets/companyLogo.jpeg" class="mx-2 rounded" width="120" height="80" alt="">
-            <i>Ondeh Ondeh</i>
+            <i>SBRP</i>
           </a>
         </router-link>
-          <a class="navbar-brand" href="#">
-          <img src="./assets/profileIcon.png"  class="rounded-circle" width="50" height="50" alt="">
+
+        <a class="navbar-brand" href="#">
+          <router-link :to="{ name: 'profile-page'}" v-if="routeName !== 'landingPage' && routeName !== 'LoginPage'">
+            <img src="./assets/profileIcon.png" class="rounded-circle" width="50" height="50" alt="">
+          </router-link>
         </a>
+
       </div>
     </nav>
 
@@ -28,33 +32,47 @@
         <router-view></router-view>
       </div>
     </main>
-
   </div>
 </template>
 
 <script>
-  import 'bootstrap/dist/css/bootstrap.css'
-  import 'bootstrap/dist/js/bootstrap'
-  import 'jquery/dist/jquery.min.js'
-  import { createRouter, createWebHistory } from 'vue-router'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/js/bootstrap'
+import 'jquery/dist/jquery.min.js'
+import { createRouter, createWebHistory } from 'vue-router'
 
-  export default {
+export default {
     name: 'App',
-    methods: {
+  data() {
+    return {
+      routeName: '',
+    };
+  },
+  watch: {
+    $route() {
+      this.routeName = this.$route.name;
+      console.log(this.routeName);
     },
-    router: createRouter(
+  },
+  created() {
+    this.routeName = this.$route.name;
+    console.log(this.routeName);
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.test();
+    next();
+  },
+  router: createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    routes: [
       {
-        history: createWebHistory(process.env.BASE_URL),
-        routes: [
-          {
-            path: "/",
-            name: "landingPage",
-            component: () => import('./views/LandingPage.vue')
-          }
-        ]
+        path: "/",
+        name: "landingPage",
+        component: () => import('./views/LandingPage.vue')
       }
-    )
-  }
+    ]
+  })
+}
 </script>
 
 <style>
