@@ -37,7 +37,7 @@ class IntegrationTest(unittest.TestCase):
 
     def tearDown(self):
         # Clear data from the test database
-        test_db_filename = 'instance/test.db'
+        test_db_filename = 'test.db'
         conn = sqlite3.connect(test_db_filename)
         cursor = conn.cursor()
 

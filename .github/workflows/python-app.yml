@@ -39,8 +39,8 @@ jobs:
         python $GITHUB_WORKSPACE/backend/unit_tests.py
     - name: Start Flask application
       run: |
-        cd $GITHUB_WORKSPACE/backend
-        python app.py &  
+        python $GITHUB_WORKSPACE/backend/app.py
+        &  
         sleep 3  
     - name: Run integration tests
       run: |
