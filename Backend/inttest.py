@@ -34,7 +34,6 @@ class IntegrationTest(unittest.TestCase):
         conn.close()
  
 
-
     def tearDown(self):
         # Clear data from the test database
         test_db_filename = 'instance/test.db'
@@ -152,7 +151,28 @@ class IntegrationTest(unittest.TestCase):
             self.assertIn("App_Deadline", role)
 
     
+    def test_get_role_details_success(self):
+        # Assuming you have a valid role_id for an existing role in your database
+        role_id = 1000001
+        response = self.app.get(f'/role/view_role?role_id={role_id}')
 
+        # Check the response status code (200 for success)
+        self.assertEqual(response.status_code, 200)
+        self.maxDiff = None
+        # Assuming you know the expected JSON structure for the role details
+        expected_data = {      
+            'App_Deadline': 'Fri, 29 Dec 2023 00:00:00 GMT', 
+            'Date_Posted': 'Wed, 11 Oct 2023 00:00:00 GMT', 
+            'Role_Department': 'Sales', 
+            'Role_Description': "The Account Manager acts as a key point of contact between an organisation and its clients. He/She possesses thorough product knowledge and oversees product and/or service sales. He works with customers to identify their wants and prepares reports by collecting, analysing, and summarising sales information. He contacts existing customers to discuss and give recommendations on how specific products or services can meet their needs. He maintains customer relationships to strategically place new products and drive sales for long-term growth. He works in a fast-paced and dynamic environment, and travels frequently to clients' premises for meetings. He is familiar with client relationship management and sales tools. He is knowledgeable of the organisation's products and services, as well as trends, developments and challenges of the industry domain. The Sales Account Manager is a resourceful, people-focused and persistent individual, who takes rejection as a personal challenge to succeed when given opportunity. He appreciates the value of long lasting relationships and prioritises efforts to build trust with existing and potential customers. He exhibits good listening skills and is able to establish rapport with customers and team members alike easily.",
+            'Role_ID': 1000001,
+            'Role_Name': 'Account Manager',
+            'Role_Skills': ['Account Management','Budgeting','Business Development', 'Business Needs Analysis', 'Business Negotiation','Collaboration','Communication','Data Analytics', 'Pricing Strategy','Problem Solving','Product Management', 'Sales Strategy','Stakeholder Management']
+            }
+        
+        # Check if the response data matches the expected data
+        data = json.loads(response.data)
+        self.assertEqual(data, expected_data)
         
 if __name__ == '__main__':
     unittest.main()
