@@ -6,15 +6,13 @@ import json
 from app import Role, Staff, Skill, Role_Skill, Staff_Skill
 from datetime import datetime, date
 
-
-# os.environ['FLASK_ENV'] = 'testing'
     
 class IntegrationTest(unittest.TestCase):
     def setUp(self):
         # Create a test database by executing the SQL script
         # Ensure the script is located in the same directory as this test script
         test_db_filename = 'instance/test.db' 
-        script_filename = 'test.sql'
+        script_filename = os.path.join(os.path.dirname(__file__), 'test.sql')
         print(test_db_filename)
         print("Current working directory:", os.getcwd())
         # Use SQLite to execute the SQL script

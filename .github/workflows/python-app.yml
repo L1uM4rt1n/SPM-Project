@@ -5,7 +5,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" , "dev-weixuan-1", "weixuanseow-patch-1"]
   pull_request:
     branches: [ "main" ]
 
