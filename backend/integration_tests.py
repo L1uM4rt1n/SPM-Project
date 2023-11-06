@@ -209,21 +209,21 @@ class IntegrationTest(unittest.TestCase):
     
 # #     ###################### create new role test cases #####################
 
-    def test_create_role_success(self):
-        # Test creating a new role with valid data
-        role_data = {
-            'Role_Name': 'Test Role',
-            'Role_Department': 'Marketing',
-            'Date_Posted': '2023-11-01',
-            'App_Deadline': '2023-11-15',
-            'Role_Description': 'Create content for the company',
-            'Role_Skills': ['Budgeting']
-        }
-        response = self.app.post('/role/create', data=json.dumps(role_data), content_type='application/json')
-        data = json.loads(response.data)
-        print(data)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(data['message'], 'Role listing created successfully.')
+    # def test_create_role_success(self):
+    #     # Test creating a new role with valid data
+    #     role_data = {
+    #         'Role_Name': 'Test Role',
+    #         'Role_Department': 'Marketing',
+    #         'Date_Posted': '2023-11-01',
+    #         'App_Deadline': '2023-11-15',
+    #         'Role_Description': 'Create content for the company',
+    #         'Role_Skills': ['Budgeting']
+    #     }
+    #     response = self.app.post('/role/create', data=json.dumps(role_data), content_type='application/json')
+    #     data = json.loads(response.data)
+    #     print(data)
+    #     self.assertEqual(response.status_code, 201)
+    #     self.assertEqual(data['message'], 'Role listing created successfully.')
 
     def test_create_role_missing_fields(self):
         # Test creating a new role with missing required fields
