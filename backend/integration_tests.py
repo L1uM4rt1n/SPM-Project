@@ -14,7 +14,7 @@ class IntegrationTest(unittest.TestCase):
         # Create a test database by executing the SQL script
         # Ensure the script is located in the same directory as this test script
         test_db_filename = 'instance/test.db' 
-        script_filename = 'test.sql'
+        script_filename = os.path.join(os.path.dirname(__file__), 'test.sql')
         print(test_db_filename)
         print("Current working directory:", os.getcwd())
         # Use SQLite to execute the SQL script
@@ -37,7 +37,7 @@ class IntegrationTest(unittest.TestCase):
 
     def tearDown(self):
         # Clear data from the test database
-        test_db_filename = 'test.db'
+        test_db_filename = 'instance/test.db'
         conn = sqlite3.connect(test_db_filename)
         cursor = conn.cursor()
 
