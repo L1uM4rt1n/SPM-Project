@@ -42,6 +42,9 @@ jobs:
           cd $GITHUB_WORKSPACE/backend
           python app.py &
           sleep 3  
+    - name: Copy test.sql file
+      run: |
+        cp $GITHUB_WORKSPACE/test.sql $GITHUB_WORKSPACE/backend/
     - name: Run integration tests
       run: |
           cd $GITHUB_WORKSPACE/backend
