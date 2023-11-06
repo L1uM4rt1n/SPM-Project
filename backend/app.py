@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_session import Session
 from os import environ
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
@@ -10,14 +11,26 @@ import logging
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/skills_based_role_portal'
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8809/skills_based_role_portal'
+
+if __name__ == 'main':
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://' + \
+                                            'root:' + \
+                                            '@localhost:3306/skills_based_role_portal'
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
+                                               'pool_recycle': 280}
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///test.db"
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 CORS(app)
+Session(app)
 migrate = Migrate(app, db)
 
 class AccessRights(db.Model):
@@ -651,7 +664,7 @@ def submit_application():
     staff_id = request.args.get('staff_id') # make sure to pass in the staff_id to the endpoint, based on user session
     ##################### check how to retrieve
     # staff_id = session.get('staff_id')
-    role_id = request.args.get('role_id')
+    role_id = request.form.get('role_id')
     # role_id = 1000004
     # check if staff has already applied for this role
     existing_application = Staff_Role_Apply.query.filter_by(
