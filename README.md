@@ -3,7 +3,7 @@
       <img src="https://readme-typing-svg.demolab.com/?lines=SPM+G1T7+SBRP&font=Fira%20Code&center=true&width=380&height=50&duration=4000&pause=1000">
 </p>
 
-## Members
+## Members 👥
 | Team Members             | Student ID | Email                            | Role                                 |
 | :----------------------: | :--------: | :------------------------------: | :----------------------------------: |
 | Liu Ze Wei Martin        | 01398322   | martin.liu.2021@scis.smu.edu.sg  | Product Owner / Full-Stack Developer |
