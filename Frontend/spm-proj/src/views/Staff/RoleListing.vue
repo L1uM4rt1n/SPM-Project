@@ -28,7 +28,7 @@
                 <p v-for="(skill, index) in skillsGap" :key="'gap-' + index" style="color: rgb(255, 0, 0);"> {{ skill }} </p>
 
                 <!-- have an apply now button in light blue, which will direct to a pop-up confirmation window to be linked later -->
-                <button type="button" class="btn btn-info">Apply Now</button>
+                <button v-if="!hasApplied" @click="applyNow" type="button" class="btn btn-info">Apply Now</button>
             </div>
 
             <!-- displaying the skills-matched percentage score -->
@@ -54,6 +54,7 @@
                 percentageMatch: null,
                 skillsMatched: [],
                 skillsGap: [],
+                hasApplied: false,
             };
         },
         computed: {
@@ -104,6 +105,20 @@
                         }
                     )
             },
+            applyNow() {
+                axios.post(`${server.baseURL}/staff/submit_application?role_id=${this.role.Role_ID}&staff_id=${this.user_id}`)
+                    .then(
+                        () => {
+                            alert("Application submitted successfully.")
+                        }
+                    )
+                    .catch(
+                        () => {
+                            this.hasApplied = true
+                            alert("You have already applied for this role.")
+                        }
+                    )
+            }
         },
     };
 </script>

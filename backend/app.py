@@ -651,7 +651,7 @@ def submit_application():
     staff_id = request.args.get('staff_id') # make sure to pass in the staff_id to the endpoint, based on user session
     ##################### check how to retrieve
     # staff_id = session.get('staff_id')
-    role_id = request.form.get('role_id')
+    role_id = request.args.get('role_id')
     # role_id = 1000004
     # check if staff has already applied for this role
     existing_application = Staff_Role_Apply.query.filter_by(
