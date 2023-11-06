@@ -19,6 +19,7 @@ app = Flask(__name__)
 # else:
 #     database_uri = 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 
+
 if __name__ == 'main':
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://' + \
                                             'root:' + \
