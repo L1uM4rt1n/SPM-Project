@@ -14,12 +14,21 @@ app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8809/skills_based_role_portal'
 
-if os.environ.get('FLASK_ENV') == 'testing': 
-    database_uri = 'sqlite:///test.db'
-else:
-    database_uri = 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
+# if os.environ.get('FLASK_ENV') == 'testing': 
+#     database_uri = 'sqlite:///test.db'
+# else:
+#     database_uri = 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+if __name__ == 'main':
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://' + \
+                                            'root:' + \
+                                            '@localhost:3306/skills_based_role_portal'
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
+                                               'pool_recycle': 280}
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///test.db"
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
