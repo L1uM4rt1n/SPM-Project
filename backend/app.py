@@ -802,7 +802,7 @@ def validate_email():
         if staff:
             return jsonify({'valid': True}), 200
         else:
-            return jsonify({'valid': False}), 200
+            return jsonify({'valid': False}), 300
     except KeyError as key_error:
         return jsonify({'message': str(key_error)}), 400
     except Exception as e:
@@ -818,7 +818,7 @@ def validate_password():
         if staff:
             return jsonify({'valid': True}), 200
         else:
-            return jsonify({'valid': False}), 200
+            return jsonify({'valid': False}), 300
     except KeyError as key_error:
         return jsonify({'message': str(key_error)}), 400
     except Exception as e:

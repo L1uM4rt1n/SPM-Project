@@ -206,22 +206,6 @@ class IntegrationTest(unittest.TestCase):
     
 # #     ###################### create new role test cases #####################
 
-    # def test_create_role_success(self):
-    #     # Test creating a new role with valid data
-    #     role_data = {
-    #         'Role_Name': 'Test Role',
-    #         'Role_Department': 'Marketing',
-    #         'Date_Posted': '2023-11-01',
-    #         'App_Deadline': '2023-11-15',
-    #         'Role_Description': 'Create content for the company',
-    #         'Role_Skills': ['Budgeting']
-    #     }
-    #     response = self.app.post('/role/create', data=json.dumps(role_data), content_type='application/json')
-    #     data = json.loads(response.data)
-    #     print(data)
-    #     self.assertEqual(response.status_code, 201)
-    #     self.assertEqual(data['message'], 'Role listing created successfully.')
-
     def test_create_role_missing_fields(self):
         # Test creating a new role with missing required fields
         role_data = {
@@ -266,61 +250,6 @@ class IntegrationTest(unittest.TestCase):
 
     
 # #         ############# Update role listing endpoint test cases #################
-    # def test_update_role_success(self):
-    #     # Create test role
-    #     # app_deadline = datetime.strptime('2023-12-29', '%Y-%m-%d').date()
-    #     # date_posted = datetime.strptime('2023-10-11', '%Y-%m-%d').date()
-    #     with app.app_context():  # Create an application context
-    #         role = Role(
-    #             Role_ID=9999999,
-    #             Role_Name='Test Role',
-    #             Role_Description='This is a test role',
-    #             Role_Department='Sales',
-    #             App_Deadline=date(2023,12,29),
-    #             Date_Posted='2023-10-11'
-    #         )
-    #         # Create role skills for the role
-    #         role_skills = [
-    #             Role_Skill(Role_Name='Test Role', Skill_Name='Account Management'),
-    #         ]
-    #         db.session.add(role)
-    #         db.session.add_all(role_skills)
-    #         db.session.commit()
-    #     # Assuming you have a valid role_id for an existing role in your database
-    #     role_id = 9999999
-    #     updated_data = {
-    #     'Role_Name': 'Test Role 1',
-    #     'Role_Department': 'Sales',
-    #     'Date_Posted': '2023-10-11',
-    #     'App_Deadline': '2023-12-29',
-    #     'Role_Description': 'Updated Role Description',
-    #     'Role_Skills': ['Budgeting']
-    #     }
-
-    #     response = self.app.put(f'/role/update?role_id={role_id}', json=updated_data, content_type='application/json')
-    #     self.assertEqual(response.status_code, 200)
-
-    #     # Verify that the role has been updated in the database
-    #     updated_role = Role.query.get(role_id)
-    #     self.assertEqual(updated_role.Role_Name, updated_data['Role_Name'])
-    #     self.assertEqual(updated_role.Role_Department, updated_data['Role_Department'])
-    #     # Convert the date fields in the database to match the format in your updated_data
-    #     expected_date_posted = datetime.strptime(updated_data['Date_Posted'], '%Y-%m-%d').date()
-    #     expected_app_deadline = datetime.strptime(updated_data['App_Deadline'], '%Y-%m-%d').date()
-    #     self.assertEqual(updated_role.Date_Posted, expected_date_posted)
-    #     self.assertEqual(updated_role.App_Deadline, expected_app_deadline)
-    #     self.assertEqual(updated_role.Role_Description, updated_data['Role_Description'])
-
-    #     # Verify that role skills have been updated in the database
-    #     updated_role_skills = [skill.Skill_Name for skill in updated_role.role_skills]
-    #     self.assertEqual(set(updated_role_skills), set(updated_data['Role_Skills']))
-    #     expected_response = {
-    #         'code': 200,
-    #         'message': 'Role updated successfully.'
-    #     }
-    #     data = json.loads(response.data)
-    #     self.assertEqual(data, expected_response)
-
 
     def test_update_role_not_found(self):
         # Test updating a role that does not exist
