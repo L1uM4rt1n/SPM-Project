@@ -15,7 +15,6 @@ class IntegrationTest(unittest.TestCase):
         script_filename = os.path.join(os.path.dirname(__file__), 'test.sql')
         print(test_db_filename)
         print("Current working directory:", os.getcwd())
-        # Use SQLite to execute the SQL script
 
         # Set Flask configuration to use the test database
         app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///'
