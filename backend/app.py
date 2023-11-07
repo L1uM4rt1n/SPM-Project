@@ -14,19 +14,23 @@ app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8809/skills_based_role_portal'
 
-if __name__ == 'main':
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://' + \
-                                            'root:' + \
-                                            '@localhost:3306/skills_based_role_portal'
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
-                                               'pool_recycle': 280}
+# if __name__ == 'main':
+    # app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size': 100,
+    #                                            'pool_recycle': 280}
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SESSION_TYPE'] = 'filesystem'
+
+if __name__ == '__main__':
+    app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root:@localhost:3306/skills_based_role_portal'
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///test.db"
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.urandom(24)
-app.config['SESSION_TYPE'] = 'filesystem'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SECRET_KEY'] = os.urandom(24)
+# app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 CORS(app)
@@ -823,6 +827,6 @@ def validate_password():
         return jsonify({'message': str(key_error)}), 400
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-    
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)
