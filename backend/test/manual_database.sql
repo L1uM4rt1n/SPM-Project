@@ -1,4 +1,4 @@
-
+create DATABASE 
 
 DROP TABLE IF EXISTS Staff_Role_Apply;
 DROP TABLE IF EXISTS Staff_Skill;
