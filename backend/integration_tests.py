@@ -490,6 +490,7 @@ class IntegrationTest(unittest.TestCase):
         role_id = 1000001  # fill valid role ID
 
         response = self.app.post(f'/staff/submit_application?staff_id={staff_id}', data={'role_id': role_id})
+        response = self.app.post(f'/staff/submit_application?staff_id={staff_id}', data={'role_id': role_id})
         self.assertEqual(response.data.decode('utf-8'), "You have already applied for this role.")
         self.assertEqual(response.status_code, 200)
 
