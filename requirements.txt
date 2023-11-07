@@ -5,3 +5,4 @@ Flask-SQLAlchemy
 SQLAlchemy
 mysql-connector-python
 Flask-Migrate
+Flask-Session
